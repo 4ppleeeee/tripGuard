@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
@@ -31,16 +32,17 @@ import java.util.UUID
 class DemoActivity : Activity() {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private lateinit var root: LinearLayout
     private lateinit var input: EditText
     private lateinit var listContainer: LinearLayout
     private lateinit var emptyView: TextView
+    private var selectedPlatform: SourcePlatform? = null
     private val repository by lazy { TravelSourceRepository(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupContentView()
+        setupHomeView()
         handleIncomingIntent(intent, autoSave = true)
-        renderSources()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -56,27 +58,73 @@ class DemoActivity : Activity() {
         super.onDestroy()
     }
 
-    private fun setupContentView() {
-        val root = LinearLayout(this).apply {
+    override fun onBackPressed() {
+        if (selectedPlatform != null) {
+            setupHomeView()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    private fun setupBaseRoot() {
+        root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(28), dp(20), dp(20))
-            setBackgroundColor(0xFFF6F7F9.toInt())
+            setBackgroundColor(0xFFF4F6FA.toInt())
         }
+        setContentView(root)
+    }
+
+    private fun setupHomeView() {
+        selectedPlatform = null
+        setupBaseRoot()
 
         root.addView(text("旅行资料 MVP", 26f, true, 0xFF171717.toInt()))
-        root.addView(text("从小红书分享文本中提取链接，入库后异步解析标题、描述和封面。", 14f, false, 0xFF666666.toInt()).apply {
-            setPadding(0, dp(8), 0, dp(18))
+        root.addView(text("选择渠道，逐个验证收藏、正文解析和封面抓取链路。", 14f, false, 0xFF667085.toInt()).apply {
+            setPadding(0, dp(8), 0, dp(20))
+        })
+
+        val scroll = ScrollView(this)
+        val channels = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+        }
+        SourcePlatform.values().forEach { platform ->
+            channels.addView(channelCard(platform))
+            channels.addView(space(1, dp(12)))
+        }
+        scroll.addView(channels)
+        root.addView(scroll, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
+    }
+
+    private fun setupChannelView(platform: SourcePlatform) {
+        selectedPlatform = platform
+        setupBaseRoot()
+
+        val header = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        header.addView(iconButton("‹") { setupHomeView() }, LinearLayout.LayoutParams(dp(44), dp(44)))
+        header.addView(LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(text(platform.displayName, 24f, true, 0xFF171717.toInt()))
+            addView(text(platform.shortStatus, 13f, false, platform.accentColor))
+        }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        root.addView(header)
+
+        root.addView(text(platform.description, 14f, false, 0xFF667085.toInt()).apply {
+            setPadding(0, dp(10), 0, dp(18))
         })
 
         input = EditText(this).apply {
-            hint = "粘贴小红书分享文案或 URL"
+            hint = platform.inputHint
             minLines = 4
             maxLines = 7
             gravity = Gravity.TOP
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             setTextColor(0xFF222222.toInt())
             setHintTextColor(0xFF999999.toInt())
-            setBackgroundColor(0xFFFFFFFF.toInt())
+            background = roundedBg(0xFFFFFFFF.toInt(), 0xFFE2E8F0.toInt(), 8f)
             setPadding(dp(14), dp(12), dp(14), dp(12))
         }
         root.addView(input, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -86,17 +134,17 @@ class DemoActivity : Activity() {
             gravity = Gravity.CENTER_VERTICAL
             setPadding(0, dp(12), 0, dp(18))
         }
-        actions.addView(primaryButton("保存到资料库") { saveInputText() }, LinearLayout.LayoutParams(0, dp(44), 1f))
+        actions.addView(primaryButton("保存并解析") { saveInputText() }, LinearLayout.LayoutParams(0, dp(44), 1f))
         actions.addView(space(dp(10), 1))
-        actions.addView(secondaryButton("清空") {
-            repository.replaceAll(emptyList())
+        actions.addView(secondaryButton("清空本渠道") {
+            repository.replaceAll(repository.getAll().filterNot { it.platform == platform })
             renderSources()
-        }, LinearLayout.LayoutParams(dp(88), dp(44)))
+        }, LinearLayout.LayoutParams(dp(128), dp(44)))
         root.addView(actions)
 
-        emptyView = text("还没有资料。复制小红书分享文本后，从系统分享面板选择 Travel MVP Demo，或直接粘贴到上方。", 14f, false, 0xFF777777.toInt()).apply {
+        emptyView = text("还没有${platform.displayName}资料。复制分享文本后，从系统分享面板选择 Travel MVP Demo，或直接粘贴到上方。", 14f, false, 0xFF667085.toInt()).apply {
             setPadding(dp(16), dp(18), dp(16), dp(18))
-            setBackgroundColor(0xFFFFFFFF.toInt())
+            background = roundedBg(0xFFFFFFFF.toInt(), 0xFFE2E8F0.toInt(), 8f)
         }
         root.addView(emptyView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
@@ -107,7 +155,7 @@ class DemoActivity : Activity() {
         scroll.addView(listContainer)
         root.addView(scroll, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
 
-        setContentView(root)
+        renderSources()
     }
 
     private fun handleIncomingIntent(intent: Intent, autoSave: Boolean) {
@@ -119,6 +167,10 @@ class DemoActivity : Activity() {
 
         if (sharedText.isBlank()) {
             return
+        }
+        val platform = XhsShareParser.detectPlatform(sharedText)
+        if (selectedPlatform != platform) {
+            setupChannelView(platform)
         }
         input.setText(sharedText)
         if (autoSave) {
@@ -150,12 +202,16 @@ class DemoActivity : Activity() {
         }
 
         val now = System.currentTimeMillis()
+        val detectedPlatform = XhsShareParser.detectPlatform("$url $rawText")
+        val platform = selectedPlatform
+            ?.takeIf { it != SourcePlatform.WEB || detectedPlatform == SourcePlatform.WEB }
+            ?: detectedPlatform
         val source = TravelSource(
             id = UUID.randomUUID().toString(),
             rawText = rawText,
             originalUrl = url,
             resolvedUrl = null,
-            platform = XhsShareParser.detectPlatform("$url $rawText"),
+            platform = platform,
             title = null,
             description = null,
             imageUrl = null,
@@ -184,7 +240,8 @@ class DemoActivity : Activity() {
                 onSuccess = { metadata ->
                     val resolvedUrl = XhsShareParser.normalizeResolvedUrl(metadata.resolvedUrl)
                     val platform = XhsShareParser.detectPlatform("$resolvedUrl ${latest.rawText}")
-                    val isXhs = platform == SourcePlatform.XIAOHONGSHU
+                        .takeIf { it != SourcePlatform.WEB || latest.platform == SourcePlatform.WEB }
+                        ?: latest.platform
                     latest.copy(
                         resolvedUrl = resolvedUrl,
                         platform = platform,
@@ -199,7 +256,7 @@ class DemoActivity : Activity() {
                         ),
                         imageUrl = metadata.imageUrl?.takeIf { it.isNotBlank() },
                         status = if (metadata.hasUsefulContent()) SourceStatus.PARSED else SourceStatus.PARTIAL,
-                        error = null,
+                        error = metadata.warning,
                         updatedAt = System.currentTimeMillis(),
                     )
                 },
@@ -217,7 +274,10 @@ class DemoActivity : Activity() {
     }
 
     private fun renderSources() {
-        val sources = repository.getAll().sortedByDescending { it.createdAt }
+        val platform = selectedPlatform ?: return
+        val sources = repository.getAll()
+            .filter { it.platform == platform }
+            .sortedByDescending { it.createdAt }
         emptyView.visibility = if (sources.isEmpty()) View.VISIBLE else View.GONE
         listContainer.removeAllViews()
         sources.forEach { source ->
@@ -230,7 +290,7 @@ class DemoActivity : Activity() {
         val card = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(14), dp(16), dp(14))
-            setBackgroundColor(0xFFFFFFFF.toInt())
+            background = roundedBg(0xFFFFFFFF.toInt(), 0xFFE2E8F0.toInt(), 8f)
         }
         card.addView(text("${source.platform.displayName} · ${source.status.displayName}", 12f, true, source.status.color))
         card.addView(text(source.title ?: "等待解析标题", 18f, true, 0xFF202124.toInt()).apply {
@@ -262,6 +322,32 @@ class DemoActivity : Activity() {
         return card
     }
 
+    private fun channelCard(platform: SourcePlatform): View {
+        val count = repository.getAll().count { it.platform == platform }
+        val parsedCount = repository.getAll().count { it.platform == platform && it.status == SourceStatus.PARSED }
+        return LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), dp(14), dp(16), dp(14))
+            background = roundedBg(0xFFFFFFFF.toInt(), 0xFFE2E8F0.toInt(), 8f)
+            isClickable = true
+            setOnClickListener { setupChannelView(platform) }
+
+            addView(LinearLayout(context).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                addView(text(platform.displayName, 20f, true, 0xFF172033.toInt()), LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+                addView(text(platform.shortStatus, 12f, true, platform.accentColor).apply {
+                    setPadding(dp(10), dp(5), dp(10), dp(5))
+                    background = roundedBg((platform.accentColor and 0x00FFFFFF) or 0x14000000, 0x00000000, 8f)
+                })
+            })
+            addView(text(platform.description, 14f, false, 0xFF667085.toInt()).apply {
+                setPadding(0, dp(8), 0, dp(12))
+            })
+            addView(text("已保存 $count 条 · 已解析 $parsedCount 条", 13f, false, 0xFF475467.toInt()))
+        }
+    }
+
     private fun openUrl(url: String) {
         runCatching {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
@@ -273,15 +359,29 @@ class DemoActivity : Activity() {
     private fun primaryButton(label: String, onClick: () -> Unit): Button =
         Button(this).apply {
             text = label
+            isAllCaps = false
             setTextColor(0xFFFFFFFF.toInt())
-            setBackgroundColor(0xFF226CFF.toInt())
+            background = roundedBg(selectedPlatform?.accentColor ?: 0xFF226CFF.toInt(), 0x00000000, 8f)
             setOnClickListener { onClick() }
         }
 
     private fun secondaryButton(label: String, onClick: () -> Unit): Button =
         Button(this).apply {
             text = label
-            setTextColor(0xFF226CFF.toInt())
+            isAllCaps = false
+            val color = selectedPlatform?.accentColor ?: 0xFF226CFF.toInt()
+            setTextColor(color)
+            background = roundedBg(0xFFFFFFFF.toInt(), color, 8f)
+            setOnClickListener { onClick() }
+        }
+
+    private fun iconButton(label: String, onClick: () -> Unit): Button =
+        Button(this).apply {
+            text = label
+            textSize = 28f
+            isAllCaps = false
+            setTextColor(0xFF344054.toInt())
+            background = roundedBg(0xFFFFFFFF.toInt(), 0xFFE2E8F0.toInt(), 8f)
             setOnClickListener { onClick() }
         }
 
@@ -336,6 +436,16 @@ class DemoActivity : Activity() {
     private fun space(width: Int, height: Int): View =
         View(this).apply {
             layoutParams = LinearLayout.LayoutParams(width, height)
+        }
+
+    private fun roundedBg(fillColor: Int, strokeColor: Int, radiusDp: Float): GradientDrawable =
+        GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = dp(radiusDp.toInt()).toFloat()
+            setColor(fillColor)
+            if (strokeColor != 0x00000000) {
+                setStroke(dp(1), strokeColor)
+            }
         }
 
     private fun dp(value: Int): Int = (value * resources.displayMetrics.density + 0.5f).toInt()
@@ -446,6 +556,7 @@ internal data class ParsedMetadata(
     val title: String?,
     val description: String?,
     val imageUrl: String?,
+    val warning: String? = null,
 ) {
     fun hasUsefulContent(): Boolean =
         XhsShareParser.isUsefulParsedTitle(title) || !description.isNullOrBlank() || !imageUrl.isNullOrBlank()
@@ -523,6 +634,17 @@ internal object MetadataParser {
                     builder.toString()
                 }
                 val resolvedUrl = XhsShareParser.normalizeResolvedUrl(connection.url?.toString() ?: currentUrl)
+                if (isWafChallenge(connection, html)) {
+                    return ParseAttemptResult.Success(
+                        ParsedMetadata(
+                            resolvedUrl = resolvedUrl,
+                            title = null,
+                            description = null,
+                            imageUrl = null,
+                            warning = WAF_WARNING,
+                        ),
+                    )
+                }
                 if (XhsShareParser.detectPlatform(resolvedUrl) == SourcePlatform.XIAOHONGSHU) {
                     XhsNoteMetadataParser.parse(resolvedUrl, html)?.let { metadata ->
                         return ParseAttemptResult.Success(
@@ -587,6 +709,10 @@ internal object MetadataParser {
             ?.getOrNull(1)
             ?.let { htmlDecode(it.trim()) }
 
+    private fun isWafChallenge(connection: HttpURLConnection, html: String): Boolean =
+        html.contains("probe.js") ||
+            connection.getHeaderField("Set-Cookie").orEmpty().contains("x-waf-captcha-referer")
+
     private fun htmlDecode(value: String): String = value
         .replace("&amp;", "&")
         .replace("&quot;", "\"")
@@ -596,6 +722,7 @@ internal object MetadataParser {
         .trim()
 
     private const val MAX_HTML_CHARS = 1_200_000
+    private const val WAF_WARNING = "平台返回 WAF/验证码探针页，当前 HTTP 解析器拿不到正文。"
     private const val DESKTOP_USER_AGENT = "Mozilla/5.0 TravelMvpDemo/0.1"
     private const val MOBILE_USER_AGENT =
         "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36"

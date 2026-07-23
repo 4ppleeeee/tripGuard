@@ -63,10 +63,36 @@ class MetadataParserTest {
         assertTrue(requests[1].second.orEmpty().contains("Mobile Safari"))
     }
 
+    @Test
+    fun parseMarksWafChallengePageAsPartialWarning() {
+        val noteUrl = "https://www.mafengwo.cn/i/24886269.html?sys_ver="
+
+        val metadata = MetadataParser.parse(noteUrl) { url ->
+            FakeConnection(url) {
+                FakeResponse(
+                    status = 202,
+                    body = """
+                        <!DOCTYPE html><html>
+                        <head>
+                          <script src="/C2WF946J0/probe.js?v=vc1jasc"></script>
+                        </head>
+                        <body></body>
+                        </html>
+                    """.trimIndent(),
+                    headers = mapOf("Set-Cookie" to "x-waf-captcha-referer=; Path=/; Max-Age=60;"),
+                )
+            }
+        }
+
+        assertEquals(noteUrl, metadata.resolvedUrl)
+        assertEquals("平台返回 WAF/验证码探针页，当前 HTTP 解析器拿不到正文。", metadata.warning)
+    }
+
     private data class FakeResponse(
         val status: Int,
         val location: String? = null,
         val body: String = "",
+        val headers: Map<String, String> = emptyMap(),
     )
 
     private class FakeConnection(
@@ -83,7 +109,11 @@ class MetadataParserTest {
         override fun getResponseCode(): Int = response.status
 
         override fun getHeaderField(name: String?): String? =
-            if (name.equals("Location", ignoreCase = true)) response.location else null
+            if (name.equals("Location", ignoreCase = true)) {
+                response.location
+            } else {
+                response.headers.entries.firstOrNull { it.key.equals(name, ignoreCase = true) }?.value
+            }
 
         override fun getInputStream(): InputStream = response.body.byteInputStream()
 

@@ -15,6 +15,18 @@ class XhsShareParserTest {
     }
 
     @Test
+    fun detectPlatformRecognizesMafengwoUrls() {
+        assertEquals(
+            SourcePlatform.MAFENGWO,
+            XhsShareParser.detectPlatform("https://www.mafengwo.cn/i/24563180.html"),
+        )
+        assertEquals(
+            SourcePlatform.MAFENGWO,
+            XhsShareParser.detectPlatform("https://imfw.cn/l/333042131"),
+        )
+    }
+
+    @Test
     fun loginRedirectExtractsOriginalNoteUrl() {
         val redirect = "https://www.xiaohongshu.com/login?redirectPath=https%3A%2F%2Fwww.xiaohongshu.com%2Fdiscovery%2Fitem%2F66abc%3Fxsec_token%3Dtoken"
 

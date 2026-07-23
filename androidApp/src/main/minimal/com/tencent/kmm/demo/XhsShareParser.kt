@@ -4,9 +4,34 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import java.util.Locale
 
-internal enum class SourcePlatform(val displayName: String) {
-    XIAOHONGSHU("小红书"),
-    WEB("网页"),
+internal enum class SourcePlatform(
+    val displayName: String,
+    val shortStatus: String,
+    val description: String,
+    val accentColor: Int,
+    val inputHint: String,
+) {
+    XIAOHONGSHU(
+        displayName = "小红书",
+        shortStatus = "移动 H5 已跑通",
+        description = "分享笔记链接，解析标题、正文和封面。",
+        accentColor = 0xFFE64566.toInt(),
+        inputHint = "粘贴小红书分享文案或 URL",
+    ),
+    MAFENGWO(
+        displayName = "马蜂窝",
+        shortStatus = "待验证",
+        description = "粘贴游记、攻略或目的地链接，先走通用网页解析。",
+        accentColor = 0xFFFF9F1C.toInt(),
+        inputHint = "粘贴马蜂窝游记、攻略或目的地 URL",
+    ),
+    WEB(
+        displayName = "通用网页",
+        shortStatus = "兜底解析",
+        description = "用网页 meta/title/image 兜底，适合快速试新平台。",
+        accentColor = 0xFF64748B.toInt(),
+        inputHint = "粘贴任意网页 URL",
+    ),
 }
 
 internal object XhsShareParser {
@@ -27,6 +52,12 @@ internal object XhsShareParser {
             lower.contains("小红书")
         ) {
             SourcePlatform.XIAOHONGSHU
+        } else if (
+            lower.contains("mafengwo.cn") ||
+            lower.contains("imfw.cn") ||
+            lower.contains("马蜂窝")
+        ) {
+            SourcePlatform.MAFENGWO
         } else {
             SourcePlatform.WEB
         }
