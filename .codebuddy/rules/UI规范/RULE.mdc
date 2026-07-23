@@ -1,0 +1,646 @@
+---
+description: WeSee-Core 的 Compose UI 强制规范。适用于任何新增、修改或迁移 Kuikly Compose UI 的任务；用于约束组件、主题、无障碍和禁用 API。
+alwaysApply: true
+enabled: true
+---
+
+
+# 腾讯新闻 Compose 基础UI组件开发规范
+
+## 1. 导入规范与单位使用
+
+### 包导入规范
+
+1. **优先使用 Kuikly 组件**
+   - 优先使用 `com.tencent.kuikly.compose` 包下的组件
+   - 禁止保留 `androidx.compose.*` 的 import
+   - 如需同名 API，请替换为 Kuikly 版本
+   - 改规则仅限于UI组件，例如Box、Text、Image等；不适用于注解类，例如：使用 androidx.compose.runtime.Composable 是合规的
+
+2. **正确导入示例**
+   ```kotlin
+   // ✅ 正确
+   import com.tencent.kuikly.compose.ui.unit.dp
+   import com.tencent.kuikly.compose.ui.unit.sp
+   import com.tencent.kuikly.compose.foundation.layout.*
+   import com.tencent.kuikly.compose.material.*
+   
+   // ❌ 错误：使用 androidx.compose 导入
+   import androidx.compose.ui.unit.dp
+   import androidx.compose.ui.unit.sp
+   ```
+
+### 单位使用规范
+
+1. **尺寸单位统一**
+   - 尺寸单位统一从 `com.tencent.kuikly.compose.ui.unit.dp` 导入
+   - 字号单位统一从 `com.tencent.kuikly.compose.ui.unit.sp` 导入
+
+2. **正确使用示例**
+   ```kotlin
+   // ✅ 正确
+   Modifier.size(100.dp)     // 尺寸使用 .dp
+   fontSize = 16.sp           // 字号使用 .sp
+   padding = 8.dp            // 内边距使用 .dp
+   
+   // ❌ 错误：使用错误的导入
+   Modifier.size(100)        // 缺少 .dp 单位
+   fontSize = 16             // 缺少 .sp 单位
+   ```
+
+### 文件头示例
+
+```kotlin
+// 正确的文件导入示例
+package com.tencent.news.core.compose.myfeature
+
+import com.tencent.kuikly.compose.ui.unit.dp
+import com.tencent.kuikly.compose.ui.unit.sp
+import com.tencent.kuikly.compose.foundation.layout.*
+import com.tencent.kuikly.compose.material.*
+import com.tencent.kuikly.compose.runtime.*
+import com.tencent.news.core.compose.view.QnText
+import com.tencent.news.core.compose.view.QnImage
+import com.tencent.news.core.compose.scaffold.theme.QNTheme
+
+// 不要使用以下导入
+// import androidx.compose.ui.unit.dp
+// import androidx.compose.ui.unit.sp
+// import androidx.compose.foundation.layout.*
+// import androidx.compose.material.*
+```
+
+---
+
+## 2. 文本组件使用规则
+
+### 基本用法
+所有文本显示必须使用 `QnText` 组件，不要直接使用 Kuikly 的 Text 组件。
+
+### 常用参数
+- `text`: 显示的文本内容
+- `color`: 文本颜色，建议使用 `QNTheme.colorScheme.xxx 或 QnColor.xxx`
+- `fontSize`: 字体大小，单位为 sp，传入 Float 值
+- `fontWeight`: 字重，如 `FontWeight.W400`, `FontWeight.W500`
+- `maxLines`: 最大行数，默认为 Int.MAX_VALUE
+- `overflow`: 溢出处理，默认为 `TextOverflow.Ellipsis`
+- `autoScale`: 是否自动缩放字体，默认 true（会根据系统字体大小设置自动调整）
+- `lineHeight`: 行高，单位为 sp
+
+### 便捷封装组件
+项目提供了多个预设样式的文本组件：
+- `QnT1Text`: 字号 16，字重 400，颜色 t1（主要文本）
+- `QnT2Text`: 字号 14，字重 400，颜色 t2（次要文本）
+- `QnT3Text`: 字号 14，字重 400，颜色 t3（辅助文本）
+- `QnBlueNormalText`: 字号 14，字重 400，颜色 blueNormal（链接文本）
+- `QnWhiteText`: 字号 14，字重 500，白色文本，支持透明度调节
+- `QnTitle`: 标题组件，支持6档缩放
+
+### 代码示例
+```kotlin
+// 基本用法
+QnText(
+    text = "这是标题",
+    fontSize = 16.sp,  // 正确：使用 .sp 单位
+    color = QNTheme.colorScheme.t1, // 或者 QnColor.t1
+    fontWeight = FontWeight.W500,
+    maxLines = 2,
+    overflow = TextOverflow.Ellipsis,
+    lineHeight = 24f    // 正确：lineHeight 使用浮点数
+)
+
+// 使用便捷组件
+QnT1Text(text = "主要文本")
+QnT2Text(text = "次要文本")
+QnT3Text(text = "辅助文本")
+```
+
+### QnText 使用规范
+
+1. **字体单位规范**
+   - `fontSize` 必须写成 `12.sp` 这种形式，使用 `.sp` 单位
+   - `lineHeight` 填写浮点数（如 `12f`），不要使用 `.sp` 单位
+   - 两者不要混用：`fontSize` 用 `.sp`，`lineHeight` 用浮点数
+
+2. **错误示例**
+   ```kotlin
+   // ❌ 错误：fontSize 使用浮点数
+   fontSize = 16f
+   
+   // ❌ 错误：lineHeight 使用 .sp 单位
+   lineHeight = 24.sp
+   ```
+
+3. **正确示例**
+   ```kotlin
+   // ✅ 正确
+   QnText(
+       text = "标题",
+       fontSize = 16.sp,    // 使用 .sp 单位
+       lineHeight = 24f,    // 使用浮点数
+       color = QNTheme.colorScheme.t1
+   )
+   ```
+
+### 文件位置
+`qnView/src/commonMain/kotlin/com/tencent/news/core/compose/view/QnText.kt`
+
+---
+
+## 3. Lottie 动画使用规则
+
+### 基本用法
+所有 Lottie 动画必须使用 `QnLottie` 组件。
+
+### 常用参数
+- `fileName`: Lottie 文件名或 URL
+- `aspectRatio`: 宽高比，默认 0F（自适应）
+- `autoPlay`: 是否自动播放，默认 false
+- `infinity`: 是否循环播放，默认 false
+- `progress`: 动画进度（0-1），Float.NaN 表示不控制
+- `state`: LottieState 对象，用于监听播放和下载状态
+
+### 高级功能
+- `tintColor`: 染色，可改变动画颜色
+- `tintColorKey`: 指定染色的关键帧层
+- `progressRange`: 播放区间，可指定动画播放的起止进度
+- `textDelegate`: 文本替换，可动态替换动画中的文本
+- `scaleType`: 缩放类型（FIT_CENTER, CENTER_CROP 等）
+- `cornerInDp`: 圆角大小
+
+### 跨平台适配
+使用 `StructLottie` 对象可实现跨平台 URL 自动适配：
+```kotlin
+QnLottie(
+    modifier = Modifier.size(100.dp),
+    lottie = StructLottie(
+        urlAndroid = "https://xxx.json",
+        urlIOS = "https://xxx.json",
+        urlOhos = "https://xxx.json"
+    ),
+    autoPlay = true,
+    infinity = true
+)
+```
+
+### 占位图方案
+对于网络加载的 Lottie，可使用占位图方案：
+```kotlin
+QnLottie(
+    fileName = "https://xxx.json",
+    placeholderUrl = "https://xxx.png", // 加载完成前显示占位图
+    autoPlay = true,
+    infinity = true
+)
+```
+
+### 状态监听
+```kotlin
+val lottieState = remember { LottieState() }
+
+QnLottie(
+    fileName = "animation.json",
+    state = lottieState,
+    autoPlay = true
+)
+
+// 监听播放状态
+val playStatus by lottieState.playStatus
+when (playStatus) {
+    LottieStatus.INIT -> { /* 初始化 */ }
+    LottieStatus.PLAYING -> { /* 播放中 */ }
+    LottieStatus.PLAYED -> { /* 播放完成 */ }
+}
+
+// 监听下载状态
+val downloadStatus by lottieState.downloadStatus
+```
+
+### 文件位置
+`qnView/src/commonMain/kotlin/com/tencent/news/core/compose/view/QnLottieView.kt`
+
+---
+
+## 6. IconFont 字体图标使用规范
+
+### 基本用法
+
+所有字体图标必须使用 `QnIconFont` 组件，配合 `IconFont` 枚举类使用。
+
+### 常用参数
+
+- `name`: IconFont 枚举值，指定要显示的图标
+- `modifier`: 修饰符，通常用于设置大小
+- `textStyle`: 文本样式，用于设置颜色和字号
+
+### 代码示例
+
+#### 基本用法
+```kotlin
+QnIconFont(
+    modifier = Modifier.size(15.dp),
+    name = IconFont.LIKE_NO_REGULAR,
+    textStyle = TextStyle(
+        color = QNTheme.colorScheme.t1,
+        fontSize = 15.sp
+    )
+)
+```
+
+#### 在 Row 中与文本组合使用
+```kotlin
+Row(
+    verticalAlignment = Alignment.CenterVertically
+) {
+    QnIconFont(
+        modifier = Modifier.size(15.dp),
+        name = IconFont.TISHI_REGULAR,
+        textStyle = TextStyle(
+            color = QNTheme.colorScheme.t1,
+            fontSize = 15.sp
+        )
+    )
+    QnText(
+        modifier = Modifier.padding(start = 3.dp),
+        text = "提示文本",
+        fontSize = 14.sp,
+        color = QNTheme.colorScheme.t1
+    )
+}
+```
+
+#### 可点击的图标
+```kotlin
+QnIconFont(
+    modifier = Modifier
+        .size(24.dp)
+        .preciseClickable {
+            // 点击事件处理
+        },
+    name = IconFont.CLOSE_REGULAR,
+    textStyle = TextStyle(
+        color = QNTheme.colorScheme.t2,
+        fontSize = 24.sp
+    )
+)
+```
+
+### 在线预览
+
+所有可用的 IconFont 图标可以在线预览：
+https://remote-build.woa.com/fileupload/iconfont_new/demo.html
+
+### 注意事项
+
+1. **尺寸与字号一致**：`modifier` 中的 `size` 应该与 `textStyle` 中的 `fontSize` 保持一致
+2. **颜色使用规范**：颜色必须使用 `QNTheme.colorScheme.xxx` 或 `QnColor.xxx`
+3. **图标选择**：优先使用 `_REGULAR` 后缀的图标，样式更统一
+4. **不要直接使用字符串**：必须使用 `IconFont` 枚举值，不要直接传入字符串代码
+
+### 文件位置
+- `qnView/src/commonMain/kotlin/com/tencent/news/core/compose/platform/IconFont.kt` (QnIconFont 组件)
+- `qnCore/src/commonMain/kotlin/com/tencent/news/core/app/constants/IconFont.kt` (IconFont 枚举定义)
+
+---
+
+## 7. 网络请求规范
+
+### 基本用法
+所有网络请求必须使用 `INetwork.kt` 中的 `quickRequest` 方法。
+
+### 函数签名
+```kotlin
+inline fun <reified T> quickRequest(
+    url: String,                          // 请求 URL
+    params: Map<String, Any>? = null,     // 请求参数
+    needGlobalParams: Boolean = true,     // 是否添加全局参数
+    useJsonPost: Boolean = true,          // true=JSON格式，false=表单格式
+    responseOnMain: Boolean = false,      // 是否在主线程回调
+    header: Map<String, String>? = null,  // 请求头
+    connectTimeout: Long = -1,            // 连接超时（毫秒）
+    parser: INetworkParser<T> = ktJsonParser(), // 数据解析器
+    noinline onResponse: NetworkCallback<T> = {}, // 响应回调
+): INetworkRequest
+```
+
+### useJsonPost 参数说明
+
+- **useJsonPost = true**（推荐）：请求体为标准 JSON 格式
+  - 适用于新接口，使用 trpc 框架
+  - 数据格式更规范，校验更严格
+  
+- **useJsonPost = false**：请求体为表单格式
+  - 适用于老接口（如 channel_feed）
+  - 数据格式校验更宽松
+
+### parser 参数说明
+
+- `ktJsonParser<T>()`: 自动解析 JSON 为 Kotlin 数据类（默认）
+- `originJsonParser()`: 保留原始 JSON 字符串不解析
+
+### 代码示例
+
+#### 基本请求
+```kotlin
+quickRequest<MyDataClass>(
+    url = AppHost.READ_HOST.concatUriPath("/api/getData"),
+    params = mapOf(
+        "id" to "123",
+        "type" to 1
+    ),
+    useJsonPost = true,
+    onResponse = { response ->
+        if (response.isValid()) {
+            val data = response.parserResult
+            // 处理数据
+            // 处理错误
+            val errorMsg = response.errorMsg()
+        }
+    }
+)
+```
+
+#### DataRepo 中的使用
+```kotlin
+override fun createResetRequest(
+    defaultRequest: DataRequest,
+    dataEnv: StructDataEnv
+): NetworkBuilder<IKmmKeep> {
+    return NetworkBuilder(
+        url = AppHost.READ_HOST.concatUriPath(MY_API_PATH),
+        parser = null,  // DataRepo 中通常不设置 parser
+        useJsonPost = false,
+        params = mapOf(
+            "channel_id" to dataEnv.channelInfo.channelKey,
+            "page_size" to 20
+        )
+    )
+}
+```
+
+#### 错误处理
+```kotlin
+quickRequest<MyDataClass>(
+    url = "...",
+    params = mapOf(...),
+    onResponse = { response ->
+        when {
+            response.isValid() -> {
+                // 请求成功且数据解析成功
+                val data = response.parserResult
+            }
+            response.result.succeed -> {
+                // 请求成功但数据解析失败
+                qnFileLog()?.logE("TAG", "数据解析失败: ${response.json}")
+            }
+            else -> {
+                // 请求失败
+                qnFileLog()?.logE("TAG", "请求失败: ${response.errorMsg()}")
+            }
+        }
+    }
+)
+```
+
+#### GET 请求（用于上报）
+```kotlin
+quickGetReport(
+    url = "https://report.qq.com/log",
+    params = mapOf("event" to "click"),
+    needGlobalParams = false,
+    onResponse = { succeed ->
+        if (succeed) {
+            // 上报成功
+        }
+    }
+)
+```
+
+### 文件位置
+`qnCore/src/commonMain/kotlin/com/tencent/news/core/platform/api/INetwork.kt`
+
+---
+
+## 8. 固定 TitleBar 规范
+
+### 配置说明
+
+在 `StructPageConfig` 中通过 `fixTitleBarAboveContent` 控制 TitleBar 的行为：
+
+- **fixTitleBarAboveContent = false**（默认）
+  - TitleBar 与 Header 联动滑动
+  - TitleBar 有渐变效果（从透明到白色）
+  - 适用于：专题页、列表页等需要沉浸式体验的页面
+
+- **fixTitleBarAboveContent = true**
+  - TitleBar 固定在顶部，不随内容滑动
+  - TitleBar 始终保持固定颜色（无渐变）
+  - 内容区域在 TitleBar 下方
+  - 适用于：设置页、表单页等工具类页面
+
+### 相关配置项
+
+```kotlin
+StructPageConfig(
+    dataRepo = myDataRepo,
+    defaultChannelInfo = myChannelInfo,
+    
+    // 固定 TitleBar 在顶部
+    fixTitleBarAboveContent = true,
+    
+    // 将 ChannelBar 固定在 TitleBar 下面（只有 fixTitleBarAboveContent=true 时才有用）
+    fixChannelBarBelowTitleBar = false,
+    
+    // 强制隐藏 TitleBar 区域（即使有下发 widget 也不展示）
+    forceHideTitleBarArea = false,
+    
+    // 强制隐藏 Header 区域（即使有下发 widget 也不展示）
+    forceHideHeaderArea = false,
+)
+```
+
+### 代码示例
+
+#### 固定 TitleBar 的页面（如设置页）
+```kotlin
+class MySettingsWidget : StructPageWidget2(
+    StructPageConfig(
+        dataRepo = MySettingsDataRepo(),
+        defaultChannelInfo = KmmChannelInfo.createQnInstance(
+            channelKey = "settings",
+            channelName = "设置"
+        ),
+        fixTitleBarAboveContent = true,  // TitleBar 固定在顶部
+        forceHideHeaderArea = true,      // 不需要 Header
+    )
+)
+```
+
+#### 联动滑动的页面（如专题页）
+```kotlin
+class MyTopicWidget : StructPageWidget2(
+    StructPageConfig(
+        dataRepo = MyTopicDataRepo(),
+        defaultChannelInfo = KmmChannelInfo.createQnInstance(
+            channelKey = "topic",
+            channelName = "专题"
+        ),
+        fixTitleBarAboveContent = false,  // TitleBar 与内容联动（默认值）
+    )
+)
+```
+
+#### 无 TitleBar 的页面
+```kotlin
+class MyFullscreenWidget : StructPageWidget2(
+    StructPageConfig(
+        dataRepo = MyFullscreenDataRepo(),
+        defaultChannelInfo = KmmChannelInfo.createQnInstance(
+            channelKey = "fullscreen",
+            channelName = "全屏"
+        ),
+        forceHideTitleBarArea = true,  // 完全隐藏 TitleBar
+        forceHideHeaderArea = true,    // 完全隐藏 Header
+    )
+)
+```
+
+### 文件位置
+`qnCore/src/commonMain/kotlin/com/tencent/news/core/page/model/StructPageConfig.kt`
+
+---
+
+## 10. Kuikly TextField 特殊用法
+
+### 场景说明
+在 Kuikly 中 `TextField` 直接使用 `Modifier.weight(1f)` 时会出现布局异常，需要外层包裹一层 `Box` 再设置 `weight`。
+
+### 推荐写法
+
+```kotlin
+Box(modifier = Modifier.weight(1f)) {
+    // 搜索输入框 - 预留右侧空间给关闭按钮
+    TextField(
+        value = searchText,
+        onValueChange = { newText ->
+            searchText = newText
+            onKeywordChange(newText)
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .focusRequester(focusRequester)
+            .padding(
+                start = 8.dp,
+                end = if (searchText.isNotEmpty()) 30.dp else 8.dp
+            )
+    )
+}
+```
+
+### 说明
+- 通过 `Box` 承载 `weight`，让 `TextField` 可以正常拉伸宽度。
+- 根据输入内容动态预留关闭按钮空间，保证交互体验。
+
+---
+
+## 11. 字号及尺寸缩放
+
+现三端字号缩放逻辑已完全一致，标题支持1~6档缩放，非标题支持1~5档缩放；
+
+- `dp`: 尺寸单位，三端均自动缩放；
+- `fdp`: 尺寸单位，三端均不缩放；
+- `sp`: 字号单位，三端均自动缩放；
+- `fsp`: 字号单位，三端均不自动缩放；注意，仅适用于非标题场景，如果标题不想缩放，使用`QnTitle`时`disableScale`参
+数传`true`即可；
+
+### 底部安全区单位规则
+
+`ComposeUtils.rememberSafeAreaBottomHeight()` 获取的是系统底部安全区高度，用于适配导航栏 / 手势条，不属于随大字号变化的内容尺寸。用于 `Spacer`、`padding`、底部栏高度、底部弹层占位等布局尺寸时，必须使用 `fdp`，禁止使用 `dp`，避免大字号 / 尺寸缩放场景下底部安全区异常变高。
+
+```kotlin
+// ✅ 正确
+Modifier.height(ComposeUtils.rememberSafeAreaBottomHeight().fdp)
+Modifier.padding(bottom = ComposeUtils.rememberSafeAreaBottomHeight().fdp)
+
+// ❌ 错误
+Modifier.height(ComposeUtils.rememberSafeAreaBottomHeight().dp)
+```
+
+此外，还提供以下API控制缩放：
+
+1. ForceNoScale: 禁止缩放；具体使用方式可参考`QnImage`
+2. MaxDensityScale: 最大缩放到指定梯度
+3. TitleDensityScale: 标题缩放，支持1~6档
+4. NormalDensityScale: 正常缩放，适用于非标题场景，支持1~5档；
+
+这4个API可搭配使用，比如在全局禁止缩放的页面内，标题和描述可正常缩放，可这样使用：
+
+```kotlin
+ForceNoScale {
+    Box {
+        // 标题，按照1~6档进行缩放
+        QnTitle()
+
+        // 非标题，按照1~5档进行缩放
+        NormalDensityScale {
+            // 描述
+            QnText()
+        }
+
+        // 其他UI组件，不缩放
+    }
+}
+```
+
+【重要提示】
+获取页面宽高时，请使用`pageViewWidth()`或`pageViewWidthValue`和`pageViewHeight`或`pageViewHeightValue`,
+禁止直接调用`LocalConfiguration.current.pageViewWidth`和`LocalConfiguration.current.pageViewHeight`。
+
+以上代码均定义在文件`qnView/src/commonMain/kotlin/com/tencent/news/core/compose/platform/DensityAdapter.kt`
+
+---
+
+## 12. HorizontalPager 使用规范
+
+### 强制规则
+**禁止**直接使用 Kuikly 的 `HorizontalPager`，**必须**使用 `QnHorizontalPager` 替代。
+
+### 原因
+`QnHorizontalPager` 在 `HorizontalPager` 基础上自动为每个 page 注入独立的页面生命周期流（`LocalComposePageLifecycleFlow`），确保：
+- 当前选中的 page 收到 `ON_RESUME`，非选中的 page 收到 `ON_PAUSE`
+- 父页面 pause 时，子 page 同步 pause（父子联动）
+- 同一 page 不会连续收到相同的 RESUME / PAUSE（去重保护）
+
+直接使用 `HorizontalPager` 会导致子页面无法感知可见状态变化，造成视频不暂停、数据重复加载等问题。
+
+### 正确示例
+```kotlin
+// ✅ 正确：使用 QnHorizontalPager
+import com.tencent.news.core.compose.view.QnHorizontalPager
+
+QnHorizontalPager(state = pagerState) { pageIndex ->
+    // 子组件自动拥有独立的页面生命周期
+    MyPageContent(pageIndex)
+}
+```
+
+### 错误示例
+```kotlin
+// ❌ 错误：直接使用 HorizontalPager，子页面没有生命周期管理
+import com.tencent.kuikly.compose.foundation.pager.HorizontalPager
+
+HorizontalPager(state = pagerState) { pageIndex ->
+    MyPageContent(pageIndex)
+}
+```
+
+### 文件位置
+`qnView/src/commonMain/kotlin/com/tencent/news/core/compose/view/QnHorizontalPager.kt`
+
+---
+
+## 13. 自定义组件
+
+仓库内部定义了很多自定义组件，具体如何使用请参考文件: `doc/【规范】qnView常用组件使用指南.md`
+

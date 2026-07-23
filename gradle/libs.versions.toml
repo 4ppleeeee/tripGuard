@@ -1,0 +1,159 @@
+[versions]
+androidCompileSdk = "34"
+androidTargetSdk = "30"
+androidMinSdk = "21"
+androidBuildToolsVersion = "34.0.0"
+
+agp = "1"
+kotlin = "1"
+mmkvkotlin = "1.0.2"
+tencent-mmkv = "1.0.22"
+serialization = "1"
+compose-multiplatform = "1"
+compose-plugin = "1"
+kuikly = "1"
+kuikly-plugin = "1"
+kuikly-compose = "1"
+kuikly-short = "1"
+ksp = "1"
+kotlinx-coroutines = "1"
+markdown-render = "1"
+
+knio = "0.3.5"
+ktor = "1"
+
+detekt = "1.23.0"
+lint = "1.7.5"
+
+androidx-lifecycle = "2.8.3"
+androidx-activityCompose = "1.9.3"
+androidXAppCompat = "1.2.0"
+kotlinx-datetime = "0.6.0-RC.2"
+runtimeAndroid = "1.7.6"
+firebaseCrashlyticsBuildtools = "3.0.6"
+tabexpSdk = "4.6.0.1"
+vmeUploadSdk = "1.3.7"
+gdtAds = "8.820.4440.2"
+hippy = "3.3.0.11"
+rewardedAdCore = "1.1.1.109"
+amsDynamicSdk = "1.1.0.216"
+fusionadDownloadCard = "1.0.2.14"
+rewardedAdNews = "1.0.0.32-build20260129"
+tpns = "1.4.3.9-release"
+tpnsJg = "1.1"
+huaweiPush = "6.12.0.300"
+commonsCodec = "1.15"
+junit = "4.13.2"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+material = "1.13.0"
+
+[libraries]
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization-plugin = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
+kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version = "0.6.4" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+
+android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+android-gradlePluginApi = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
+detekt-gradlePluginApi = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+
+lint-rule = { module = "com.tencent.news:lint", version.ref = "lint" }
+detekt-rule = { module = "com.tencent.news:detekt", version.ref = "lint" }
+
+compose-compiler-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "compose-multiplatform" }
+compose-gradle-plugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-multiplatform" }
+
+androidx-annotation = { module = "androidx.annotation:annotation", version = "1.8.1" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidXAppCompat" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+androidx-dynamicanimation = { module = "androidx.dynamicanimation:dynamicanimation", version = "1.0.0" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version = "1.17.0" }
+
+kuikly-core-annotation = { module = "com.tencent.kuikly:core-annotations", version.ref = "kuikly" }
+kuikly-core = { module = "com.tencent.kuikly:core", version.ref = "kuikly" }
+kuikly-compose = { module = "com.tencent.kuikly:compose", version.ref = "kuikly-compose" }
+kuikly-core-render-android = { module = "com.tencent.kuikly:core-render-android", version.ref = "kuikly-short" }
+ksp-plugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
+mmkvkotlin = { module = "io.github.walkman707:mmkvKotlin", version.ref = "mmkvkotlin" }
+tencent-mmkv = { module = "com.tencent:mmkv", version.ref = "tencent-mmkv" }
+ohos-knoi-plugin = { module = "com.tencent.tmm:knoi-gradle-plugin", version.ref = "knio" }
+
+jetbrains-markdown = { module = "org.jetbrains:markdown", version = "0.7.4.7" }
+qqnews-markdown-render = { module = "com.tencent.news:markdown-render", version.ref = "markdown-render" }
+gradle-enterprisePlugin = "com.gradle:gradle-enterprise-gradle-plugin:3.9"
+androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+tencent-tabexp = { module = "com.tencent.tab.exp.sdk:tabexpsdk", version.ref = "tabexpSdk" }
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-client-ohos = { module = "io.ktor:ktor-client-ohos", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-serialization-kotlinx-protobuf = { module = "io.ktor:ktor-serialization-kotlinx-protobuf", version.ref = "ktor" }
+kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "serialization" }
+
+wire-runtime = { module = "com.squareup.wire.kmm:wire-runtime", version = "4.6.10.2" }
+
+# 协议打包流水线：https://devops.woa.com/console/pipeline/weseeandroid/p-aad380d26464490aa9931a8cfb91d473
+# 版本号就是流水线构建号减1（看bash任务日志里的，例如：common-v241）
+weishi-proto = { module = "com.tencent.weishi:proto", version = "255" }
+
+bugly = { module = "com.tencent.bugly:bugly-library", version = "4.4.1.7" }
+tdos-diagnose = { module = "com.tencent.tdos-diagnose:diagnose", version = "0.4.11" }
+rdelivery-core-sdk = { module = "com.tencent.rdelivery:core-sdk", version = "1.3.10" }
+beacon = { module = "com.tencent.beacon:beacon-android-release", version = "4.2.84.6-hf2" }
+tencent-turingfd = { module = "com.tencent.weishi.thirdparty:turingfd", version = "v90" }
+tencent-vme-upload = { module = "com.tencent.vmeuploadlib:uploadsdk", version.ref = "vmeUploadSdk" }
+
+tencent-gdt-ads = { module = "com.qq.e.ads:gdt_ads", version.ref = "gdtAds" }
+tencent-hippy = { module = "com.tencent.hippy:release", version.ref = "hippy" }
+tencent-ads-rewardedad-core = { module = "com.tencent.ads:rewardedad-core-hippy3", version.ref = "rewardedAdCore" }
+tencent-ads-dynamic-sdk = { module = "com.tencent.ads:dynamic-sdk-hippy3", version.ref = "amsDynamicSdk" }
+tencent-ads-downloadcard = { module = "com.tencent.ads:fusionad-widget-downloadcard", version.ref = "fusionadDownloadCard" }
+tencent-ads-rewardedad-news = { module = "com.tencent.ads:rewardedad-news", version.ref = "rewardedAdNews" }
+
+tencent-thumbplayer = "com.tencent.weishi.thirdparty:thumbplayer:3.1.588.121"
+tencent-tpdownloadproxy = "com.tencent.weishi.thirdparty:tp-download-proxy:2.47.588.109"
+tencent-tvk = "com.tencent.qqlive.kmm:tvkplayer:10.73.0.1305.all"
+
+# TPNS 推送（与 wesee-android base/push 版本对齐）
+tpns-core = { module = "com.tencent.tpns:tpns", version.ref = "tpns" }
+tpns-xiaomi = { module = "com.tencent.tpns:xiaomi", version.ref = "tpns" }
+tpns-huawei = { module = "com.tencent.tpns:huawei", version.ref = "tpns" }
+tpns-oppo = { module = "com.tencent.tpns:oppo", version.ref = "tpns" }
+tpns-vivo = { module = "com.tencent.tpns:vivo", version.ref = "tpns" }
+tpns-honor = { module = "com.tencent.tpns:honor", version.ref = "tpns" }
+tpns-jg = { module = "com.tencent.jg:jg", version.ref = "tpnsJg" }
+huawei-push = { module = "com.huawei.hms:push", version.ref = "huaweiPush" }
+commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodec" }
+pandora = { module = "com.tencent.news.pandora:pandora-core", version = "0.0.7" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+maven = { id = "maven-publish", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+detektPlugin = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+detektCompilerPlugin = { id = "io.github.detekt.gradle.compiler-plugin", version.ref = "detekt" }
+
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+composePlugin = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "compose-plugin" }
+
+kuikly = { id = "kuikly", version.ref = "kuikly-plugin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+wire = { id = "com.squareup.wire", version = "4.6.10.2" }
+ohos-knoi = { id = "com.tencent.tmm.knoi.plugin", version.ref = "knio" }

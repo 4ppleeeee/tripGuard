@@ -1,0 +1,101 @@
+[
+  {
+    "id": "msg-1776656822548-9k5wqy",
+    "from": "protocol-architect",
+    "to": "team-lead",
+    "type": "message",
+    "content": "Step 3 接口协议设计已完成。\n\n## 产出\n- 文档路径：`docs/component/login/loginPage/login_page_protocol.md`\n- 模式：🆕 新建（基线）\n\n## 关键结论\n\n### 1. 总体判断：**无需新增后端 PB 接口**\n登录页全部能力由三类既有能力组合完成：\n- **SDK 桥接能力**（微信/QQ OpenSDK 授权、扫码、快登）\n- **登录核心流程封装**（`LoginFlowController.performLogin(method)` + `LoginStateManager.loginEvent` 事件流）\n- **本地存储读取**（`LastLoginStorage` / 协议 URL 常量）\n\n不涉及 trpc/PB 协议联调。\n\n### 2. 复用清单（已有能力，本次 UI 层直接调用）\n- `LoginFlowController.performLogin(LoginMethod.WX/QQ/WX_SCAN/QQ_SCAN/WX_FAST/QQ_FAST)`\n- `LoginStateManager.loginEvent`（LoginSuccess/LoginFailed/LoginCanceled）\n- `LastLoginStorage.get()` → `LastLoginInfo(uId, nick, avatar, loginType)`\n- `LoginWebUrl.USER_AGREEMENT_URL` / `PRIVACY_POLICY_URL`（硬编码常量，标注为配置项）\n\n### 3. 桥接层需本次补齐（非 PB，是 SDK 桥接契约）\n`LoginPlatformBridge` 扩展 4 个方法：\n- `loginByWeChatScan()` — 微信扫码\n- `loginByWeChatFast()` — 微信快登（一键登录）\n- `loginByQQFast()` — QQ 快登（一键登录）\n- `dismissLoginUI()` — 区分全屏 goBack / 半屏关闭弹窗\n\n### 4. 扫码三态事件选型（建议技术方案阶段敲定）\n需求 2.4 要求扫码弹层覆盖「正常/失效/成功」三态：\n- **方案 A（推荐）**：在 `LoginStateManager.loginEvent` 新增 `ScanQRCodeReady/Expired/Scanned/Failed` 子类，UI 侧 `filterIsInstance` 消费。\n- 方案 B：新增独立 `ScanLoginBridge { refresh(); observeState(): Flow<ScanState> }`。\n\n### 5. 形态差异\n全屏 vs 半屏登录弹窗：**接口与桥接契约完全一致**；差异仅在\"关闭 UI\"语义（由 `dismissLoginUI()` 内部区分）。\n\n### 6. 风险与待确认项\n1. **微信扫码真实实现缺失**：Android `AndroidWXAuthorizer.onAuthorizeWithScan` 和 ohos 均 fallback 到普通微信登录。若本次要求真实扫码三态，各端桥接需补齐；否则可 UI 层二态降级。\n2. **扫码事件选型**：方案 A/B 由 Step 4 技术方案决定。\n3. **半屏弹窗容器**：当前 `setupLoginUIProvider()` 仅路由到页面，半屏模式可能需扩展 `LoginUIProvider` 根据 DisplayMode 选择容器，协议层不展开。\n4. **协议 URL 配置化**：当前硬编码，后续可迁移到配置中心，本次不在协议范围。\n5. **登录来源 refPosition**：旧 iOS 有 25+ 来源枚举，是否通过 `PageArgs` 透传由技术方案决定。\n\n### 7. 对 Step 4（技术方案）/ Step 5（ViewModel 设计）的输入\n- VM 需按通用架构规范的\"面向 UI 设计\"原则重构（固定属性 + StateFlow + `onXxx()`），不要暴露 `LastLoginInfo`/`LoginMethod` 等业务 model 给 UI 层。\n- VM 需新增 `onOneKeyLoginClick` / `onWeChatScanLoginClick` / `onQQScanLoginClick` / `onWeChatFastLoginClick` / `onQQFastLoginClick` / 协议勾选系列交互方法。\n- 扫码三态 UI 状态通过 `StateFlow<ScanQRCodeState>` 暴露给 UI。\n\n协议文档已完成，可进入下一步。",
+    "timestamp": "2026-04-20T03:47:02.548Z",
+    "read": true
+  },
+  {
+    "id": "msg-1776656986712-y6kpcd",
+    "from": "report-architect",
+    "to": "team-lead",
+    "type": "message",
+    "content": "Step 4 上报需求分析完成，产出文档：`docs/component/login/loginPage/login_page_report.md`。\n\n【关键结论】\n\n1. **页面 ID 规则（核心差异点）**\n   - 全屏登录页（无历史账号，Normal 态）：`page_id=10002003`（iOS `PersonalLoginPageId`，个人登录页）\n   - 全屏登录页（有历史账号，WithHistory 态）：`page_id=10002031`（iOS `LastLoginPageId`，上次登录信息页）\n   - 半屏登录弹窗：**不注册独立 page_id**，`page_id/ref_page_id` 继续使用宿主页面；弹窗自身通过 `position=light.loginfloat.*` 前缀与 `user_exposure` 事件上报曝光\n   - 登录页侧需在 `LoginUiState.Normal ↔ WithHistory` 切换时动态切换 `dataReportPageId`\n\n2. **字段命名规范（对齐 wesee-kmm `LoginReporter`）**\n   - 稳定公共 key：`ref_position`（登录来源）、`status`（协议勾选 1=已勾/2=未勾）、`account_type`（1=WX/2=QQ）、`float_type`（2=WX历史账号/3=QQ历史账号/4=双按钮无历史）、`logintips_type=7`（固定新样式）、`e_type`（common=授权/QR_code=扫码）\n   - `type` 字段统一 JSON 对象上报，不使用扁平拼接\n   - 全屏页 position 无前缀（`close/set/help/agreement/wxlogin/qqlogin/code/account.login`）\n   - 半屏弹窗 position 统一 `light.loginfloat.*` 前缀\n   - 协议确认弹窗固定 `confloat / confloatok / confloatno` 三个 position\n   - 扫码新增 position 统一 `code.*` 前缀（见下）\n\n3. **登录类型区分**\n   - 登录按钮点击侧：用 `e_type=common|QR_code` + `account_type=1|2` 组合区分 WX/QQ/WX_SCAN/QQ_SCAN；一键登录走 `position=account.login` + `account_type` 区分 WX_FAST/QQ_FAST\n   - 登录结果侧：走独立事件 `login_result`（已有 `LoginFlowTracker` 实现），`operate_type=wx|qq|wx_scan|qq_scan|wx_fast|qq_fast`、`login_type=0|1|3`，无需登录页重复埋点\n\n4. **新增 vs 迁移对照**\n   - **迁移 25 条**：覆盖页面曝光、全屏页 7 个按钮曝光/点击、半屏弹窗 9 个按钮点击、协议确认弹窗 3 条、`login_result` 已有\n   - **新增 9 条**（N1~N9）：\n     - N1~N4：协议链接（用户协议/隐私政策）点击，区分全屏/弹窗，旧端未拆分已合在 `agreement` 里\n     - N5：扫码方式选择层曝光 `code.select`\n     - N6：扫码弹层曝光 `code.float`（覆盖 valid/expired/scanned 三态）\n     - N7~N9：扫码弹层关闭/刷新二维码/切换扫码方式，旧端 `WSScanLoginPopup` / `WSWXQRCodeDialog` 完全无埋点，本次补齐\n\n5. **下一步对接**\n   - 上报常量集中维护建议放在新增文件 `startup/src/commonMain/kotlin/com/tencent/weishi/login/reporter/LoginReporter.kt`\n   - `refPosition` 需通过 `PageArgs`（`IComposePageArgs`）透传到 `LoginPageViewModel` / `LoginDialogViewModel`\n   - 协议勾选 `LoginUiState` 切换 page_id 的逻辑需与 UI 层协作\n\n文档已覆盖任务要求的 11 个场景（页面曝光 / WX 登录曝光-点击-结果 / QQ 登录曝光-点击-结果 / 扫码入口 / 扫码选择层 / 扫码弹层三态 / 一键登录（WX_FAST 与 QQ_FAST）/ 协议勾选区 / 协议确认弹窗 / 协议链接点击 / 页面返回关闭）。",
+    "timestamp": "2026-04-20T03:49:46.712Z",
+    "read": true
+  },
+  {
+    "id": "msg-1776657284832-vddcz7",
+    "from": "report-architect",
+    "to": "team-lead",
+    "type": "message",
+    "content": "基于用户提供的 Figma 设计稿（`figma.com/...node-id=1957-30790`，微视品牌升级-2026 / 登录-全屏/半屏/记录登录信息，共 24 个画板）完成了二次核对并补充了上报文档：\n\n【设计稿核对结论】\n1. 设计稿完全印证了需求文档 §四 组件清单：全屏/半屏 × Normal/WithHistory 4 种基础形态 + 协议主动勾选态 + 免勾选协议确认弹窗 + 扫码气泡选择层 + 微信/QQ 扫码弹层 + 二维码失效 + 扫码成功 + 登录成功 Toast\n2. 设计稿明确了几个实现细节，用以校准上报：\n   - 扫码入口在全屏页和半屏弹窗里都是**独立的小图标**（带文案\"扫码\"），不是隐藏在文字里\n   - 扫码气泡选择层是从扫码入口上方**弹出的气泡**（非 dialog），内含\"微信扫码登录/QQ扫码登录\"两行\n   - 扫码弹层底部带\"切换 QQ/微信 扫码登录\"按钮\n   - 二维码失效态带明显的「刷新」icon + \"二维码获取失败，请刷新\"提示\n   - 扫码成功态显示\"请在微信/QQ中同意登录腾讯微视\"\n   - 半屏 WithHistory 弹窗同样有\"其它方式登录\"区（微信/QQ/扫码 3 个圆形小图标）\n\n【对上报文档的增量】\n在 `login_page_report.md` §3 曝光章节和 §7.2 新增清单里补充了 5 条旧端没有、但新稿需要独立曝光的埋点：\n- **N10** `code`（全屏扫码入口曝光）\n- **N11** `light.loginfloat.login`（半屏弹窗一键登录按钮曝光）\n- **N12** `light.loginfloat.wxlogin`（半屏弹窗微信登录按钮曝光）\n- **N13** `light.loginfloat.qqlogin`（半屏弹窗 QQ 登录按钮曝光）\n- **N14** `light.loginfloat.code`（半屏弹窗扫码入口曝光）\n\n原因：旧端 iOS 半屏弹窗仅上报 `light.loginfloat` 整体曝光，Figma 新稿对内部按钮做了结构化拆分，建议与全屏 Page 对齐，拆分独立曝光。\n\n【最终上报清单总览】\n- 迁移旧埋点：25 条（保持 iOS/wesee-kmm 原有 position 与 key 命名）\n- 新增埋点：14 条（N1~N14）\n- 登录结果：独立事件 `login_result`，由 `LoginFlowTracker` 已有实现覆盖\n\n文档已更新：`docs/component/login/loginPage/login_page_report.md`。",
+    "timestamp": "2026-04-20T03:54:44.832Z",
+    "read": true
+  },
+  {
+    "id": "msg-1776657544424-tt3fye",
+    "from": "protocol-architect",
+    "to": "team-lead",
+    "type": "message",
+    "content": "已根据 Figma 设计稿细节完成协议文档增量补充，关键更新点如下：\n\n## 文档更新摘要\n\n### 1. 扫码弹层扩展为「四态 + 互切」（能力 7 重写）\n- UI 四态对齐上报维度：\n  - `LOADING`（加载中，不上报）\n  - `NORMAL(qrCodeImage, expiredAt)` → 上报 `qr_status=valid`\n  - `EXPIRED` → 上报 `qr_status=expired`（UI 展示\"刷新\"icon）\n  - `SCANNED_WAITING` → 上报 `qr_status=scanned`（文案\"请在微信/QQ 中同意登录腾讯微视\"）\n- `LoginEvent` 对应新增 5 个子类：`ScanQRCodeLoading / Ready / Expired / Scanned / Failed`\n\n### 2. 扫码入口是独立小图标 + 气泡选择层（新增能力 7.1）\n- 扫码入口独立小图标，不隐藏在文字里\n- 气泡选择（上方弹出，非 Dialog）在 VM 实现类中用 `StateFlow<ScanPopupVisible>` 管理\n- **纯 UI 交互，不涉及接口**\n\n### 3. 扫码弹层底部「QQ↔微信扫码互切」支持\n- 新增桥接方法 `LoginPlatformBridge.cancelScanLogin()`\n  - 用途：弹层关闭 / 互切时先取消当前会话，避免 SDK 回调错乱（建议 serialNo 校验）\n- 互切时序：`cancelScanLogin()` → 切换 UI method → 重新调用 `loginByXxxScan()`\n\n### 4. 区分扫码来源 scene=page/dialog\n- `scanScene` 由 ViewModel 持有（根据 `PageArgs.displayMode` 或容器形态自判定）\n- **不经过桥接层**，仅用于上报透传到 report-architect 的 `scene` 维度\n- 在形态差异章节表格中明确：两种 scene 下**接口/桥接契约完全一致**\n\n### 5. 历史账号数据源明确\n- **唯一来源：本地 KV 存储 `LastLoginStorage`**，不走后端接口、不调账号中心、不跨端同步\n- 存储时机说明：\n  1. 登录成功后由 `LoginPostTaskExecutor` 写入\n  2. 登出后清除\n  3. 启动时从后台拉取用户信息后更新\n- 底层存储按平台：Android SharedPreferences / iOS UserDefaults / 鸿蒙 Preferences\n- `loginType=DEFAULT` 或 `isValid()==false` 时视为无有效历史账号\n\n### 6. LoginPlatformBridge 契约扩展最终清单（本次新增 5 个方法）\n```kotlin\nfun loginByWeChatScan()\nfun loginByWeChatFast()\nfun loginByQQFast()\nfun cancelScanLogin()    // 新增：支持互切与取消\nsuspend fun dismissLoginUI()\n```\n\n### 7. 与上报文档对齐\n协议层事件与上报维度一一对应：\n- 扫码 `qr_status` {valid/expired/scanned} ↔ `ScanQRCodeReady/Expired/Scanned`\n- 扫码 `scene` {page/dialog} ↔ VM 本地持有\n- 登录 `operate_type` {wx/qq/wx_scan/qq_scan/wx_fast/qq_fast} ↔ `LoginMethod` 枚举\n\n## 总体判断（不变）\n- **仍然不引入任何后端 PB 接口**\n- 所有能力由 SDK 桥接 + 登录核心流程封装 + 本地存储三类组合完成\n- 桥接层需补齐：微信真实扫码实现 + 扫码四态事件 + cancelScanLogin 取消机制\n\n协议文档已落地到 `docs/component/login/loginPage/login_page_protocol.md`。",
+    "timestamp": "2026-04-20T03:59:04.424Z",
+    "read": true
+  },
+  {
+    "id": "msg-1776657838094-tox3xi",
+    "from": "protocol-architect",
+    "to": "team-lead",
+    "type": "message",
+    "content": "protocol-architect 报到。\n\nStep 3 协议设计已完成并两轮回报，产出：`docs/component/login/loginPage/login_page_protocol.md`（492 行，10 章节）。\n\n## 请示下一步\n我的任务范围（协议设计）已闭环。请 main 调度下一步：\n\n**选项 A**：若后续还有协议层补充需求（如集成 report-architect 与 ui-architect 的反馈、新发现的接口点），请派发具体指令，我继续迭代。\n\n**选项 B**：若 Step 3 验收通过、无需进一步变更，请发送 `shutdown_request`，我将完成收尾并退出。\n\n默认等待指令，保持静默不重复产出。",
+    "timestamp": "2026-04-20T04:03:58.094Z",
+    "read": true
+  },
+  {
+    "id": "resp-1776657873434-36kqpi",
+    "from": "protocol-architect",
+    "to": "team-lead",
+    "type": "shutdown_response",
+    "content": "{\"type\":\"shutdown_response\",\"request_id\":\"shutdown-1776657865638\",\"approve\":true,\"reason\":\"protocol-architect 收到关闭请求，同意关闭。Step 3 协议设计交付物 docs/component/login/loginPage/login_page_protocol.md 已验收通过。感谢协作，退出。\",\"from\":\"protocol-architect\",\"timestamp\":\"2026-04-20T04:04:33.434Z\"}",
+    "timestamp": "2026-04-20T04:04:33.434Z",
+    "read": true
+  },
+  {
+    "id": "resp-1776657874584-vi3zi4",
+    "from": "report-architect",
+    "to": "team-lead",
+    "type": "shutdown_response",
+    "content": "{\"type\":\"shutdown_response\",\"request_id\":\"shutdown-1776657865712\",\"approve\":true,\"from\":\"report-architect\",\"timestamp\":\"2026-04-20T04:04:34.584Z\"}",
+    "timestamp": "2026-04-20T04:04:34.584Z",
+    "read": true
+  },
+  {
+    "id": "msg-1776658586835-5fs7pr",
+    "from": "solution-architect",
+    "to": "team-lead",
+    "type": "message",
+    "content": "Step 5 技术方案已落盘：`/Users/jusheng/wesee/weseecore-worktree/docs/component/login/loginPage/login_page_tech_solution.md`（15 章齐备）。\n\n## 一、关键决策摘要\n\n### 1. 模块归属结论\n**登录页继续保留在 `startup/` 模块，不迁移到 wsUser。**\n- 登录核心（LoginFlowController/LoginStateManager/provider/reporter）已全部落在 startup；\n- 三端 KRApplication/OhosAppLogin/IOSLoginSetup 均通过 setupLoginUIProvider() 绑定 startup；\n- wsCore/service/api/ 无 ILoginServiceRegistry，**本次不新建** Registry。\n- 三层落位：契约层=wsCore/…/core/login/（VM 接口 + PageArgs + Factory 接口 + LoginService 入口）；逻辑层=startup/…/login/（VM 实现 + Bridge 扩展 + Reporter）；UI 层=wsCompose/…/compose/login/（Page + View + 12 个子组件）。\n- 现有 `startup/.../ui/page/LoginPage.kt` 和 `.../ui/screen/LoginPageScreen.kt` 整体迁出到 wsCompose；VM/Bridge 保留在 startup 并扩展。\n\n### 2. VM 接口设计（严格面向 UI 设计）\n- **页面级** `ILoginPageViewModel`：10 个固定属性（文案）+ 3 个 StateFlow（isAgreementChecked/scanPopupVisible/hasHistoryAccount）+ 3 个子 VM + 14 个 onXxx 方法。\n- **子 VM 拆分** 4 个：`IHistoryAccountVM`、`IAgreementConfirmDialogVM`、`IScanLoginDialogVM`、`ILoginPageViewModel` 自身。\n- 严格无业务 model 暴露（LoginMethod/LoginEvent/LastLoginInfo 均在实现类内部转换为基础类型 + UI 枚举）；所有枚举（LoginDisplayMode/ScanMethod/ScanDialogPhase/HistoryBadgeType）皆为 UI 枚举，无业务语义。\n- **无** MutableStateFlow 暴露、**无** sealed UiState、**无** sealed Action + dispatch。\n\n### 3. 桥接层扩展（5 个新方法）\n`LoginPlatformBridge` 新增：`loginByWeChatScan` / `loginByWeChatFast` / `loginByQQFast` / `cancelScanLogin` / `dismissLoginUI`；复用 `LoginSerialNo` 做扫码会话去重；`dismissLoginUI` 根据当前容器（Page/Dialog）自动选择 goBack/dismissComposeDialog。\n\n### 4. 扫码四态方案\n采用协议文档方案 A：扩展 `LoginEvent` 新增 5 个子类 `ScanQRCodeLoading/Ready(qrCodeImage, expiredAt)/Expired/Scanned/Failed`；`ScanAuthProvider` 接收桥接回调 dispatch 到 `LoginStateManager.loginEvent`；`ScanLoginDialogVM` 订阅事件更新 phase + qrCodeImage StateFlow。\n\n### 5. 半屏 vs 全屏容器\n**方案 B（推荐）**：同一 `@Page(LOGIN_PAGE)` + `args.displayMode` 分支 UI，半屏走 `toComposeDialog` 路由（Android/ohos 已实现）；不使用 ModalBottomSheet。LoginPageView 根据 displayMode 选 LoginFullScreenView/LoginDialogView。\n\n### 6. 日志与可观测性（单独一章 §11）\n- 在 wsCore `WsLogHelper.kt` 追加 `object LoginLog : BaseBizLog(\"Login\")`；\n- 旧 `startup/.../utils/LoginLog.kt`（class）保留向后兼容，转发到新 object；\n- 按层落点：Bridge=Bridge subTag；VM=PageInit/Action/State；UI=DisposableEffect only（禁重组打印）；\n- 关键节点 7 处覆盖；敏感信息（uId/nick/avatar/ticket/token）全部脱敏；二维码只打 size。\n\n## 二、不引入的抽象\n- **不引入 Repository**（LastLoginStorage.get() 是单一 KV 读取，套 Repository 属于空壳反模式）\n- **不新增 ILoginServiceRegistry**（现阶段 LoginService 单例 lateinit var 足够，后续需要再收敛）\n\n## 三、主要风险项（§14 共 10 条）\n1. **Android/ohos 微信真实扫码未落地** → 本次先做二态降级（LOADING→Success/Fail），四态补齐作为 Step 6/8 后续任务；\n2. **`LoginFlowController.setLoginUIProvider` 签名需扩展**（当前 `() -> Unit`，需改为接收 LoginPageArgs）；\n3. **`appRouter().dismissComposeDialog()` 若未暴露需补三端实现**（列入 Step 8）；\n4. 半屏容器选型方案 B，**待 team-lead 确认**，若要改走 ModalBottomSheet 需补 UI 定制方案。\n\n## 四、重要提醒\n⚠️ **方案产出后请先停下等用户确认**，不要直接进入编码阶段。用户可能对以下决策有异议需要协商：\n- 模块归属（startup vs wsUser）\n- 半屏容器方案（B 推荐 vs ModalBottomSheet）\n- `LoginFlowController.setLoginUIProvider` 签名修改\n- VM 接口的文案属性是否全量保留在接口（可下沉到实现类）\n\n文档路径：`docs/component/login/loginPage/login_page_tech_solution.md`",
+    "timestamp": "2026-04-20T04:16:26.835Z",
+    "read": true
+  },
+  {
+    "id": "msg-1776658818338-mg3hz2",
+    "from": "solution-architect",
+    "to": "team-lead",
+    "type": "message",
+    "content": "用户直接要求进入 Step 6（UI 层实现）。考虑到：\n1. 团队当前仅 solution-architect 一个角色，无独立 ui-developer；\n2. 我已掌握完整的技术方案、VM 接口契约、Figma 设计稿映射、上报埋点落点等上下文；\n3. Step 6 的产出（12 个 Composable 组件 + 页面入口）与 VM 接口高度耦合，复用上下文效率最高。\n\n我将由 solution-architect 直接承接 Step 6，按技术方案 §4.3 的文件清单实现 UI 层。\n\n## Step 6 执行范围\n在 `wsCompose/src/commonMain/kotlin/com/tencent/weishi/compose/login/` 下落地以下文件：\n\n### 契约层前置（wsCore，UI 依赖）\n- `wsCore/.../core/login/page/LoginPageArgs.kt`（@Serializable + LoginDisplayMode）\n- `wsCore/.../core/login/api/LoginPageAssembly.kt` + `ILoginPageFactory.kt` + `LoginService.kt`\n- `wsCore/.../core/login/vm/ILoginPageViewModel.kt` + `IAgreementConfirmDialogVM.kt` + `IScanLoginDialogVM.kt` + `IHistoryAccountVM.kt`（含 ScanMethod/ScanDialogPhase/HistoryBadgeType 枚举）\n- `wsCore/.../core/trace/WsLogHelper.kt` 追加 `object LoginLog : BaseBizLog(\"Login\")`\n\n### UI 层（wsCompose）\n- `page/LoginPage.kt` — @Page 入口 + parsePageArgs + Service.pageFactory 装配\n- `page/LoginPageView.kt` — displayMode 分支 + 共用浮层挂载\n- `page/LoginFullScreenView.kt`\n- `page/LoginDialogView.kt`\n- `page/component/LoginTopBar.kt`\n- `page/component/HistoryAccountCard.kt`\n- `page/component/PrimaryLoginButtonRow.kt`\n- `page/component/ScanEntry.kt`\n- `page/component/AgreementSection.kt`\n- `page/component/AgreementConfirmDialog.kt`\n- `page/component/ScanPopup.kt`\n- `page/component/ScanLoginDialog.kt`\n\n### 暂不处理（留给 Step 7/8/9）\n- VM 实现（startup 模块）→ Step 9\n- Bridge 扩展 / 三端桥接 → Step 8\n- LoginEvent 扩展 → Step 8\n- 迁出旧 `startup/.../ui/page/LoginPage.kt` 和 `.../ui/screen/LoginPageScreen.kt` → Step 9 VM 落地时一并删除（避免编译链断裂）\n\n### UI 侧自洽策略\n- UI 层只依赖 wsCore 契约层的 VM 接口；\n- 为 Step 6 验收方便，在 wsCompose 的 `commonTest` 或 `debug` 目录下提供一个 `PreviewLoginPageViewModel`（Mock VM，基于 MutableStateFlow）——此为 Step 7 Mock 工作的前置；\n- 现有 `startup/.../ui/page/LoginPage.kt` 保留不动（仍用旧 `LoginPageScreen`）；新 `wsCompose/.../login/page/LoginPage.kt` 的 `@Page` 注解会与旧文件冲突，**必须删除旧 LoginPage 以便路由系统识别新注册**，但这会影响现有登录链路——建议 Step 6 阶段暂时**先在新路径放入 LoginPage.kt 但不加 @Page**（用 `LoginPageStub.kt` 或仅实现 LoginPageView/子组件），等 Step 9 VM 实现到位后再在 @Page 上线切换。\n\n请确认是否同意由我承接 Step 6 并按上述范围执行。如无异议我将立即开始落地。",
+    "timestamp": "2026-04-20T04:20:18.338Z",
+    "read": true
+  },
+  {
+    "id": "msg-1776658867048-9pviwh",
+    "from": "solution-architect",
+    "to": "team-lead",
+    "type": "message",
+    "content": "收到纠偏指令，确认如下：\n\n## 边界确认\n- ✅ Step 6 相关动作**未启动**。收到用户「step6」后仅向你发送了请示消息询问是否承接，**未写任何代码文件**。可放心，无越界落地。\n- ✅ 工作区状态未变更（仅有 `docs/component/login/loginPage/login_page_tech_solution.md` 一个产出）。\n\n## 技术方案产出确认\n- 文件路径：`/Users/jusheng/wesee/weseecore-worktree/docs/component/login/loginPage/login_page_tech_solution.md`\n- 章节数：**15 章完整**（概述 / 架构图 / 数据流 / 分层设计 / 核心类设计 / 桥接层扩展 / 扫码四态状态机 / 协议勾选拦截时序 / 半屏vs全屏容器 / 上报落点 / 日志与可观测性 / PageFactory注册链 / 路由Key / 风险与待确认项 / 后续编码步骤入口提示 + 附架构规范对齐检查表）\n- 约 949 行\n\n## 关键决策摘要\n\n### 1. 模块归属结论\n**登录页继续保留在 `startup/` 模块，不迁移到 wsUser。**\n- 登录核心（LoginFlowController/LoginStateManager/provider/reporter）已全部落在 startup；\n- 三端 KRApplication/OhosAppLogin/IOSLoginSetup 通过 setupLoginUIProvider() 绑定 startup；\n- **不新建** `ILoginServiceRegistry`，用简化版 `object LoginService { lateinit var pageFactory }` 入口。\n- 三层落位：\n  - 契约层 `wsCore/.../core/login/`：PageArgs + VM 接口 + Factory 接口 + LoginService\n  - 逻辑层 `startup/.../login/`：VM 实现 + Bridge 扩展 + Reporter（仅在现有模块扩展）\n  - UI 层 `wsCompose/.../compose/login/`：Page + View + 12 个子组件\n\n### 2. 子 VM 拆分清单（4 个）\n| 接口 | 职责 |\n|---|---|\n| `ILoginPageViewModel` | 页面级：displayMode / 协议勾选态 / 扫码气泡显隐 / 历史账号存在态 / 全局交互方法 |\n| `IHistoryAccountVM` | 历史账号卡片：avatar/nick/badgeType/oneKeyLoginButtonText StateFlow |\n| `IAgreementConfirmDialogVM` | 协议确认弹窗：visible + 文案 + onAgree/onCancel |\n| `IScanLoginDialogVM` | 扫码弹层：visible + currentMethod + phase(4态) + qrCodeImage + 刷新/切换/关闭 |\n\n全部接口严格遵循面向 UI 设计：无业务 model 暴露、无 MutableStateFlow、无 sealed UiState、无 sealed Action。\n\n### 3. 桥接层扩展清单（5 个新方法）\n```\nLoginPlatformBridge {\n    fun loginByWeChatScan()         // 新增\n    fun loginByWeChatFast()         // 新增\n    fun loginByQQFast()             // 新增\n    fun cancelScanLogin()           // 新增，复用 LoginSerialNo 做会话去重\n    suspend fun dismissLoginUI()    // 新增，根据 Page/Dialog 自动选择 goBack/dismissComposeDialog\n}\n```\n\n### 4. 扫码四态事件扩展\n采用协议方案 A：在 `LoginEvent` 新增 5 个子类 `ScanQRCodeLoading / Ready(qrCodeImage, expiredAt) / Expired / Scanned / Failed(reason)`。\n\n### 5. 主要风险项（§14 共 10 条）\n| # | 风险 | 建议 |\n|---|---|---|\n| 1 | Android/ohos 微信真实扫码未落地 | 本次先上二态降级；四态桥接补齐作为 Step 8 后续任务 |\n| 2 | `LoginFlowController.setLoginUIProvider` 签名 `() -> Unit` 无法承接 args | 需扩展为 `(LoginPageArgs?) -> Unit` |\n| 3 | `appRouter().dismissComposeDialog()` 若 IAppRouterBase 未暴露 | 需补三端实现（Step 8） |\n| 4 | 半屏容器方案选型（B 推荐 vs ModalBottomSheet） | 待用户确认 |\n| 5 | refPosition 枚举收敛（iOS 有 25+）| 本次先透传 String，后续再收敛 |\n| 6-10 | 见技术方案 §14 | - |\n\n### 6. 日志与可观测性章节\n✅ **已完整包含**（§11）：\n- 模块日志入口：`object LoginLog : BaseBizLog(\"Login\")` 追加至 `WsLogHelper.kt`\n- 按层落点：Bridge/VM/Reporter/UI 各层 subTag 规约\n- 关键节点 7 处清单（页面 init / 点击登录 / 协议拦截 / performLogin / 扫码 phase 切换 / LoginEvent 收到 / Bridge cancelScan）\n- 对象日志格式：KtJson.safeEncode + 二维码只打 size\n- 敏感脱敏：uId/nick/avatar/ticket/token 全覆盖\n- 反模式禁止：重组路径禁打日志、LoginEvent 不整包输出、phase emit distinctUntilChanged 去重\n\n---\n\n任务已完成，等待 shutdown_request。",
+    "timestamp": "2026-04-20T04:21:07.048Z",
+    "read": true
+  },
+  {
+    "id": "resp-1776658882678-o3obnq",
+    "from": "solution-architect",
+    "to": "team-lead",
+    "type": "shutdown_response",
+    "content": "{\"type\":\"shutdown_response\",\"request_id\":\"shutdown-1776658875080\",\"approve\":true,\"reason\":\"同意关闭。Step 5 技术方案已完整落盘至 docs/component/login/loginPage/login_page_tech_solution.md，无越界动作，无待清理临时产物。感谢协作。\",\"from\":\"solution-architect\",\"timestamp\":\"2026-04-20T04:21:22.678Z\"}",
+    "timestamp": "2026-04-20T04:21:22.678Z",
+    "read": true
+  }
+]

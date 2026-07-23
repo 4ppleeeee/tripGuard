@@ -1,0 +1,2 @@
+# Obfuscation rules for shared module
+# Add your obfuscation rules here

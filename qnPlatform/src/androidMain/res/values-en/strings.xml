@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- User Center -->
+    <string name="USER_CENTER_MESSAGE">Message</string>
+    <string name="USER_CENTER_COMMON_FUNCTIONS">Common Functions</string>
+    <string name="USER_CENTER_MORE_FUNCTIONS">More Functions</string>
+    <string name="USER_CENTER_GO_CHECK">Go Check</string>
+    <string name="USER_CENTER_POINTS">Points</string>
+
+    <!-- Common Feed Labels -->
+    <string name="COMMON_FEED_LABEL_COMMENT_COUNT">%s comments</string>
+    <string name="COMMON_FEED_LABEL_READ_COUNT">%s views</string>
+    <string name="COMMON_FEED_LABEL_APPROVE_COUNT">%s approvals</string>
+    <string name="COMMON_FEED_LABEL_PROGRESS_COUNT">%s updates</string>
+    <string name="COMMON_FEED_LABEL_LISTEN_COUNT">%s listens</string>
+    <string name="COMMON_FEED_LABEL_VIDEO_COUNT">%s videos</string>
+
+    <!-- Common Time and Date -->
+    <string name="COMMON_DATE_TODAY">Today</string>
+    <string name="COMMON_DATE_YESTERDAY">Yesterday</string>
+    <string name="COMMON_DATE_DAY_BEFORE_YESTERDAY">2d ago</string>
+    <string name="COMMON_DATE_MONTH_DAY">%s/%s</string>
+    <string name="COMMON_DATE_YEAR_MONTH_DAY">%s/%s/%s</string>
+
+    <!-- My History -->
+    <string name="MY_HISTORY_TITLE">My History</string>
+    <string name="MY_HISTORY_TAB_FAVORITE">Favorites</string>
+    <string name="MY_HISTORY_TAB_BROWSE_HISTORY">History</string>
+    <string name="MY_HISTORY_TAB_LIKED">Liked</string>
+    <string name="MY_HISTORY_TAB_PUSH">Push</string>
+    <string name="MY_HISTORY_TAB_UNDERLINE">Highlights</string>
+    <string name="MY_HISTORY_PUSH_OPTIMIZE">Optimize</string>
+    <string name="MY_HISTORY_PUSH_OPTIMIZE_ACTION">Optimize</string>
+    <string name="MY_HISTORY_PUSH_EDIT_GUIDE">Select "Not Interested" to optimize future recommendations</string>
+    <string name="MY_HISTORY_LABEL_WECHAT_ACCOUNT">WeChat Official Account</string>
+    <string name="MY_HISTORY_PUSH_GROUP_TITLE">%s shared %s articles</string>
+    <string name="MY_HISTORY_LOAD_FINISH">You\'re all caught up</string>
+    <string name="MY_HISTORY_PUSH_LOAD_FINISH">You\'re all caught up on recommendations from the past two days</string>
+    <string name="MY_HISTORY_EMPTY_FAVORITE">No favorites yet\nTap the star to save what you like</string>
+    <string name="MY_HISTORY_EMPTY_FAVORITE_NO_LOGIN">Sign in to see your favorites</string>
+    <string name="MY_HISTORY_EMPTY_LIKED">No liked content yet\nContent you like will show up here</string>
+    <string name="MY_HISTORY_EMPTY_LIKED_NO_LOGIN">Sign in to see your liked content</string>
+    <string name="MY_HISTORY_EMPTY_PUSH">No recommendations yet</string>
+    <string name="MY_HISTORY_EMPTY_UNDERLINE">No highlights yet</string>
+    <string name="MY_HISTORY_EMPTY_UNDERLINE_NO_LOGIN">Sign in to see your highlights</string>
+    <string name="MY_HISTORY_EMPTY_BROWSE">No reading history yet\nContent you read will show up here</string>
+    <string name="MY_HISTORY_EMPTY_AUDIO">No listening history yet</string>
+    <string name="MY_HISTORY_EMPTY_SEARCH_CONTENT">No content</string>
+    <string name="MY_HISTORY_EMPTY_BUTTON_NEWS_LOOK">Browse Top News</string>
+    <string name="MY_HISTORY_EMPTY_BUTTON_NEWS_LISTEN">Listen to Top News</string>
+    <string name="MY_HISTORY_PUSH_ENABLE">Turn on notifications</string>
+    <string name="MY_HISTORY_PUSH_ENABLE_GUIDE">Stay on top of the news that matters to you</string>
+    <string name="MY_HISTORY_TOAST_PUSH_OPTIMIZED">Updated preferences for %s recommendations</string>
+    <string name="MY_HISTORY_TOAST_ALL_OPTIMIZED">Updated all recommendations</string>
+    <string name="MY_HISTORY_TOAST_FEEDBACK">Thanks for your feedback</string>
+    <string name="MY_HISTORY_TOAST_NO_PLAYABLE_CONTENT">Nothing to play</string>
+    <string name="MY_HISTORY_LABEL_COLUMN_PURCHASED">Purchased</string>
+
+    <!-- Common Buttons -->
+    <string name="COMMON_CANCEL">Cancel</string>
+    <string name="COMMON_CONFIRM">Confirm</string>
+    <string name="COMMON_RETRY">Retry</string>
+    <string name="COMMON_SKIP">Skip</string>
+    <string name="COMMON_SELECT_ALL">Select All</string>
+    <string name="COMMON_DESELECT_ALL">Deselect All</string>
+    <string name="COMMON_DELETE">Delete</string>
+    <string name="COMMON_EDIT">Edit</string>
+    <string name="COMMON_SEARCH">Search</string>
+
+    <!-- Login -->
+    <string name="LOGIN_SIGN_IN_IMMEDIATELY">Sign in</string>
+    <string name="LOGIN_SIGNING_IN">Signing in</string>
+    <string name="LOGIN_OTHER_ACCOUNT">Use another account</string>
+    <string name="LOGIN_LAST_SIGN_IN">Last used</string>
+
+    <!-- List Status -->
+    <string name="LIST_LOADING">Loading...</string>
+    <string name="LIST_LOAD_FAILED">Load Failed</string>
+    <string name="LIST_NO_MORE">No More</string>
+    <string name="LIST_EMPTY">No Data</string>
+
+    <!-- Third Party Links -->
+    <string name="THIRD_PARTY_LEAVE_TITLE">Leave Warning</string>
+    <string name="THIRD_PARTY_LEAVE_DESC">Leaving Tencent News, going to third-party link</string>
+    <string name="THIRD_PARTY_LEAVE_SKIP">Cancel</string>
+    <string name="THIRD_PARTY_CONTINUE">Continue</string>
+
+    <!-- News Detail -->
+    <string name="DETAIL_AI_AUDIO_ENTRANCE">AI Podcast</string>
+</resources>

@@ -1,0 +1,13 @@
+@font-face {
+	font-family:'sysong';
+	src:url('fontRes');
+	font-display:option;
+}
+
+body {
+	font-family: 'sysong';
+}
+
+
+div.main.specail_ui.qqnews_font_sysong p { font-size:1.125em; line-height: 1.67em; margin-top: 1.33em; margin-bottom: 1.33em;}
+div.main.qa_ui.qqnews_font_sysong p { font-size:1.125em; line-height: 1.67em; margin-top: 1.33em; margin-bottom: 1.33em;}

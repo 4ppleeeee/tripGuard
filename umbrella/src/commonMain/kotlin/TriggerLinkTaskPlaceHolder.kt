@@ -1,0 +1,2 @@
+// 仅作为触发link任务的占位
+class TriggerLinkTaskPlaceHolder

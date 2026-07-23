@@ -1,0 +1,49 @@
+<resources>
+
+    <style name="AppTheme" parent="android:Theme.Material.NoActionBar" >
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowTitleSize">0dp</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- 让窗口自行绘制系统栏背景，配合透明色实现内容延伸到导航栏 -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="AppThemeIn" parent="android:Theme.Material.NoActionBar.Fullscreen" >
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowTitleSize">0dp</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:statusBarColor">@color/home_bottom_bar_color</item>
+        <item name="android:navigationBarColor">@color/home_bottom_bar_color</item>
+    </style>
+    <!--
+      冷启动开屏主题：利用 windowBackground 直接展示开屏图。
+      - splash_bg：top 为主图，bottom 为应用名称文字图，
+        中间以黑色纯色填充避免拉伸。
+      - windowDrawsSystemBarBackgrounds + 透明 statusBarColor/navigationBarColor：
+        让 windowBackground 延伸覆盖状态栏和导航栏区域，同时保留状态栏图标展示。
+        Android 8/9 通过版本化主题不设置 navigationBarColor，保留系统导航栏默认表现。
+    -->
+    <style name="AppTheme.Splash" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@drawable/splash_bg</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowTitleSize">0dp</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- 让窗口自行绘制系统栏背景，配合透明色实现内容延伸到导航栏 -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

@@ -1,0 +1,9 @@
+/node_modules
+/oh_modules
+/.preview
+/build
+/.cxx
+/.test
+BuildProfile.ets
+/src/main/ets/kniogen/callback.d.ts
+/src/main/ets/kniogen/consumer.d.ts

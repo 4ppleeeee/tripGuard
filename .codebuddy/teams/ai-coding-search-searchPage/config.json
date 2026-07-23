@@ -1,0 +1,18 @@
+{
+  "name": "ai-coding-search-searchPage",
+  "leadAgentId": "7e7f46d2a8d447cebcbd433fe1311cc7",
+  "workspacePath": "/Users/bigbywang/workspace/wesee-core",
+  "createdAt": "2026-04-20T03:02:15.100Z",
+  "options": {
+    "workspacePath": "/Users/bigbywang/workspace/wesee-core",
+    "isAutoTeam": false
+  },
+  "members": [
+    {
+      "memberId": "team-lead@ai-coding-search-searchPage",
+      "name": "team-lead",
+      "role": "Team Lead - coordinates the team and interacts with the user"
+    }
+  ],
+  "isAutoTeam": false
+}

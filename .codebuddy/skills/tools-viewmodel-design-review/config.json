@@ -1,0 +1,84 @@
+{
+  "_comment": "ViewModel 架构审查 Skill 配置文件。迁移到新工程时，只需修改此文件即可。",
+
+  "project": {
+    "name": "WeSeeCore",
+    "description": "微视 KMM 核心模块（wesee-core）"
+  },
+
+  "layers": {
+    "interface": {
+      "path_marker": "wsCore/",
+      "description": "接口定义层（业务契约层），只放 ViewModel 接口、Service 接口、PageFactory 接口"
+    },
+    "ui": {
+      "path_marker": "wsCompose/",
+      "description": "UI 消费层，只依赖接口，不依赖实现"
+    },
+    "impl": {
+      "description": "业务实现层（wsDrama / wsFeeds / wsUser），承载业务判断、路由、埋点、数据转换"
+    }
+  },
+
+  "git": {
+    "target_branch": "origin/master",
+    "diff_command": "git diff --name-only origin/master...HEAD"
+  },
+
+  "whitelist_types": [
+    "IKmmAdFeedsItem",
+    "IKmmAdOrder",
+    "IComposePageArgs",
+    "IStructPageArgs",
+    "IStructWidgetVM",
+    "IStructPageViewModel",
+    "IFeedsVMItem",
+    "pageArgs"
+  ],
+
+  "forbidden_ui_calls": [
+    "appRouter()",
+    "appReport()",
+    "appLogin()",
+    "UserLog"
+  ],
+
+  "mutable_keywords": [
+    "MutableStateFlow",
+    "MutableSharedFlow"
+  ],
+
+  "safe_type_prefixes": [
+    "IKmm",
+    "ICompose",
+    "IStruct",
+    "IPopVM",
+    "IBaseVM",
+    "IApp"
+  ],
+
+  "business_model_suffixes": [
+    "Info",
+    "Data",
+    "Model",
+    "Item",
+    "Order",
+    "Entity",
+    "Bean",
+    "Response",
+    "Detail",
+    "Dto"
+  ],
+
+  "vm_file_keywords": ["VM", "ViewModel"],
+
+  "file_extension": ".kt",
+
+  "report": {
+    "output_dir": "./report",
+    "md_filename": "ViewModel-design-report.md",
+    "html_filename": "ViewModel-design-issues.html"
+  },
+
+  "design_spec_path": "../../rules/通用架构规范/viewmodel-design-spec.mdc.md"
+}

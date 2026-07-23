@@ -1,0 +1,9 @@
+@font-face {
+	font-family:'sysong';
+	src:url('fontRes');
+	font-display:option;
+}
+
+body {
+	font-family: 'sysong';
+}

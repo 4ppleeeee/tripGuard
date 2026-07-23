@@ -1,0 +1,32 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "KMM Demo"
+    },
+    {
+      "name": "reason_camera",
+      "value": "Used to take avatar photos"
+    },
+    {
+      "name": "reason_location",
+      "value": "Used to get your location for nearby places"
+    },
+    {
+      "name": "reason_read_imagevideo",
+      "value": "Used to browse and select photos and videos from album for publishing"
+    },
+    {
+      "name": "reason_write_imagevideo",
+      "value": "Used to save created works to album"
+    }
+  ]
+}

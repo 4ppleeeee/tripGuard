@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  FileProvider 暴露路径声明。
+  用途：分享日志 zip（写在 context.cacheDir 下）等场景，把 File 转为 content:// Uri。
+  authority：com.tencent.kmm.demo.fileprovider（= applicationId + .fileprovider）
+-->
+<paths>
+    <!-- 内部 cacheDir，对应 buildOrganizedLogZip 的输出目录 -->
+    <cache-path
+        name="cache"
+        path="." />
+    <!-- 外部 cacheDir，预留备用 -->
+    <external-cache-path
+        name="external_cache"
+        path="." />
+    <!-- 内部 filesDir 及外部 filesDir，预留给后续可能的日志/崩溃导出 -->
+    <files-path
+        name="files"
+        path="." />
+    <external-files-path
+        name="external_files"
+        path="." />
+    <!-- 外部存储兜底声明，供文件分享/安装等系统 Intent 使用。 -->
+    <external-path
+        name="external_root"
+        path="." />
+</paths>

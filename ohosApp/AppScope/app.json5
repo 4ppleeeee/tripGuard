@@ -1,0 +1,11 @@
+{
+  "app": {
+    "bundleName": "com.tencent.news.base.app",
+    "vendor": "tencent",
+    "versionCode": 15,
+    "versionName": "8.168.0.20",
+    "icon": "$media:start_icon",
+    "label": "$string:app_name",
+    "configuration": "$profile:configuration"
+  }
+}

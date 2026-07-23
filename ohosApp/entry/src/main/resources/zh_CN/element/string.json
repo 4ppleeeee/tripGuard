@@ -1,0 +1,32 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "模块描述"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "KMM Demo"
+    },
+    {
+      "name": "reason_camera",
+      "value": "用于拍摄头像照片"
+    },
+    {
+      "name": "reason_location",
+      "value": "需要获取你的位置信息，以便推荐附近地点"
+    },
+    {
+      "name": "reason_read_imagevideo",
+      "value": "用于浏览和选择相册中的照片和视频进行发布"
+    },
+    {
+      "name": "reason_write_imagevideo",
+      "value": "用于将创作作品保存到相册"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "debug",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "./keys/debug/debug.cer",
+          "storePassword": "0000001A6FDEA95BF2FB0BBFA1EF182D625CC0E76385E14243F5B6355FDC413CAB99684801076AE970C0",
+          "keyAlias": "weishi",
+          "keyPassword": "0000001A36B2506BF957253EA0FC97E3B44F57B8AAB68FAA2DC066803A451D9AFD0A2F32CF598753BDF7",
+          "profile": "./keys/debug/debug.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "./keys/debug/debug.p12"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "debug",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": {
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "shared",
+      "srcPath": "./shared"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 用户中心 -->
+    <string name="USER_CENTER_MESSAGE">消息</string>
+    <string name="USER_CENTER_COMMON_FUNCTIONS">常用功能</string>
+    <string name="USER_CENTER_MORE_FUNCTIONS">更多功能</string>
+    <string name="USER_CENTER_GO_CHECK">去看看</string>
+    <string name="USER_CENTER_POINTS">积分</string>
+
+    <!-- 通用列表标签 -->
+    <string name="COMMON_FEED_LABEL_COMMENT_COUNT">%s评</string>
+    <string name="COMMON_FEED_LABEL_READ_COUNT">%s阅读</string>
+    <string name="COMMON_FEED_LABEL_APPROVE_COUNT">%s赞同</string>
+    <string name="COMMON_FEED_LABEL_PROGRESS_COUNT">%s进展</string>
+    <string name="COMMON_FEED_LABEL_LISTEN_COUNT">%s人听过</string>
+    <string name="COMMON_FEED_LABEL_VIDEO_COUNT">%s视频</string>
+
+    <!-- 通用时间与日期 -->
+    <string name="COMMON_DATE_TODAY">今天</string>
+    <string name="COMMON_DATE_YESTERDAY">昨天</string>
+    <string name="COMMON_DATE_DAY_BEFORE_YESTERDAY">前天</string>
+    <string name="COMMON_DATE_MONTH_DAY">%s月%s日</string>
+    <string name="COMMON_DATE_YEAR_MONTH_DAY">%s年%s月%s日</string>
+
+    <!-- 我的历史 -->
+    <string name="MY_HISTORY_TITLE">我的历史</string>
+    <string name="MY_HISTORY_TAB_FAVORITE">收藏</string>
+    <string name="MY_HISTORY_TAB_BROWSE_HISTORY">浏览历史</string>
+    <string name="MY_HISTORY_TAB_LIKED">已赞</string>
+    <string name="MY_HISTORY_TAB_PUSH">推送</string>
+    <string name="MY_HISTORY_TAB_UNDERLINE">划线</string>
+    <string name="MY_HISTORY_PUSH_OPTIMIZE">推送优化</string>
+    <string name="MY_HISTORY_PUSH_OPTIMIZE_ACTION">优化</string>
+    <string name="MY_HISTORY_PUSH_EDIT_GUIDE">选择不感兴趣内容，同时会为你优化后续推送</string>
+    <string name="MY_HISTORY_LABEL_WECHAT_ACCOUNT">微信公众号</string>
+    <string name="MY_HISTORY_PUSH_GROUP_TITLE">%s推送了%s篇文章</string>
+    <string name="MY_HISTORY_LOAD_FINISH">已显示全部内容</string>
+    <string name="MY_HISTORY_PUSH_LOAD_FINISH">已显示最近两天全部推送内容</string>
+    <string name="MY_HISTORY_EMPTY_FAVORITE">暂无收藏\n点击星星收藏你喜欢的内容</string>
+    <string name="MY_HISTORY_EMPTY_FAVORITE_NO_LOGIN">登录查看收藏内容</string>
+    <string name="MY_HISTORY_EMPTY_LIKED">暂无喜欢的内容\n点赞后你喜欢的内容会出现在这里</string>
+    <string name="MY_HISTORY_EMPTY_LIKED_NO_LOGIN">登录查看点赞内容</string>
+    <string name="MY_HISTORY_EMPTY_PUSH">暂无推送</string>
+    <string name="MY_HISTORY_EMPTY_UNDERLINE">暂无划线内容</string>
+    <string name="MY_HISTORY_EMPTY_UNDERLINE_NO_LOGIN">登录查看划线内容</string>
+    <string name="MY_HISTORY_EMPTY_BROWSE">暂无阅读历史\n看过的内容都会在这里出现</string>
+    <string name="MY_HISTORY_EMPTY_AUDIO">暂无收听记录</string>
+    <string name="MY_HISTORY_EMPTY_SEARCH_CONTENT">暂无内容</string>
+    <string name="MY_HISTORY_EMPTY_BUTTON_NEWS_LOOK">去要闻频道看看</string>
+    <string name="MY_HISTORY_EMPTY_BUTTON_NEWS_LISTEN">去要闻频道听听</string>
+    <string name="MY_HISTORY_PUSH_ENABLE">开启推送</string>
+    <string name="MY_HISTORY_PUSH_ENABLE_GUIDE">第一时间获知你关心的重大新闻</string>
+    <string name="MY_HISTORY_TOAST_PUSH_OPTIMIZED">已优化%s条推送</string>
+    <string name="MY_HISTORY_TOAST_ALL_OPTIMIZED">已优化全部内容</string>
+    <string name="MY_HISTORY_TOAST_FEEDBACK">已反馈</string>
+    <string name="MY_HISTORY_TOAST_NO_PLAYABLE_CONTENT">暂无可播放内容</string>
+    <string name="MY_HISTORY_LABEL_COLUMN_PURCHASED">已购专栏</string>
+
+    <!-- 通用按钮 -->
+    <string name="COMMON_CANCEL">取消</string>
+    <string name="COMMON_CONFIRM">确认</string>
+    <string name="COMMON_RETRY">重试</string>
+    <string name="COMMON_SKIP">跳过</string>
+    <string name="COMMON_SELECT_ALL">全选</string>
+    <string name="COMMON_DESELECT_ALL">反选</string>
+    <string name="COMMON_DELETE">删除</string>
+    <string name="COMMON_EDIT">编辑</string>
+    <string name="COMMON_SEARCH">搜索</string>
+
+    <!-- 登录 -->
+    <string name="LOGIN_SIGN_IN_IMMEDIATELY">立即登录</string>
+    <string name="LOGIN_SIGNING_IN">登录中</string>
+    <string name="LOGIN_OTHER_ACCOUNT">其它账号登录</string>
+    <string name="LOGIN_LAST_SIGN_IN">上次登录</string>
+
+    <!-- 列表状态 -->
+    <string name="LIST_LOADING">加载中...</string>
+    <string name="LIST_LOAD_FAILED">加载失败</string>
+    <string name="LIST_NO_MORE">没有更多了</string>
+    <string name="LIST_EMPTY">暂无数据</string>
+
+    <!-- 第三方链接 -->
+    <string name="THIRD_PARTY_LEAVE_TITLE">离开提示</string>
+    <string name="THIRD_PARTY_LEAVE_DESC">即将离开腾讯新闻，前往第三方链接</string>
+    <string name="THIRD_PARTY_LEAVE_SKIP">取消</string>
+    <string name="THIRD_PARTY_CONTINUE">继续</string>
+
+    <!-- 图文详情 -->
+    <string name="DETAIL_AI_AUDIO_ENTRANCE">生成AI播客</string>
+</resources>

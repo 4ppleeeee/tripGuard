@@ -1,0 +1,6 @@
+@font-face { 
+    font-family: 'QNUserFont'; src: url('qnfont/userFont')
+} body {
+    font-family: 'QNUserFont', 'PingFang SC';
+}
+div.main.specail_ui.qqnews_font_sysong p { font-size:1.125em; line-height: 1.67em; margin-top: 1.33em; margin-bottom: 1.33em;}

@@ -1,0 +1,5 @@
+<resources>
+
+    <color name="splash_navigation_bar_color">#00000000</color>
+    <color name="home_bottom_bar_color">#232327</color>
+</resources>

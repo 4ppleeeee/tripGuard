@@ -1,0 +1,166 @@
+---
+description: WeSee-Core 的通用架构约束。适用于任何跨模块改动、新页面、新 VM、新 service 工厂或重构任务；默认采用 MVVM 分离逻辑与 UI，并确保依赖方向、模块职责和 Service 解耦不被破坏。
+alwaysApply: true
+enabled: true
+---
+
+# WeSee-Core 通用架构规范
+
+## 规则定位
+
+- 先遵循现有模块边界，再写代码。优先查找同域已有实现，沿用最近的成功模式。
+- 通用场景默认采用 **MVVM**，目标是让 **UI 渲染、页面状态、业务编排、数据访问** 分层清晰、职责单一。
+- 本规则用于约束默认的通用页面 / 通用业务架构；如果用户**明确指定 Struct**，或目标任务本身就是已有 Struct 页面扩展、迁移、多 tab、吸顶、悬浮等场景，再切换到 `@.codebuddy/rules/Struct结构规范/RULE.mdc`。
+- 修改架构相关代码时，优先做最小闭环：先补契约，再迁实现，最后切 UI 入口与注册链路。
+- 声称“已完成某一步”前，必须让产物真正落到文件中。不要把计划文档、注释、缓存目录或 `tasks.md` 状态当作完成证据。
+
+## 依赖方向与模块边界
+
+- 依赖方向必须保持为：**契约层**（如 `wsCore`）→ **逻辑实现层**（如 `wsDrama` / `wsFeeds` / `wsUser`）→ **UI 层**（如 `wsCompose` / `qnView` 的消费侧）。禁止反向依赖。
+- UI 层不得直接引用业务逻辑实现类；必须经由契约层定义的 `Service` / `Factory` / `Registry` 获取能力，例如 `UserService.pageFactory`。
+- 跨模块暴露的接口、`PageArgs`、VM 接口、Service Factory、Registry 等放在契约层。
+- ViewModel 实现类、Repository、业务状态流转与数据转换逻辑放在逻辑模块。
+- `ComposePage`、Composable 视图、页面装配与纯 UI 组件放在 UI 模块。
+- 若 `constitution` 的命名与当前仓库不完全一致，以**代码库中的真实模块命名和依赖关系**为准，但保持其分层精神不变。
+
+## MVVM 标准分层
+
+### View
+
+- View 负责页面渲染、组件组合、交互采集与事件分发。
+- View 只消费 VM 接口暴露的属性（固定属性 + StateFlow 可变属性）和 `onXxx()` 方法，不存在额外的事件通道。
+- View 不感知任何业务 model、controller 或数据结构；所有业务数据必须在 VM 实现层完成转换后，以基础类型暴露给 View。
+- View 不直接请求数据，不直接编排业务流程，不直接承接跨页面业务规则。
+- 不要把业务判断、数据拼装、接口回调处理直接写进 Composable / Page View。
+
+### ViewModel（面向 UI 设计）
+
+- **核心原则**：VM 接口面向 UI 设计，而非面向业务设计。UI 层只消费 VM 接口暴露的属性和方法，不感知任何业务 model、controller 或数据结构。详细规范参见 `@.codebuddy/rules/通用架构规范/viewmodel-design-spec.mdc.md`。
+- ViewModel 负责持有页面状态、接收用户交互（通过 `onXxx()` 方法）、直接编排业务逻辑、通过 StateFlow 输出状态。
+- ViewModel 负责把业务数据转换成页面可直接消费的基础类型属性，而不是把原始 DTO / PB 直接暴露给 View。
+- ViewModel 可以管理加载、刷新、重试、分页、选中态、空态、权限态等页面状态。
+- ViewModel 不负责具体 UI 结构细节，不直接依赖具体 Composable 组件。
+
+#### VM 接口 4 要素
+
+一个设计合理的 VM 接口应包含以下 4 个方面：
+
+1. **固定属性**：基础数据类型（String、Int、Boolean 等），不会变化的数据。
+2. **可变属性**：统一用 `StateFlow` 或 `SharedFlow` 包装，供 UI 侧做状态监听。
+3. **与 UI 层交互的方法**：以 `onXxx()` 命名，隐藏所有业务逻辑（跳转、上报、日志等）。
+4. **子组件 VM**：将页面拆分为多个子 VM，每个子 VM 负责一个独立的 UI 区域。
+
+#### VM 接口中不应该出现什么
+
+1. **❌ 数据结构 model 类**（如 `IUserInfo`、`IAdOrder`）：出现这个就说明 UI 与数据结构强耦合了。
+2. **❌ 业务层的 controller、presenter**：出现这个就说明 UI 与逻辑强耦合了。
+3. **❌ var 可变属性**：可变属性应该由 StateFlow 提供，供 UI 侧做状态监听。
+4. **❌ MutableStateFlow、MutableSharedFlow**：flow 的更新应该在 VM 实现类中执行，不应该暴露在 VM 接口中。
+5. **❌ sealed class UIState（Loading/Error/Success）**：不要额外封装私有的 UIState 结构，应该将状态拆分为独立的属性和子 VM。
+6. **❌ sealed interface Action**：不要定义 Action 分发模式，交互方法直接以 `onXxx()` 暴露在接口上。
+
+#### 子 VM 拆分原则
+
+- 每个独立的 UI 区域对应一个子 VM 接口。
+- 列表中的每个卡片 / 项对应一个子 VM 接口。
+- 可复用的 UI 组件（如用户头像、操作栏）对应独立的子 VM 接口。
+- 子 VM 可以被不同业务场景复用（如用户头像 VM 可被普通用户、广告主等不同实现类复用）。
+
+#### VM 接口落位
+
+- VM 接口定义在 `wsCore`（契约层），面向 UI 设计。
+- VM 实现类在业务模块（如 `wsDrama`、`wsUser`），面向业务实现。
+- UI 组件在 `wsCompose`（UI 层），只依赖 VM 接口。
+- 接口层、实现层、UI 层的代码比例期望为 **1:8:1**。
+
+### Repository
+
+- Repository 负责数据访问抽象，统一承接网络、缓存、本地存储、协议转换或多数据源聚合。
+- Repository 对上提供稳定、可测试的数据接口；不要把接口细节、缓存细节、平台细节泄漏给 ViewModel。
+- Repository 不负责页面文案、不负责 toast、不负责跳转、不负责 UI 控件状态。
+- 如果只是简单转发单个 service 调用、没有任何抽象收益，不必机械新增 Repository；保持分层但避免空壳。
+
+### Model
+
+- Model 至少区分三类，不要混用：
+  - **DTO / PB Model**：网络协议、Proto、原始接口数据。
+  - **Domain Model**：业务领域模型，表达业务语义。
+  - **VM 属性模型**：页面展示所需的基础类型属性，通过 VM 接口暴露给 View。
+- 禁止让 PB / DTO 直接污染 UI 层；需要经过 ViewModel 或转换层映射到可展示模型。
+- `PageArgs` 在参与路由、跨端传递或页面恢复时，必须实现 `IComposePageArgs` 并标记 `@Serializable`。
+
+## 标准数据流与状态流转
+
+推荐遵循以下单向数据流：
+
+- `View` 接收用户操作，直接调用 VM 接口的 `onXxx()` 方法
+- `ViewModel` 在 `onXxx()` 方法内部直接编排业务逻辑，调用 `Repository` 或工具类
+- `Repository` 获取 / 更新数据后将结果返回给 `ViewModel`
+- `ViewModel` 将结果更新到对应的 `StateFlow` 属性中
+- `View` 通过收集 `StateFlow` 属性渲染 UI
+
+状态管理要求：
+
+- **所有可变状态** 统一用 `StateFlow` 包装，通过 VM 接口暴露给 View。
+- **不要使用 `UiState` sealed class** 做 UI 状态管理，应将状态拆分为独立的 StateFlow 属性（如 `isLoading: StateFlow<Boolean>`、`errorMessage: StateFlow<String?>`）。
+- **不要使用 `UiEffect` / `SingleEvent` / `SharedFlow` 做一次性事件通道**，toast、跳转、关闭页面、打开弹窗等操作应在 VM 的 `onXxx()` 方法实现中直接执行，不需要额外的事件通道。
+- 不要使用零散布尔值、回调地狱或隐式共享变量代替明确状态建模。
+- 页面整体加载失败、局部模块失败、空态、刷新态、分页态应显式区分，不要全部混成一个 `isLoading`。
+
+## 错误处理规范
+
+### Repository 层
+
+- Repository 负责捕获底层异常，并转换为上层可识别的错误结果或错误类型。
+- 不要把原始异常直接无差别抛到 View；要尽量转换成稳定、可判断的业务错误语义。
+- Repository 不直接决定页面提示文案，也不直接触发 UI 提示。
+
+### ViewModel 层
+
+- ViewModel 负责把错误转换成页面可处理的状态，通过 StateFlow 属性暴露给 View：
+  - 全页错误态（如 `isError: StateFlow<Boolean>`、`errorMessage: StateFlow<String?>`）
+  - 局部错误态（通过子 VM 的 StateFlow 属性表达）
+  - 可重试动作（通过 VM 的 `onRetry()` 等方法暴露）
+- ViewModel 需要明确区分“首次加载失败”“刷新失败”“加载更多失败”“局部卡片失败”。
+- 错误处理优先走状态建模，不要只靠日志输出或吞异常。
+
+### View 层
+
+- View 只负责展示错误结果、错误占位和重试入口。
+- View 不负责错误分类，不负责决定业务恢复策略。
+
+## 测试要求
+
+- 新增或修改 ViewModel 时，必须同步补齐或更新对应的 `*ViewModelTest.kt`；不要只改实现不改测试。
+- Repository 如果承担复杂映射、缓存、容错、分页拼接、多源合并等逻辑，应补测试覆盖关键路径。
+- 测试至少覆盖以下维度：
+  - 成功态
+  - 失败态
+  - 空态
+  - 重试 / 刷新
+  - 边界条件
+  - 交互方法是否正确触发状态更新
+- 在宣布“完成”“已修复”或“可交付”前，至少验证与本次改动直接相关的测试、编译或检查项。
+
+## 仓库内的推荐落位
+
+- `wsCompose`：页面入口、`@Page`、Composable 视图、页面装配。
+- `wsCore`：跨模块契约、`PageArgs`、VM 接口、Service Factory、Registry。
+- `wsDrama` / `wsFeeds` / `wsUser`：ViewModel 实现类、Repository、业务工具类、数据转换。
+- 当任务涉及 `PageWidget`、`DataRepo`、`StructComposePage`、多 tab、吸顶、悬浮等结构化页面能力时，不在本规则内展开，转而遵循 `@.codebuddy/rules/Struct结构规范/RULE.mdc`。
+
+## 反模式清单
+
+- 不要在 Composable / Page View 中直接写网络请求、业务编排或复杂数据转换。
+- 不要让 ViewModel 直接依赖具体 UI 控件实现或操纵具体布局结构。
+- 不要把多个不相关业务场景塞进同一个巨型 ViewModel。
+- 不要把 DTO / PB Model 直接当成页面展示模型。
+- 不要把 Repository 写成只会透传的空壳，也不要让 Repository 承担 UI 语义。
+- 不要使用 `UiEffect` / `SingleEvent` / `SharedFlow` 做一次性事件通道；toast、跳转、弹窗等操作应在 VM 的 `onXxx()` 方法实现中直接执行。
+- 不要在没有明确业务收益的情况下引入过深分层；保持职责清晰，但避免形式主义。
+- 不要引入 `UseCase`、`Interactor` 等额外架构概念；业务逻辑直接在 VM 实现类中编排，复杂数据请求封装为 Repository，其余操作封装为简易工具类即可。
+- 不要在 VM 接口中暴露业务 model 类（如 `IUserInfo`、`IAdOrder`），应转换为基础类型属性。
+- 不要在 VM 接口中暴露 `MutableStateFlow` / `MutableSharedFlow`，只暴露只读的 `StateFlow` / `SharedFlow`。
+- 不要额外封装 `sealed class UIState`（Loading/Error/Success）结构，应将状态拆分为独立属性和子 VM。
+- 不要定义 `sealed interface Action` + `dispatchAction()` 分发模式，交互方法直接以 `onXxx()` 暴露在接口上。
+- 不要把业务参数传给 UI 层再传回来（如 `fun jumpToPage(userInfo: IUserInfo)`），正确做法是 `fun onXxxClick()`，在实现类中自行持有业务数据。

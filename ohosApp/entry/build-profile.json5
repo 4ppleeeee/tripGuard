@@ -1,0 +1,53 @@
+{
+  "apiType": "stageMode",
+  "buildOption": {
+  },
+  "buildOptionSet": [
+    {
+      "name": "debug",
+      "arkOptions": {
+        "obfuscation": {
+          "ruleOptions": {
+            "enable": false,
+            "files": [
+              "./obfuscation-rules.txt"
+            ]
+          }
+        }
+      },
+      "nativeLib": {
+        "debugSymbol": {
+          "strip": false,
+          "exclude": []
+        }
+      }
+    },
+    {
+      "name": "release",
+      "arkOptions": {
+        "obfuscation": {
+          "ruleOptions": {
+            "enable": true,
+            "files": [
+              "./obfuscation-rules.txt"
+            ]
+          }
+        }
+      },
+      "nativeLib": {
+        "debugSymbol": {
+          "strip": true,
+          "exclude": []
+        }
+      }
+    },
+  ],
+  "targets": [
+    {
+      "name": "default"
+    },
+    {
+      "name": "ohosTest",
+    }
+  ]
+}

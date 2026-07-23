@@ -1,0 +1,6 @@
+{
+  "name": "libkmm_shared.so",
+  "types": "./index.d.ts",
+  "version": "",
+  "description": "KMM shared native bridge"
+}

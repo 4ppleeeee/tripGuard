@@ -1,0 +1,11 @@
+[
+  {
+    "id": "shutdown-1776657865712",
+    "from": "team-lead",
+    "to": "report-architect",
+    "type": "shutdown_request",
+    "content": "{\"type\":\"shutdown_request\",\"request_id\":\"shutdown-1776657865712\",\"reason\":\"Step 4 上报需求分析已验收通过，产物 docs/component/login/loginPage/login_page_report.md 已覆盖 25 条迁移 + 14 条新增埋点，并与 Step 3 协议文档的 scene/qr_status 维度对齐。\\n\\n你的任务已闭环，请完成收尾并退出。感谢协作。\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-20T04:04:25.712Z\"}",
+    "timestamp": "2026-04-20T04:04:25.712Z",
+    "read": true
+  }
+]

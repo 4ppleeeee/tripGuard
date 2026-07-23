@@ -1,0 +1,18 @@
+{
+  "name": "ai-coding-login-loginPage",
+  "leadAgentId": "f93d93775ebe4a4ca7d78614c082881e",
+  "workspacePath": "/Users/jusheng/wesee/weseecore-worktree",
+  "createdAt": "2026-04-20T03:43:22.927Z",
+  "options": {
+    "workspacePath": "/Users/jusheng/wesee/weseecore-worktree",
+    "isAutoTeam": false
+  },
+  "members": [
+    {
+      "memberId": "team-lead@ai-coding-login-loginPage",
+      "name": "team-lead",
+      "role": "Team Lead - coordinates the team and interacts with the user"
+    }
+  ],
+  "isAutoTeam": false
+}

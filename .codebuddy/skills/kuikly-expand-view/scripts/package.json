@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@tencent/beacon-node-new-sdk": "^4.2.11"
+  }
+}

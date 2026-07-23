@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:schema.weishi.qq.com</string>
+		<string>applinks:isee.weishi.qq.com</string>
+	</array>
+	<!-- Release / AppStore / Enterprise 包必须用 production，否则 APNs 推送收不到生产环境消息 -->
+	<key>aps-environment</key>
+	<string>production</string>
+</dict>
+</plist>

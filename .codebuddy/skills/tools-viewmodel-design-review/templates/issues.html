@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewModel 设计问题报告</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, {{THEME_COLOR_START}} 0%, {{THEME_COLOR_END}} 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { font-size: 28px; margin-bottom: 10px; }
+        .header .summary { font-size: 16px; opacity: 0.9; }
+        .header .disclaimer {
+            margin: 14px auto 0;
+            display: inline-block;
+            max-width: 980px;
+            background: #ffffff;
+            color: #cf1322;
+            font-size: 13px;
+            line-height: 1.5;
+            font-weight: 700;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+        .content { padding: 30px; }
+        .issue-card { border: 1px solid #e0e0e0; border-left: 4px solid {{ACCENT_COLOR}}; border-radius: 6px; margin-bottom: 24px; background: #fff; transition: box-shadow 0.2s; }
+        .issue-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .issue-header { padding: 16px 20px; background: {{CARD_BG}}; border-bottom: 1px solid {{CARD_BORDER}}; display: flex; align-items: center; justify-content: space-between; }
+        .issue-title { font-size: 18px; font-weight: 600; color: {{TITLE_COLOR}}; }
+        .issue-type { background: {{ACCENT_COLOR}}; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .issue-body { padding: 20px; }
+        .issue-section { margin-bottom: 16px; }
+        .issue-section:last-child { margin-bottom: 0; }
+        .issue-label { font-weight: 600; color: #666; margin-bottom: 8px; font-size: 14px; }
+        .issue-location { background: #f8f9fa; padding: 12px 16px; border-radius: 4px; font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace; font-size: 13px; color: #0066cc; }
+        .code-block { background: #f6f8fa; color: #24292e; padding: 16px; border-radius: 6px; overflow-x: auto; font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace; font-size: 13px; line-height: 1.5; border: 1px solid #e1e4e8; }
+        .code-block .highlight { background: #fff1f0; color: #cf1322; padding: 2px 4px; border-radius: 2px; font-weight: 600; }
+        .code-block .keyword { color: #d73a49; }
+        .code-block .type { color: #6f42c1; }
+        .code-block .comment { color: #6a737d; }
+        .code-block .string { color: #032f62; }
+        .issue-reason { color: #666; line-height: 1.6; }
+        .issue-solution { background: #e8f5e9; padding: 16px; border-radius: 6px; border-left: 3px solid #4caf50; }
+        .issue-solution-title { font-weight: 600; color: #2e7d32; margin-bottom: 8px; }
+        .footer { background: #f8f9fa; padding: 20px 30px; text-align: center; color: #666; font-size: 14px; border-top: 1px solid #e0e0e0; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; margin-right: 8px; }
+        .badge-critical { background: #ff6b6b; color: white; }
+        .badge-warning { background: #ffa726; color: white; }
+        .badge-info { background: #42a5f5; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{HEADER_ICON}} {{HEADER_TITLE}}</h1>
+            <div class="summary">{{HEADER_SUMMARY}}</div>
+            <div class="disclaimer"><strong>AI检查的问题不代表一定错误，具有模糊性，流水线卡住时应该找架构师讨论，“流水线挂了一定错”在AI模式下不适用。</strong></div>
+        </div>
+        <div class="content">
+            {{ISSUE_CARDS}}
+        </div>
+        <div class="footer">
+            <p>📋 详细审查报告：<a href="./ViewModel-design-report.md">ViewModel-design-report.md</a></p>
+            <p style="margin-top: 8px;">审查时间：{{REVIEW_TIME}} | 审查模式：{{REVIEW_MODE}}</p>
+        </div>
+    </div>
+</body>
+</html>

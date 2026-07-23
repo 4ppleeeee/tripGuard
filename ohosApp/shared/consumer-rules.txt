@@ -1,0 +1,2 @@
+# Consumer obfuscation rules for shared module
+# Add your consumer rules here

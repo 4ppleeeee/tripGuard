@@ -1,0 +1,29 @@
+[
+  {
+    "id": "msg-1776654449665-ndjr6h",
+    "from": "solution-architect",
+    "to": "team-lead",
+    "type": "message",
+    "content": "Step 5 技术方案已产出：`/Users/bigbywang/workspace/wesee-core/docs/component/search/searchPage/search_page_tech_solution.md`\n\n已完整覆盖任务要求的全部 12 章节：总览 / 模块归属 / Struct 拆分 / 三态状态机 / 四 Tab 数据源 / VM 接口要点 / Repository 映射 / Mock 组织 / Deco 集成 / 上报落点 / 日志可观测性 / 风险回退 / 任务 checklist。\n\n## 关键决策点（5 条）\n\n1. **本期不新建 `wsSearch` 模块**：搜索业务实现统一落在 `wsFeeds/search/` 子包下；契约层落 `wsCore/search/`；UI 层落 `wsCompose/search/`。理由：新增模块涉及 `modules.properties`、`umbrella`、三端 `KmmModuleSetup` 注册链改动面过大，与本期交付节奏不匹配；代码收敛在子包内，后续可平滑迁出。\n\n2. **Struct 结构采用\"顶层单 PageWidget + LayersWidget 三态切换 + 结果 Pager 四 Tab\"模式**：搜索栏用 TitleBar 常驻（`fixTitleBarAboveContent=true`、`forceHideHeaderArea=true`）；起始态、联想态用 `LayersWidget` 整屏覆盖切换，不重建 Struct 骨架；结果态复用 `pager + channels`，四 Tab 各自独立 `DataRepo` 与分页游标。参考 `MineProfilePageWidget` 的 `applyProfileTabs` 骨架。\n\n3. **`ISearchPageFactory` 挂载到 `FeedsService.searchPageFactory`**：不新增顶级 `SearchService`，减少注册链改动；当后续拆分 `wsSearch` 模块时再新建独立 Service。\n\n4. **VM 接口面向 UI 设计，全程不暴露 PB / 业务 model**：使用独立 `StateFlow` 属性（`isLoading / isError / isEmpty`）替代 sealed `UIState`；交互方法以 `onXxx()` 暴露；列表项（历史词、联想词、热榜项、Cell 等）均为独立子 VM 接口；`SearchResultSessionRegistry` 在实现层管理 `search_session_id / feedId` 映射。\n\n5. **日志统一使用 `SearchLog : BaseBizLog(\"Search\")` 入口**：在 `WsLogHelper.kt` 新增，按 Repository / VM / UI 分层落点，打印关键 9 类节点（PageInit / State / Suggest Req-Rsp / Search Req-Rsp / LoadMore / TabSwitch / PlayPaging / Session / Error），复杂对象通过 `KtJson.safeEncode()` 序列化；Cell 列表响应只打 size + hasMore + cursor。\n\n## 待确认问题清单（5 条，提交人工关卡）\n\n- **Q1**：是否同意本期业务实现落在 `wsFeeds/search/` 子包下、暂不新建 `wsSearch` 模块？\n- **Q2**：Deco 产物目录确认使用 `qnView/deco-output/`（项目现有约定），而非新建 `wsCompose/deco-output/`？\n- **Q3**：`ISearchPageFactory` 挂载在 `FeedsService` 下是否可接受？如需独立 `SearchService` 则需要调整注册链。\n- **Q4**：只读模式（`allowedTabs=[视频]`）的触发来源是 `SearchPageArgs.readOnly`（本地参数），还是服务端首屏回包字段下发？两种方式 Pager 构建时机不同，需要明确。\n- **Q5**：综合筛选条吸顶实现方式建议优先用 `titleHanging`（参照找剧页），次选列表内 sticky。是否同意此优先级？\n\n## 补充说明\n\n- 方案已遵循 `.codebuddy/rules/Struct结构规范/RULE.mdc` 与 `.codebuddy/rules/通用架构规范/RULE.mdc`（契约层 `wsCore` / 实现层 `wsFeeds` / UI 层 `wsCompose` 三层分离）。\n- VM 接口自检清单已按 `design-viewmodel-interface` skill 的 10 条规范逐项对照。\n- Deco 集成章节列出 5 个转码子节点、产物落位表、改造规则（import 规范、组件替换、颜色语义化、VM 绑定），供 Step 6 `ui-developer` 直接执行。\n- 任务 checklist 已按 Step 6~9 拆分，共 4 大阶段、30+ 子项。\n\n**Step 5 人工关卡已到位，请用户确认\"按该技术方案继续编码\"后再进入 Step 6。**",
+    "timestamp": "2026-04-20T03:07:29.665Z",
+    "read": true
+  },
+  {
+    "id": "resp-1776654617864-el6u51",
+    "from": "solution-architect",
+    "to": "team-lead",
+    "type": "shutdown_response",
+    "content": "{\"type\":\"shutdown_response\",\"request_id\":\"shutdown-1776654611143\",\"approve\":true,\"reason\":\"Step 5 任务已完成，同意关闭。\",\"from\":\"solution-architect\",\"timestamp\":\"2026-04-20T03:10:17.864Z\"}",
+    "timestamp": "2026-04-20T03:10:17.864Z",
+    "read": true
+  },
+  {
+    "id": "resp-1776654929810-exph63",
+    "from": "team-lead",
+    "to": "team-lead",
+    "type": "shutdown_response",
+    "content": "{\"type\":\"shutdown_response\",\"request_id\":\"shutdown-1776654611143\",\"approve\":true,\"reason\":\"Step 5 任务已完成，同意关闭。\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-20T03:15:29.810Z\"}",
+    "timestamp": "2026-04-20T03:15:29.810Z",
+    "read": true
+  }
+]

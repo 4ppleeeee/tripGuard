@@ -1,0 +1,139 @@
+require 'fileutils'
+source 'https://git.woa.com/MicrovisionComponents/Specs.git'
+source 'https://git.woa.com/TencentVideoShared/VideoBase.git'
+source 'https://cdn.cocoapods.org'
+
+# ────────────────────────────────────────────────────────────────────────────
+# CocoaPods 版本守卫：本项目锁死 1.16.2，不允许其他版本。
+# 任何版本不符都会直接报错，避免 Podfile.lock / Pods 目录被异构环境污染。
+#
+# 团队约定：在 iosApp 目录下运行 `bundle install` 一次，之后统一用
+# `bundle exec pod install`；Gemfile.lock 与 .ruby-version 已随仓库提交。
+# ────────────────────────────────────────────────────────────────────────────
+
+target 'iosApp' do
+  use_frameworks! :linkage => :static
+  platform :ios, '14.0'
+  pod 'KuiklyIOSRender', '1.3.185-compose-beta'
+  pod 'Bugly', :git => 'https://git.woa.com/Raft-Monitor/RMonitor-iOS', :tag => '2.8.0.11'
+  pod 'ResHub', '~> 1.10.20', :subspecs => ['Core', 'Patch', 'Beacon', 'DownloadImpl', 'FileImpl']
+  pod 'RDelivery', '1.3.6.12', :subspecs => ['Core', 'DefaultLogImpl', 'DefaultStorageImpl', 'DefaultNetworkImpl', 'DefaultJsonModelImpl'], :source => 'https://git.woa.com/T-CocoaPods/Specs.git'
+  pod 'SDWebImage', :git => 'https://git.woa.com/bennyzqliu/SDWebImage', :tag => 'qqnews.1.0.0'
+  pod 'WSYYKit', '0.1.10'
+  pod 'WebPSDK', '0.1.0.100'
+  pod 'vsCKey', '4.0.35'
+  pod 'SSZipArchive', :git => 'https://git.woa.com/github-mirrors/ZipArchive/ZipArchive.git', :tag => 'v2.2.3'
+  pod 'MiniZip', :git => 'https://git.woa.com/ilive-sdk-ios/ThirdParty_MiniZip.git', :tag => '1.0.6'
+  pod 'Beacon', '4.2.76.84'
+  pod 'Beacon/Audit', '4.2.76.84'
+  pod 'TVKBeacon', '4.2.76.25'
+  pod 'QQOpenSDK', :path => 'LocalPods/QQOpenSDK'
+  pod 'WeChatOpenSDK-XCFramework', '2.0.6'
+  pod 'WWKOpenSDK', :path => 'LocalPods/WWKOpenSDK'
+  pod 'Weibo_SDK', :git => 'https://github.com/sinaweibosdk/weibo_ios_sdk.git'
+  pod 'Pod_MidasIAPSDK', :git => 'https://git.woa.com/Midas-iOS-OpenSource/Pod_MidasIAPSDK.git', :tag => '1.7.3'
+  pod 'MMKV', '1.2.4.101'
+  pod 'Protobuf', '3.17.0.2'
+  pod 'YYModel', '1.0.4', :source => 'https://git.woa.com/T-CocoaPods/Specs.git'
+  pod 'romaabtest', '4.6.0'
+
+  pod 'umbrella', :path => '../umbrella'
+  pod 'startupUmbrella', :path => '../startupUmbrella'
+  pod 'QimeiSDK', '5.1.2.191'
+  pod 'TuringShield', '0.1.0.100'
+  pod 'RaftKit', '~> 1.5'
+
+  # Lottie 动画库
+  pod 'lottie-ios', '~> 4.5'
+
+  # Toast 提示库
+  pod 'Toast-Swift', '~> 5.1'
+
+  # CocoaLumberjack 文件日志库
+  pod 'CocoaLumberjack/Swift', '~> 3.8'
+
+  # TDOS 诊断 SDK，用于上传日志文件到 Bugly
+  pod 'TDOS_Diagnose', '0.8.3'
+  pod 'VMEUploadLib-iOS', '2.1.6', :source => 'https://git.woa.com/T-CocoaPods/Specs.git'
+
+  # TPNS 推送 SDK（与 microvision 保持版本一致：V1.4.0.5）
+  pod 'TPNS-iOS', :git => 'https://github.com/TencentCloud/TPNS-iOS-CocoaPods.git', :branch => 'V1.4.0.5'
+  pod 'TPNS-iOS-Extension', :git => 'https://github.com/TencentCloud/TPNS-iOS-CocoaPods', :branch => 'V1.4.0.5'
+end
+
+post_install do |installer|
+  min_ios_version = Gem::Version.new('14.0')
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      current = config.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+      unless current.nil?
+        current_version = Gem::Version.new(current.to_s)
+        if current_version < min_ios_version
+          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+        end
+      end
+
+      # SuperPlayer.xcassets 不含 AppIcon，移除该设置避免编译报错
+      if target.name == 'SuperPlayer' || target.name.include?('SuperPlayerKitBundle')
+        config.build_settings.delete('ASSETCATALOG_COMPILER_APPICON_NAME')
+      end
+
+      if target.name == 'VMEUploadLib-iOS'
+        config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+      end
+
+      if target.name == 'WSYYKit'
+        # 抑制 YYTextLayout.m 中链式比较 'X < Y < Z' 的编译错误
+        config.build_settings['OTHER_CFLAGS'] = '$(inherited) -Wno-parentheses'
+      end
+
+      next unless target.respond_to?(:product_type) && target.product_type == 'com.apple.product-type.bundle'
+
+      # Pods 的 resource/privacy bundle 不参与最终 App 签名；
+      # 显式关闭签名，避免 CI 在 archive 阶段要求 DEVELOPMENT_TEAM。
+      config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+      config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
+      config.build_settings['CODE_SIGNING_IDENTITY'] = ''
+      config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ''
+      config.build_settings.delete('DEVELOPMENT_TEAM')
+    end
+  end
+
+  vme_reachability_path = File.join(
+    installer.sandbox.root.to_s,
+    'VMEUploadLib-iOS',
+    'BDHSDK',
+    'BDHSDK',
+    'upload',
+    'Acc',
+    'AccCommon',
+    'HLAccReachability.m'
+  )
+  if File.exist?(vme_reachability_path)
+    content = File.read(vme_reachability_path)
+    patched_content = content.gsub(%r{#\s*(import|include)\s*[<"]netinet6/in6\.h[>"]}) do
+      "##{Regexp.last_match(1)} <netinet/in.h>"
+    end
+    if patched_content != content
+      FileUtils.chmod(0644, vme_reachability_path)
+      File.write(vme_reachability_path, patched_content)
+    end
+  end
+
+  legacy_framework_source_snippets = [
+    'source="$(readlink -f "${source}")"',
+    'source="$(readlink "${source}")"'
+  ]
+  replacement_framework_source_snippet = 'source="$(realpath "${source}")"'
+
+  Dir[File.join(installer.sandbox.root.to_s, 'Target Support Files', '**', '*-frameworks.sh')].each do |framework_script_path|
+    content = File.read(framework_script_path)
+    next unless legacy_framework_source_snippets.any? { |snippet| content.include?(snippet) }
+
+    patched_content = legacy_framework_source_snippets.reduce(content) do |patched, snippet|
+      patched.gsub(snippet, replacement_framework_source_snippet)
+    end
+
+    File.write(framework_script_path, patched_content)
+  end
+end

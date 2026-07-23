@@ -1,0 +1,343 @@
+PODS:
+  - Beacon (4.2.76.84):
+    - Beacon/Base (= 4.2.76.84)
+    - QimeiSDK (>= 1.1.5)
+  - Beacon/Audit (4.2.76.84):
+    - QimeiSDK (>= 1.1.5)
+  - Beacon/Base (4.2.76.84):
+    - QimeiSDK (>= 1.1.5)
+  - Bugly (2.8.0.11):
+    - Bugly/Bugly (= 2.8.0.11)
+  - Bugly/Bugly (2.8.0.11)
+  - CocoaLumberjack/Core (3.9.1)
+  - CocoaLumberjack/Swift (3.9.1):
+    - CocoaLumberjack/Core
+  - estiPh (0.0.6-xc)
+  - FBRetainCycleDetector (5.0.5.1)
+  - KuiklyIOSRender (1.3.185-compose-beta):
+    - TDFCommon (~> 0.0.5)
+  - lottie-ios (4.6.0)
+  - MiniZip (1.0.6):
+    - MiniZip/minizip (= 1.0.6)
+  - MiniZip/minizip (1.0.6):
+    - MiniZip/minizip/no-arc (= 1.0.6)
+  - MiniZip/minizip/no-arc (1.0.6)
+  - MMKV (1.2.4.101):
+    - MMKVCore (~> 1.2.6.100)
+  - MMKVCore (1.2.6.100)
+  - Pod_MidasIAPSDK (1.7.3)
+  - Protobuf (3.17.0.2)
+  - QimeiSDK (5.1.2.191)
+  - QQOpenSDK (3.6.20)
+  - QSSDK (0.0.15.2-xc):
+    - estiPh
+    - XPSSDK
+  - RaftInterface (0.0.22)
+  - RaftKit (1.6.0):
+    - RaftKit/AllPlugins (= 1.6.0)
+  - RaftKit/AllPlugins (1.6.0):
+    - RaftKit/BasicPlugins
+    - RaftKit/BuglyBasedPlugins
+    - RaftKit/Core
+  - RaftKit/BasicPlugins (1.6.0):
+    - RaftKit/Core
+  - RaftKit/BuglyBasedPlugins (1.6.0):
+    - Bugly (>= 2.7.3)
+    - FBRetainCycleDetector (>= 5.0.5)
+    - RaftKit/BasicPlugins
+    - RaftKit/Core
+  - RaftKit/Core (1.6.0)
+  - RAFTMeasure (0.2.7)
+  - RDelivery/Core (1.3.6.12):
+    - RDelivery/RaftInterface
+    - RDelivery/RDeliveryYYModelProtocol
+  - RDelivery/DefaultJsonModelImpl (1.3.6.12):
+    - RDelivery/RDeliveryYYModelProtocol
+    - YYModel
+  - RDelivery/DefaultLogImpl (1.3.6.12):
+    - RDelivery/RaftInterface
+  - RDelivery/DefaultNetworkImpl (1.3.6.12):
+    - RDelivery/RaftInterface
+  - RDelivery/DefaultStorageImpl (1.3.6.12):
+    - MMKV
+    - RDelivery/RaftInterface
+  - RDelivery/RaftInterface (1.3.6.12)
+  - RDelivery/RDeliveryYYModelProtocol (1.3.6.12):
+    - RDelivery/RaftInterface
+  - Reachability (3.7.7)
+  - ResHub/Beacon (1.10.20.2):
+    - Beacon (>= 4.0.0)
+    - RaftInterface (~> 0.0.16)
+  - ResHub/Core (1.10.20.2):
+    - RaftInterface (~> 0.0.19)
+    - RDelivery/Core
+    - RDelivery/DefaultLogImpl
+  - ResHub/DownloadImpl (1.10.20.2):
+    - RaftInterface (~> 0.0.16)
+    - Reachability (>= 3.2)
+    - ResHub/Core
+  - ResHub/FileImpl (1.10.20.2):
+    - RaftInterface (~> 0.0.16)
+    - SSZipArchive (>= 2.2.2)
+  - ResHub/Patch (1.10.20.2):
+    - ResHub/Core
+  - romaabtest (4.6.0):
+    - MMKV
+    - Protobuf
+    - romaabtest/no-arc (= 4.6.0)
+    - TabBeacon (= 4.2.75.4.2)
+  - romaabtest/no-arc (4.6.0):
+    - MMKV
+    - Protobuf
+    - TabBeacon (= 4.2.75.4.2)
+  - SDWebImage (5.12.5):
+    - SDWebImage/Core (= 5.12.5)
+  - SDWebImage/Core (5.12.5)
+  - SSZipArchive (2.2.3)
+  - startupUmbrella (1.0)
+  - TabBeacon (4.2.75.4.2):
+    - QimeiSDK
+    - TabBeacon/Base (= 4.2.75.4.2)
+  - TabBeacon/Base (4.2.75.4.2):
+    - QimeiSDK
+  - TDFCommon (0.0.5)
+  - TDOS_Diagnose (0.8.3):
+    - TDOS_Diagnose/AIO (= 0.8.3)
+  - TDOS_Diagnose/AIO (0.8.3):
+    - TDOS_Diagnose/Core
+    - TDOS_Diagnose/DefaultFilePacker
+    - TDOS_Diagnose/DefaultLogger
+    - TDOS_Diagnose/DefaultStorageImpl
+  - TDOS_Diagnose/Core (0.8.3):
+    - RaftInterface (~> 0.0.13)
+    - RAFTMeasure
+    - YYModel
+  - TDOS_Diagnose/DefaultFilePacker (0.8.3):
+    - SSZipArchive
+    - TDOS_Diagnose/Core
+  - TDOS_Diagnose/DefaultLogger (0.8.3):
+    - TDOS_Diagnose/Core
+  - TDOS_Diagnose/DefaultStorageImpl (0.8.3):
+    - MMKV
+    - RaftInterface (~> 0.0.13)
+    - TDOS_Diagnose/Core
+  - Toast-Swift (5.1.1)
+  - TPNS-iOS (1.4.0.5)
+  - TPNS-iOS-Extension (1.4.0.5)
+  - TuringShield (0.1.0.100)
+  - TVKBeacon (4.2.76.25):
+    - TVKBeacon/Base (= 4.2.76.25)
+  - TVKBeacon/Base (4.2.76.25)
+  - umbrella (1.0)
+  - VMEUploadLib-iOS (2.1.6):
+    - Protobuf (>= 3.1.0)
+    - VMEUploadLib-iOS/no-arc (= 2.1.6)
+  - VMEUploadLib-iOS/no-arc (2.1.6):
+    - Protobuf (>= 3.1.0)
+  - vsCKey (4.0.35):
+    - estiPh (= 0.0.6-xc)
+    - QSSDK (= 0.0.15.2-xc)
+    - XPSSDK (= 0.0.43-xc)
+  - WebPSDK (0.1.0.100)
+  - WeChatOpenSDK-XCFramework (2.0.6)
+  - Weibo_SDK (3.3.8)
+  - WSYYKit (0.1.10):
+    - WebPSDK
+    - YYCategories
+  - WWKOpenSDK (2.0.5)
+  - XPSSDK (0.0.43-xc)
+  - YYCategories (1.0.7):
+    - YYCategories/no-arc (= 1.0.7)
+  - YYCategories/no-arc (1.0.7)
+  - YYModel (1.0.4)
+
+DEPENDENCIES:
+  - Beacon (= 4.2.76.84)
+  - Beacon/Audit (= 4.2.76.84)
+  - Bugly (from `https://git.woa.com/Raft-Monitor/RMonitor-iOS`, tag `2.8.0.11`)
+  - CocoaLumberjack/Swift (~> 3.8)
+  - KuiklyIOSRender (= 1.3.185-compose-beta)
+  - lottie-ios (~> 4.5)
+  - MiniZip (from `https://git.woa.com/ilive-sdk-ios/ThirdParty_MiniZip.git`, tag `1.0.6`)
+  - MMKV (= 1.2.4.101)
+  - Pod_MidasIAPSDK (from `https://git.woa.com/Midas-iOS-OpenSource/Pod_MidasIAPSDK.git`, tag `1.7.3`)
+  - Protobuf (= 3.17.0.2)
+  - QimeiSDK (= 5.1.2.191)
+  - QQOpenSDK (from `LocalPods/QQOpenSDK`)
+  - RaftKit (~> 1.5)
+  - RDelivery/Core (= 1.3.6.12)
+  - RDelivery/DefaultJsonModelImpl (= 1.3.6.12)
+  - RDelivery/DefaultLogImpl (= 1.3.6.12)
+  - RDelivery/DefaultNetworkImpl (= 1.3.6.12)
+  - RDelivery/DefaultStorageImpl (= 1.3.6.12)
+  - ResHub/Beacon (~> 1.10.20)
+  - ResHub/Core (~> 1.10.20)
+  - ResHub/DownloadImpl (~> 1.10.20)
+  - ResHub/FileImpl (~> 1.10.20)
+  - ResHub/Patch (~> 1.10.20)
+  - romaabtest (= 4.6.0)
+  - SDWebImage (from `https://git.woa.com/bennyzqliu/SDWebImage`, tag `qqnews.1.0.0`)
+  - SSZipArchive (from `https://git.woa.com/github-mirrors/ZipArchive/ZipArchive.git`, tag `v2.2.3`)
+  - startupUmbrella (from `../startupUmbrella`)
+  - TDOS_Diagnose (= 0.8.3)
+  - Toast-Swift (~> 5.1)
+  - TPNS-iOS (from `https://github.com/TencentCloud/TPNS-iOS-CocoaPods.git`, branch `V1.4.0.5`)
+  - TPNS-iOS-Extension (from `https://github.com/TencentCloud/TPNS-iOS-CocoaPods`, branch `V1.4.0.5`)
+  - TuringShield (= 0.1.0.100)
+  - TVKBeacon (= 4.2.76.25)
+  - umbrella (from `../umbrella`)
+  - VMEUploadLib-iOS (= 2.1.6)
+  - vsCKey (= 4.0.35)
+  - WebPSDK (= 0.1.0.100)
+  - WeChatOpenSDK-XCFramework (= 2.0.6)
+  - Weibo_SDK (from `https://github.com/sinaweibosdk/weibo_ios_sdk.git`)
+  - WSYYKit (= 0.1.10)
+  - WWKOpenSDK (from `LocalPods/WWKOpenSDK`)
+  - YYModel (= 1.0.4)
+
+SPEC REPOS:
+  https://git.woa.com/MicrovisionComponents/Specs.git:
+    - MMKV
+    - MMKVCore
+    - Protobuf
+    - TuringShield
+    - WebPSDK
+    - WeChatOpenSDK-XCFramework
+    - WSYYKit
+    - YYCategories
+  https://git.woa.com/T-CocoaPods/Specs.git:
+    - Beacon
+    - FBRetainCycleDetector
+    - KuiklyIOSRender
+    - QimeiSDK
+    - RaftKit
+    - RAFTMeasure
+    - RDelivery
+    - ResHub
+    - romaabtest
+    - TabBeacon
+    - TDFCommon
+    - TDOS_Diagnose
+    - TVKBeacon
+    - VMEUploadLib-iOS
+    - YYModel
+  https://git.woa.com/TencentVideoShared/VideoBase.git:
+    - estiPh
+    - QSSDK
+    - vsCKey
+    - XPSSDK
+  trunk:
+    - CocoaLumberjack
+    - lottie-ios
+    - RaftInterface
+    - Reachability
+    - Toast-Swift
+
+EXTERNAL SOURCES:
+  Bugly:
+    :git: https://git.woa.com/Raft-Monitor/RMonitor-iOS
+    :tag: 2.8.0.11
+  MiniZip:
+    :git: https://git.woa.com/ilive-sdk-ios/ThirdParty_MiniZip.git
+    :tag: 1.0.6
+  Pod_MidasIAPSDK:
+    :git: https://git.woa.com/Midas-iOS-OpenSource/Pod_MidasIAPSDK.git
+    :tag: 1.7.3
+  QQOpenSDK:
+    :path: LocalPods/QQOpenSDK
+  SDWebImage:
+    :git: https://git.woa.com/bennyzqliu/SDWebImage
+    :tag: qqnews.1.0.0
+  SSZipArchive:
+    :git: https://git.woa.com/github-mirrors/ZipArchive/ZipArchive.git
+    :tag: v2.2.3
+  startupUmbrella:
+    :path: "../startupUmbrella"
+  TPNS-iOS:
+    :branch: V1.4.0.5
+    :git: https://github.com/TencentCloud/TPNS-iOS-CocoaPods.git
+  TPNS-iOS-Extension:
+    :branch: V1.4.0.5
+    :git: https://github.com/TencentCloud/TPNS-iOS-CocoaPods
+  umbrella:
+    :path: "../umbrella"
+  Weibo_SDK:
+    :git: https://github.com/sinaweibosdk/weibo_ios_sdk.git
+  WWKOpenSDK:
+    :path: LocalPods/WWKOpenSDK
+
+CHECKOUT OPTIONS:
+  Bugly:
+    :git: https://git.woa.com/Raft-Monitor/RMonitor-iOS
+    :tag: 2.8.0.11
+  MiniZip:
+    :git: https://git.woa.com/ilive-sdk-ios/ThirdParty_MiniZip.git
+    :tag: 1.0.6
+  Pod_MidasIAPSDK:
+    :git: https://git.woa.com/Midas-iOS-OpenSource/Pod_MidasIAPSDK.git
+    :tag: 1.7.3
+  SDWebImage:
+    :git: https://git.woa.com/bennyzqliu/SDWebImage
+    :tag: qqnews.1.0.0
+  SSZipArchive:
+    :git: https://git.woa.com/github-mirrors/ZipArchive/ZipArchive.git
+    :tag: v2.2.3
+  TPNS-iOS:
+    :commit: 56923b859a89fd6fa785862ea99f9c3394f2e604
+    :git: https://github.com/TencentCloud/TPNS-iOS-CocoaPods.git
+  TPNS-iOS-Extension:
+    :commit: 56923b859a89fd6fa785862ea99f9c3394f2e604
+    :git: https://github.com/TencentCloud/TPNS-iOS-CocoaPods
+  Weibo_SDK:
+    :commit: 8149b7407e5a20469a1e65583e960d5a2ed95851
+    :git: https://github.com/sinaweibosdk/weibo_ios_sdk.git
+
+SPEC CHECKSUMS:
+  Beacon: 899b11a8715efdd5d0b131e93db85103350aec62
+  Bugly: ccc0e0c440f1d6071f381bcf6583d76264764cdd
+  CocoaLumberjack: e4ba3b414dfca8c1916c6303d37f63b3a95134c6
+  estiPh: 82763685aa3fecdde92cff46a496c8cb4186cd37
+  FBRetainCycleDetector: b4a55211c184b6f5e9f97b6a00d23411adbbb4f1
+  KuiklyIOSRender: 056c3e29148a9e3c7910fbd97f57dab46e3f7c79
+  lottie-ios: 8f959969761e9c45d70353667d00af0e5b9cadb3
+  MiniZip: dd573f57014f19511b73396f02f4d9a7c564f870
+  MMKV: c479e11ca2a2234350d893bcb2722ae33a5a9270
+  MMKVCore: 3b246a36da3ee0d65dd85c0665a04712a217602c
+  Pod_MidasIAPSDK: 304e1712e210e07b32c88534190bd4d76950e60f
+  Protobuf: 0351e2b0c2b33ef5db33d9a484468387d7995c60
+  QimeiSDK: 8ba9c00cb25f9dec6493d622816fb58b7ff2cde2
+  QQOpenSDK: f189f3b4acb396ea9c850f4107f2c0b6632eb860
+  QSSDK: 4704b6c6e783692bd93102cd1b0237223fbde859
+  RaftInterface: b6fa64b69b6f4c97076f8dfad5f762558e6c32b3
+  RaftKit: 105909829ec1e86a488f89cfd54363bb12654602
+  RAFTMeasure: 1fbe6b113549fc9b40604954b3e2ab5c7dc79c26
+  RDelivery: e925373566106f1aed6e3b695569fed58fc6352b
+  Reachability: 8bf74b755b2993968c344b465c13e602db2b1044
+  ResHub: 2229798c061ffe7d8ccc36e9bb50c52802d9f824
+  romaabtest: 1e5b47d27e60c85229a635bcd880ebc7f05867ca
+  SDWebImage: 6cfaaf1d6bce7ca0b66bf4cfb08256d4ebe84780
+  SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
+  startupUmbrella: 456ba517e14696c65640b4e8cacc2e829db28983
+  TabBeacon: 5c78829863519be816ff24631bcd31fb30c03a11
+  TDFCommon: 12e1dd8c4a2595d7862e0a8346b59701cb49674f
+  TDOS_Diagnose: 006a9342bb3a09d4770023be1aca6352e136e88f
+  Toast-Swift: 7a03a532afe3a560d4044bc7c237e2864d295173
+  TPNS-iOS: 757b0439d967beb8c5d6be6a8e9ad23e11d1e36c
+  TPNS-iOS-Extension: 3f37e1a31024ea421078d1d811a3e0e122fbb734
+  TuringShield: 6afa33de8988d4db80828edd5e4b0f15fcdf3c3b
+  TVKBeacon: e0af4f0a9bd9fc94ec8d253b8e07f38628d9f440
+  umbrella: 7338b6fd80112e938649e16f31fd996e38a2bd74
+  VMEUploadLib-iOS: 05bac211ca1c6bed940f11b13413e26bae91b1df
+  vsCKey: 3ad6278e50bd1a756538344b3cd1e1c03aa8c1f2
+  WebPSDK: 58324c050d2c5d136454f8e7312f235c501cb4c4
+  WeChatOpenSDK-XCFramework: e86b014867096e4a27530b794fe2c81a86ec5d51
+  Weibo_SDK: ea4d83cd1b435635c402f73a3c441ee1f35fa87a
+  WSYYKit: 2ca9955136700178a31f128719291f01a28a621e
+  WWKOpenSDK: a2ae4f076d2b6f24000cc3572a929e18dcf2339e
+  XPSSDK: 97afb604dc5c1e885d33ce5dd714d4b6bc422203
+  YYCategories: fc3921ee65ee4a962190bd8f0b7d5601bc680b74
+  YYModel: bc8e92602f06b316706f101a4aa362887f7f1970
+
+PODFILE CHECKSUM: 983baf37ef3d0babb704ec272d413b71735deb95
+
+COCOAPODS: 1.16.2

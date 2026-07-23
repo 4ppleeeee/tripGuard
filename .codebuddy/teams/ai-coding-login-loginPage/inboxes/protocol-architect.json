@@ -1,0 +1,20 @@
+[
+  {
+    "id": "msg-1776657322504-v4vqzr",
+    "from": "team-lead",
+    "to": "protocol-architect",
+    "type": "message",
+    "content": "同步信息：report-architect 已完成 Step 4 上报文档，核对了用户提供的 Figma 设计稿：\n\nFigma 链接：https://www.figma.com/design/rxQZ7zwkeUKlrpznbdGfAv/...?node-id=1957-30790\n画板总览：24 个画板，覆盖\n- 全屏无历史 / 全屏有历史（微信）/ 全屏有历史（QQ）\n- 半屏无历史 / 半屏有历史（微信）/ 半屏有历史（QQ）\n- 协议主动勾选态 / 免勾选协议确认弹窗\n- 扫码气泡选择层（从扫码入口上方弹出的气泡，非 dialog）\n- 微信扫码弹层 / QQ 扫码弹层 / 二维码失效态 / 扫码成功态\n- 登录成功 Toast\n\n关键设计决策（来自设计稿）：\n1. 扫码入口在全屏页和半屏弹窗都是独立小图标（不是隐藏在文字里）\n2. 扫码方式选择是气泡弹出（上方），不是标准 dialog\n3. 扫码弹层底部有「切换 QQ/微信 扫码登录」按钮，支持微信↔QQ 互切\n4. 二维码失效态带「刷新」icon + 提示文案\n5. 扫码成功态文案：「请在微信/QQ中同意登录腾讯微视」\n\n请在你的协议文档中：\n- 确保扫码相关接口（获取二维码、轮询状态、刷新二维码、切换方式）能支撑上述 4 种状态\n- 区分扫码来源 scene=page/dialog（对应上报文档的扫码弹层曝光 qr_status=valid/expired/scanned 三态）\n- 一键登录历史账号信息（头像/昵称/登录类型）的数据来源要明确\n\n如果你还在执行中，把上述设计稿细节纳入；如果你已完成，请检查是否需要补充，并在回报时说明。",
+    "timestamp": "2026-04-20T03:55:22.504Z",
+    "read": true
+  },
+  {
+    "id": "shutdown-1776657865638",
+    "from": "team-lead",
+    "to": "protocol-architect",
+    "type": "shutdown_request",
+    "content": "{\"type\":\"shutdown_request\",\"request_id\":\"shutdown-1776657865638\",\"reason\":\"Step 3 协议设计已验收通过，产物 docs/component/login/loginPage/login_page_protocol.md 已与 Step 4 上报文档对齐（scene/qr_status 维度一致），并已覆盖设计稿全部 24 画板映射。\\n\\n你的任务已闭环，请完成收尾并退出。感谢协作。\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-20T04:04:25.638Z\"}",
+    "timestamp": "2026-04-20T04:04:25.638Z",
+    "read": true
+  }
+]

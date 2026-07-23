@@ -1,0 +1,31 @@
+---
+description: KMM/Compose 场景下，涉及 ViewModel/VM 的接口设计、代码生成、实现开发或重构时使用此规则，并优先检索 dev-viewmodel-design skill
+alwaysApply: false
+enabled: true
+updatedAt: 2026-04-16T00:00:00.000Z
+provider: 
+---
+
+# ViewModel 设计与开发规则（dev-viewmodel-design）
+
+适用场景：
+- 设计新的 ViewModel 接口
+- 生成 VM 相关代码
+- 重构现有 VM 接口或实现
+- KMM/Compose 下的 VM 规范落地
+
+## 执行要求
+
+1. 遇到以上场景，优先检索并遵循 `dev-viewmodel-design` skill：
+   - `.codebuddy/skills/dev-viewmodel-design/SKILL.md`
+2. qnCore 仅定义 VM 接口，不放业务实现。
+3. UI 层仅消费 VM 暴露的可渲染数据和语义化方法，不直接写业务分支。
+4. 对外暴露只读状态（`StateFlow`/`SharedFlow`），禁止暴露 `Mutable*`。
+5. 禁止在 VM 接口层暴露业务模型或 controller/presenter/router。
+
+## 关键约束
+
+- 方法命名语义化：统一使用 `onXxx()` 等 UI 行为命名。
+- 一次性事件与持久状态分离。
+- 复杂页面优先通过子 VM 拆分，避免单一 VM 过大。
+- 新增公开方法需补充方法注释，说明业务语义。

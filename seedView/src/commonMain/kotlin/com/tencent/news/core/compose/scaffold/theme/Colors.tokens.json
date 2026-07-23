@@ -1,0 +1,1020 @@
+{
+  "version": 1,
+  "tokens": [
+    {
+      "group": "root",
+      "name": "bNormal",
+      "token": "bNormal",
+      "light": "Color(0xFF3377FF)",
+      "dark": "Color(0xFF3377FF)"
+    },
+    {
+      "group": "root",
+      "name": "bLight",
+      "token": "bLight",
+      "light": "Color(0xFFEBF5FF)",
+      "dark": "Color(0xFF273240)"
+    },
+    {
+      "group": "root",
+      "name": "bMiddle",
+      "token": "bMiddle",
+      "light": "Color(0xFF505DE5)",
+      "dark": "Color(0xFF7780D9)"
+    },
+    {
+      "group": "root",
+      "name": "bGray",
+      "token": "bGray",
+      "light": "Color(0xFFC7D5FB)",
+      "dark": "Color(0xFF223F62)"
+    },
+    {
+      "group": "root",
+      "name": "redNormal",
+      "token": "redNormal",
+      "light": "Color(0xFFFF0055)",
+      "dark": "Color(0xFFD90048)"
+    },
+    {
+      "group": "root",
+      "name": "orangeNormal",
+      "token": "orangeNormal",
+      "light": "Color(0xFFFF8A00)",
+      "dark": "Color(0xFFd97500)"
+    },
+    {
+      "group": "root",
+      "name": "redBg",
+      "token": "redBg",
+      "light": "Color(0xFFD81306)",
+      "dark": "Color(0xFFB31005)"
+    },
+    {
+      "group": "root",
+      "name": "assistantText",
+      "token": "assistantText",
+      "light": "Color(0xFF999999)",
+      "dark": "Color(0xFF696969)"
+    },
+    {
+      "group": "root",
+      "name": "blueNormal",
+      "token": "blueNormal",
+      "light": "Color(0xFF3377FF)",
+      "dark": "Color(0xFF3377FF)"
+    },
+    {
+      "group": "root",
+      "name": "bgContentPreference",
+      "token": "bgContentPreference",
+      "light": "Color(0xFFEFF6FF)",
+      "dark": "Color(0xFF242629)"
+    },
+    {
+      "group": "root",
+      "name": "backIconColor",
+      "token": "backIconColor",
+      "light": "Color(0xFF333333)",
+      "dark": "Color(0xFFFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "brownNormal",
+      "token": "brownNormal",
+      "light": "Color(0xFFC44F1F)",
+      "dark": "Color(0xFFC44F1F)"
+    },
+    {
+      "group": "root",
+      "name": "purpleNormal",
+      "token": "brand_primary",
+      "light": "Color(0xFF7642F5)",
+      "dark": "Color(0xFF7642F5)"
+    },
+    {
+      "group": "root",
+      "name": "sponsorSelectBg",
+      "token": "sponsorSelectBg",
+      "light": "Color(0xFFEBF5FF)",
+      "dark": "Color(0xFF273240)"
+    },
+    {
+      "group": "root",
+      "name": "t1",
+      "token": "text_primary",
+      "light": "Color(0xFF1F1F23)",
+      "dark": "Color(0xFFFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "t2",
+      "token": "text_secondary",
+      "light": "Color(0xFF5C5C5C)",
+      "dark": "Color(0xFFA9A9A9)"
+    },
+    {
+      "group": "root",
+      "name": "t3",
+      "token": "text_tertiary",
+      "light": "Color(0xFF999999)",
+      "dark": "Color(0xFF696969)"
+    },
+    {
+      "group": "root",
+      "name": "t6",
+      "token": "t6",
+      "light": "Color(0x4D999999)",
+      "dark": "Color(0x4D999999)"
+    },
+    {
+      "group": "root",
+      "name": "t3DarkAlpha04",
+      "token": "t3DarkAlpha04",
+      "light": "Color(0x66999999)",
+      "dark": "Color(0x66696969)"
+    },
+    {
+      "group": "root",
+      "name": "t4",
+      "token": "t4",
+      "light": "Color(0xFFFFFFFF)",
+      "dark": "Color(0xFFFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "t5",
+      "token": "t5",
+      "light": "Color(0xBFFFFFFF)",
+      "dark": "Color(0xBFFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "tlink",
+      "token": "text_link",
+      "light": "Color(0xFF776BFF)",
+      "dark": "Color(0xFF776BFF)"
+    },
+    {
+      "group": "root",
+      "name": "yNormal",
+      "token": "yNormal",
+      "light": "Color(0xFFFFB700)",
+      "dark": "Color(0xFFD99B00)"
+    },
+    {
+      "group": "root",
+      "name": "bgPage",
+      "token": "bg_page",
+      "light": "Color(0xFFFFFFFF)",
+      "dark": "Color(0xFF1F1F23)"
+    },
+    {
+      "group": "root",
+      "name": "audioPodNormalBgColor",
+      "token": "audioPodNormalBgColor",
+      "light": "Color(0xFFFFFFFF)",
+      "dark": "Color(0xFF2B2B2B)"
+    },
+    {
+      "group": "root",
+      "name": "bgBlock",
+      "token": "bg_block",
+      "light": "Color(0xFFF7F7F7)",
+      "dark": "Color(0xFF262626)"
+    },
+    {
+      "group": "root",
+      "name": "panelBgBlock",
+      "token": "panelBgBlock",
+      "light": "Color(0xFFF7F7F7)",
+      "dark": "Color(0xEE121212)"
+    },
+    {
+      "group": "root",
+      "name": "panelBgPage",
+      "token": "panelBgPage",
+      "light": "Color(0xFFFFFFFF)",
+      "dark": "Color(0xFF1F1F23)"
+    },
+    {
+      "group": "root",
+      "name": "bgCard",
+      "token": "bg_card",
+      "light": "Color(0xFFFFFFFF)",
+      "dark": "Color(0xFF2A2A2A)"
+    },
+    {
+      "group": "root",
+      "name": "bgPageGrey",
+      "token": "bg_page_grey",
+      "light": "Color(0xFFF5F5F5)",
+      "dark": "Color(0xFF121212)"
+    },
+    {
+      "group": "root",
+      "name": "bgPageMidGrey",
+      "token": "bg_page_midgrey",
+      "light": "Color(0xFFEFEFEF)",
+      "dark": "Color(0xFF121212)"
+    },
+    {
+      "group": "root",
+      "name": "bgBar",
+      "token": "bg_bar",
+      "light": "Color(0xFF232327)",
+      "dark": "Color(0xFF232327)"
+    },
+    {
+      "group": "root",
+      "name": "bgTopLight",
+      "token": "bg_top_light",
+      "light": "Color(0xFFEFEFEF)",
+      "dark": "Color(0xFF303035)"
+    },
+    {
+      "group": "root",
+      "name": "bgMiddleStandard",
+      "token": "bg_middle_standard",
+      "light": "Color(0xFFF6F6F6)",
+      "dark": "Color(0xFF27272B)"
+    },
+    {
+      "group": "root",
+      "name": "tabContainerBg",
+      "token": "tab_container_bg",
+      "light": "Color(0xFFF2F2F2)",
+      "dark": "Color(0x1AF7F7F7)"
+    },
+    {
+      "group": "root",
+      "name": "tabSelectedBg",
+      "token": "tab_selected_bg",
+      "light": "Color(0xFFFFFFFF)",
+      "dark": "Color(0x1AFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "assistantBg",
+      "token": "assistantBg",
+      "light": "Color(0xFF212144)",
+      "dark": "Color(0xFF272633)"
+    },
+    {
+      "group": "root",
+      "name": "assistantBgPurple",
+      "token": "assistantBgPurple",
+      "light": "Color(0xFF12132B)",
+      "dark": "Color(0xFF12132B)"
+    },
+    {
+      "group": "root",
+      "name": "audioPodShadowColor",
+      "token": "audioPodShadowColor",
+      "light": "Color(0xFF3377FF)",
+      "dark": "Color(0x1A000000)"
+    },
+    {
+      "group": "root",
+      "name": "buttonBlock",
+      "token": "buttonBlock",
+      "light": "Color(0xFFF7F7F7)",
+      "dark": "Color(0xFF2B2B2B)"
+    },
+    {
+      "group": "root",
+      "name": "bgBottomSheetGrey",
+      "token": "bgBottomSheetGrey",
+      "light": "Color(0xFFF5F5F5)",
+      "dark": "Color(0xFF1F1F1F)"
+    },
+    {
+      "group": "root",
+      "name": "bgSnackBar",
+      "token": "bgSnackBar",
+      "light": "Color(0xFFFFFFFF)",
+      "dark": "Color(0xFF2B2B2B)"
+    },
+    {
+      "group": "root",
+      "name": "lineFine",
+      "token": "line_standard",
+      "light": "Color(0x1A000000)",
+      "dark": "Color(0x1AFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "lineStandard",
+      "token": "line_standard",
+      "light": "Color(0x1A000000)",
+      "dark": "Color(0x1AFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "lineWide",
+      "token": "lineWide",
+      "light": "Color(0XFFF5F5F5)",
+      "dark": "Color(0xFF121212)"
+    },
+    {
+      "group": "root",
+      "name": "lineStroke",
+      "token": "lineStroke",
+      "light": "Color(0XFFE6E6E6)",
+      "dark": "Color(0xFF303030)"
+    },
+    {
+      "group": "root",
+      "name": "lineWideVideo",
+      "token": "lineWideVideo",
+      "light": "Color(0xFFE6E6E6)",
+      "dark": "Color(0xFF121212)"
+    },
+    {
+      "group": "root",
+      "name": "lineInside",
+      "token": "lineInside",
+      "light": "Color(0xFFE6E6E6)",
+      "dark": "Color(0xFF3D3D3D)"
+    },
+    {
+      "group": "root",
+      "name": "lineLight",
+      "token": "line_light",
+      "light": "Color(0x0D000000)",
+      "dark": "Color(0x0DFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "transparent",
+      "token": "transparent",
+      "light": "Color(0x00FFFFFF)",
+      "dark": "Color(0x00FFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "fillPrimary",
+      "token": "fill_primary",
+      "light": "Color(0x1A000000)",
+      "dark": "Color(0x1AFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "fillSecondary",
+      "token": "fill_secondary",
+      "light": "Color(0x33FFFFFF)",
+      "dark": "Color(0x33FFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "fillPurple",
+      "token": "fill_purple",
+      "light": "Color(0x33776BFF)",
+      "dark": "Color(0x33776BFF)"
+    },
+    {
+      "group": "root",
+      "name": "btnPrimaryDefault",
+      "token": "btn_primary_default",
+      "light": "Color(0xFF7642F5)",
+      "dark": "Color(0xFF7642F5)"
+    },
+    {
+      "group": "root",
+      "name": "btnPrimaryDisable",
+      "token": "btn_primary_disable",
+      "light": "Color(0x80FFFFFF)",
+      "dark": "Color(0x807642F5)"
+    },
+    {
+      "group": "root",
+      "name": "btnSecondaryDefault",
+      "token": "btn_secondary_default",
+      "light": "Color(0x0D000000)",
+      "dark": "Color(0x0DFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "btnLightBrand",
+      "token": "btn_lightbrand_default",
+      "light": "Color(0xFFECEBFF)",
+      "dark": "Color(0xFFECEBFF)"
+    },
+    {
+      "group": "root",
+      "name": "btnTertiary",
+      "token": "btn_tertiary_default",
+      "light": "Color(0x80FFFFFF)",
+      "dark": "Color(0x0DFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "watchHistoryBtnBgColor",
+      "token": "watchHistoryBtnBgColor",
+      "light": "Color(0xFFFFFFFF)",
+      "dark": "Color(0x1AFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "fbError",
+      "token": "fb_error",
+      "light": "Color(0xFFE6574A)",
+      "dark": "Color(0xFFE6574A)"
+    },
+    {
+      "group": "root",
+      "name": "fbCorrect",
+      "token": "fb_correct",
+      "light": "Color(0xFF57BE6A)",
+      "dark": "Color(0xFF57BE6A)"
+    },
+    {
+      "group": "root",
+      "name": "mask20",
+      "token": "mask_20",
+      "light": "Color(0x33000000)",
+      "dark": "Color(0x33000000)"
+    },
+    {
+      "group": "root",
+      "name": "mask75",
+      "token": "mask_75",
+      "light": "Color(0xBF000000)",
+      "dark": "Color(0xBF000000)"
+    },
+    {
+      "group": "root",
+      "name": "textLinkBlue",
+      "token": "text_link_blue",
+      "light": "Color(0xFF214CA5)",
+      "dark": "Color(0xFF7A95CC)"
+    },
+    {
+      "group": "root",
+      "name": "shadow50",
+      "token": "shadow50",
+      "light": "Color.Black.changeAlpha(0.5f)",
+      "dark": "Color.Black.changeAlpha(0.5f)"
+    },
+    {
+      "group": "root",
+      "name": "shadow40",
+      "token": "shadow40",
+      "light": "Color(0x66000000)",
+      "dark": "Color(0x66000000)"
+    },
+    {
+      "group": "root",
+      "name": "shadow25",
+      "token": "shadow25",
+      "light": "Color(0x40000000)",
+      "dark": "Color(0x40000000)"
+    },
+    {
+      "group": "root",
+      "name": "shadow6",
+      "token": "shadow6",
+      "light": "Color(0x0F000000)",
+      "dark": "Color(0x0F000000)"
+    },
+    {
+      "group": "root",
+      "name": "closeBackground",
+      "token": "closeBackground",
+      "light": "Color(0x0A000000)",
+      "dark": "Color(0x0AFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "white70",
+      "token": "white70",
+      "light": "Color(0xB2FFFFFF)",
+      "dark": "Color(0xB2FFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "white80",
+      "token": "white80",
+      "light": "Color(0xCCFFFFFF)",
+      "dark": "Color(0xCCFFFFFF)"
+    },
+    {
+      "group": "root",
+      "name": "hotAskMore",
+      "token": "hotAskMore",
+      "light": "Color(0xFF53586B)",
+      "dark": "Color(0xFF53586B)"
+    },
+    {
+      "group": "root",
+      "name": "adMiniGameBg",
+      "token": "adMiniGameBg",
+      "light": "Color(0x99333333)",
+      "dark": "Color(0x99333333)"
+    },
+    {
+      "group": "root",
+      "name": "sponsorProcessBg",
+      "token": "sponsorProcessBg",
+      "light": "Color(0xFFFFE3E3)",
+      "dark": "Color(0xFF332929)"
+    },
+    {
+      "group": "root",
+      "name": "whiteText",
+      "token": "whiteText",
+      "light": "Color(0xFFFFFFFF)",
+      "dark": "Color(0xFFD9D9D9)"
+    },
+    {
+      "group": "root",
+      "name": "collectionHeaderIconGradientColor1",
+      "token": "collectionHeaderIconGradientColor1",
+      "light": "Color(0xFFD5D5D5)",
+      "dark": "Color(0xFF444444)"
+    },
+    {
+      "group": "root",
+      "name": "collectionHeaderIconGradientColor2",
+      "token": "collectionHeaderIconGradientColor2",
+      "light": "Color(0x66D5D5D5)",
+      "dark": "Color(0x66444444)"
+    },
+    {
+      "group": "root",
+      "name": "greenNormal",
+      "token": "greenNormal",
+      "light": "Color(0xFF00AA70)",
+      "dark": "Color(0xFF008557)"
+    },
+    {
+      "group": "root",
+      "name": "checkInBgGradientStart",
+      "token": "checkInBgGradientStart",
+      "light": "Color(0xFFFFDABA)",
+      "dark": "Color(0xFF3E2208)"
+    },
+    {
+      "group": "root",
+      "name": "checkInBgGradientEnd",
+      "token": "checkInBgGradientEnd",
+      "light": "Color(0xFFFFF4F4)",
+      "dark": "Color(0xFF1F1F1F)"
+    },
+    {
+      "group": "root",
+      "name": "checkInContentBgGradientStart",
+      "token": "checkInContentBgGradientStart",
+      "light": "Color(0xFFFFF2F2)",
+      "dark": "Color(0xFF2B1005)"
+    },
+    {
+      "group": "root",
+      "name": "checkInContentBgGradientEnd",
+      "token": "checkInContentBgGradientEnd",
+      "light": "Color(0xFFFFF8F8)",
+      "dark": "Color(0xFF231A16)"
+    },
+    {
+      "group": "root",
+      "name": "checkInTitleText",
+      "token": "checkInTitleText",
+      "light": "Color(0xFF282828)",
+      "dark": "Color(0xFFD9D9D9)"
+    },
+    {
+      "group": "root",
+      "name": "checkInAccentText",
+      "token": "checkInAccentText",
+      "light": "Color(0xFFC44F1F)",
+      "dark": "Color(0xFFC26A46)"
+    },
+    {
+      "group": "root",
+      "name": "checkInDashedLine",
+      "token": "checkInDashedLine",
+      "light": "Color(0xFFEDB8AB)",
+      "dark": "Color(0xFFEDB8AB)"
+    },
+    {
+      "group": "root",
+      "name": "checkInCoinText",
+      "token": "checkInCoinText",
+      "light": "Color(0xFFB24D04)",
+      "dark": "Color(0xFFB24D04)"
+    },
+    {
+      "group": "root",
+      "name": "checkInCoinTextChecked",
+      "token": "checkInCoinTextChecked",
+      "light": "Color(0xFF333333)",
+      "dark": "Color(0xFF333333)"
+    },
+    {
+      "group": "root",
+      "name": "picDefaultColor",
+      "token": "picDefaultColor",
+      "light": "Color(0xFFEAEAEA)",
+      "dark": "Color(0xFF1A1B1C)"
+    },
+    {
+      "group": "root",
+      "name": "mask50",
+      "token": "mask50",
+      "light": "Color(0x80000000)",
+      "dark": "Color(0x80000000)"
+    },
+    {
+      "group": "root",
+      "name": "mask60",
+      "token": "mask60",
+      "light": "Color(0x99000000)",
+      "dark": "Color(0x99000000)"
+    },
+    {
+      "group": "root",
+      "name": "bgGameCard",
+      "token": "bgGameCard",
+      "light": "Color(0xFFFFFFFF)",
+      "dark": "Color(0xFF2A2A2A)"
+    },
+    {
+      "group": "root",
+      "name": "oran70",
+      "token": "oran70",
+      "light": "Color(0xFF3617B3)",
+      "dark": "Color(0xFF3617B3)"
+    },
+    {
+      "group": "root",
+      "name": "bgGameShadow",
+      "token": "bgGameShadow",
+      "light": "Color(0x0F666666)",
+      "dark": "Color(0x0F666666)"
+    },
+    {
+      "group": "root",
+      "name": "audioReadTitleColor",
+      "token": "audioReadTitleColor",
+      "light": "Color(0xFF999999)",
+      "dark": "Color(0xFF696969)"
+    },
+    {
+      "group": "root",
+      "name": "rNormal",
+      "token": "brand_secondary",
+      "light": "Color(0xFFFF4273)",
+      "dark": "Color(0xFFF02D65)"
+    },
+    {
+      "group": "aigc",
+      "name": "prompt",
+      "token": "aigc.prompt",
+      "light": "Color(0xFF505DE5)",
+      "dark": "Color(0xFF7780D9)"
+    },
+    {
+      "group": "aigc",
+      "name": "prompt05",
+      "token": "aigc.prompt05",
+      "light": "Color(0x0D505DE5)",
+      "dark": "Color(0x0D7780D9)"
+    },
+    {
+      "group": "aigc",
+      "name": "prompt25",
+      "token": "aigc.prompt25",
+      "light": "Color(0x40505DE5)",
+      "dark": "Color(0x407780D9)"
+    },
+    {
+      "group": "aigc",
+      "name": "bg",
+      "token": "aigc.bg",
+      "light": "Color(0xFFF2F6FF)",
+      "dark": "Color(0xFF121212)"
+    },
+    {
+      "group": "aigc",
+      "name": "lineCard",
+      "token": "aigc.lineCard",
+      "light": "Color(0x9999994D)",
+      "dark": "Color(0x9999994D)"
+    },
+    {
+      "group": "aigc",
+      "name": "qaText",
+      "token": "aigc.qaText",
+      "light": "Color(0xFF505DE5)",
+      "dark": "Color(0xFF505DE5)"
+    },
+    {
+      "group": "aigc",
+      "name": "purple",
+      "token": "aigc.purple",
+      "light": "Color(0xFF505DE5)",
+      "dark": "Color(0xFF505DE5)"
+    },
+    {
+      "group": "aigc",
+      "name": "purpleBg12",
+      "token": "aigc.purpleBg12",
+      "light": "Color(0x1F505DE5)",
+      "dark": "Color(0x1F5564FF)"
+    },
+    {
+      "group": "aigc",
+      "name": "purpleButonBg",
+      "token": "aigc.purpleButonBg",
+      "light": "Color(0xFF505DE5)",
+      "dark": "Color(0xFF5564FF)"
+    },
+    {
+      "group": "aigc",
+      "name": "stroke",
+      "token": "aigc.stroke",
+      "light": "Color(0xFFE9EBFF)",
+      "dark": "Color(0xFF2F2D3D)"
+    },
+    {
+      "group": "aigc",
+      "name": "entryStart",
+      "token": "aigc.entryStart",
+      "light": "Color(0xFFF7F2FF)",
+      "dark": "Color(0xFF26222C)"
+    },
+    {
+      "group": "aigc",
+      "name": "entryEnd",
+      "token": "aigc.entryEnd",
+      "light": "Color(0xFFF2F7FF)",
+      "dark": "Color(0xFF22262C)"
+    },
+    {
+      "group": "aigc",
+      "name": "streamStart",
+      "token": "aigc.streamStart",
+      "light": "Color(0xFFD6F2E0)",
+      "dark": "Color(0xFF102E16)"
+    },
+    {
+      "group": "aigc",
+      "name": "streamEnd",
+      "token": "aigc.streamEnd",
+      "light": "Color(0xFFF5F5F5)",
+      "dark": "Color(0xFF121212)"
+    },
+    {
+      "group": "aigc",
+      "name": "bottomBarBorder",
+      "token": "aigc.bottomBarBorder",
+      "light": "Color(0xFF45AD60)",
+      "dark": "Color(0xFF45AD60)"
+    },
+    {
+      "group": "aigc",
+      "name": "bottomBarVoiceCancelBorder",
+      "token": "aigc.bottomBarVoiceCancelBorder",
+      "light": "Color(0x66FF0055)",
+      "dark": "Color(0x66FF0055)"
+    },
+    {
+      "group": "aigc",
+      "name": "bottomBarShadowSpot",
+      "token": "aigc.bottomBarShadowSpot",
+      "light": "Color(0xFF999999)",
+      "dark": "Color(0xFF111111)"
+    },
+    {
+      "group": "aigc",
+      "name": "bottomBarShadowAmbient",
+      "token": "aigc.bottomBarShadowAmbient",
+      "light": "Color(0xFF999999)",
+      "dark": "Color(0xFF111111)"
+    },
+    {
+      "group": "aigc",
+      "name": "yuanbaoGreen",
+      "token": "aigc.yuanbaoGreen",
+      "light": "Color(0xFF45AD60)",
+      "dark": "Color(0xFF45AD60)"
+    },
+    {
+      "group": "aigc",
+      "name": "yuanbaoGreen05",
+      "token": "aigc.yuanbaoGreen05",
+      "light": "Color(0x0D45AD60)",
+      "dark": "Color(0x0D45AD60)"
+    },
+    {
+      "group": "aigc",
+      "name": "yuanbaoGreenBg",
+      "token": "aigc.yuanbaoGreenBg",
+      "light": "Color(0xFFEDFAF0)",
+      "dark": "Color(0xFF15331C)"
+    },
+    {
+      "group": "aigc",
+      "name": "posterGrayBg",
+      "token": "aigc.posterGrayBg",
+      "light": "Color(0xFFF6F6F6)",
+      "dark": "Color(0xFFF6F6F6)"
+    },
+    {
+      "group": "aigc",
+      "name": "posterBlueBg",
+      "token": "aigc.posterBlueBg",
+      "light": "Color(0xFF167BFF)",
+      "dark": "Color(0xFF167BFF)"
+    },
+    {
+      "group": "ad",
+      "name": "adMidArticleGameScoreColor",
+      "token": "ad.adMidArticleGameScoreColor",
+      "light": "Color(0xFFFF7D3E)",
+      "dark": "Color(0xFFD96A35)"
+    },
+    {
+      "group": "ad",
+      "name": "adMultiImageBgColor",
+      "token": "ad.adMultiImageBgColor",
+      "light": "Color(0xFF8A8A8A)",
+      "dark": "Color(0xFF8A8A8A)"
+    },
+    {
+      "group": "ad",
+      "name": "adVipBannerBgColor",
+      "token": "ad.adVipBannerBgColor",
+      "light": "Color(0xFFF5E9CE)",
+      "dark": "Color(0xFFD0C6AF)"
+    },
+    {
+      "group": "ad",
+      "name": "adVipBannerTipsBgColor",
+      "token": "ad.adVipBannerTipsBgColor",
+      "light": "Color(0xFFD81306)",
+      "dark": "Color(0xFFA32618)"
+    },
+    {
+      "group": "ad",
+      "name": "adVipBannerPTitleColor",
+      "token": "ad.adVipBannerPTitleColor",
+      "light": "Color(0xFF333333)",
+      "dark": "Color(0xFF2B2B2B)"
+    },
+    {
+      "group": "ad",
+      "name": "adVipBannerPSubTitleColor",
+      "token": "ad.adVipBannerPSubTitleColor",
+      "light": "Color(0xFF999999)",
+      "dark": "Color(0xFF828282)"
+    },
+    {
+      "group": "ad",
+      "name": "adVipBannerPPriceColor",
+      "token": "ad.adVipBannerPPriceColor",
+      "light": "Color(0xFF9A5D11)",
+      "dark": "Color(0xFF834F0E)"
+    },
+    {
+      "group": "ad",
+      "name": "adVipBannerBTitleColor",
+      "token": "ad.adVipBannerBTitleColor",
+      "light": "Color(0xFF000000)",
+      "dark": "Color(0xFFD9D9D9)"
+    },
+    {
+      "group": "ad",
+      "name": "gameReserveTitle",
+      "token": "ad.gameReserveTitle",
+      "light": "Color(0xFF222222)",
+      "dark": "Color(0xFFFFFFFF)"
+    },
+    {
+      "group": "ad",
+      "name": "adGameCheckInBgColor",
+      "token": "ad.adGameCheckInBgColor",
+      "light": "Color(0XFFF0F0F0)",
+      "dark": "Color(0xFF262626)"
+    },
+    {
+      "group": "ad",
+      "name": "storeHaoDianColor",
+      "token": "ad.storeHaoDianColor",
+      "light": "Color(0xFFE0B584)",
+      "dark": "Color(0xFFBA966E)"
+    },
+    {
+      "group": "ad",
+      "name": "storeRGrey30Color",
+      "token": "ad.storeRGrey30Color",
+      "light": "Color(0x4D000000)",
+      "dark": "Color(0x4DFFFFFF)"
+    },
+    {
+      "group": "ad",
+      "name": "storeRGrey55Color",
+      "token": "ad.storeRGrey55Color",
+      "light": "Color(0x8C000000)",
+      "dark": "Color(0x80FFFFFF)"
+    },
+    {
+      "group": "ad",
+      "name": "gameCalendarTitle",
+      "token": "ad.gameCalendarTitle",
+      "light": "Color(0xFF333333)",
+      "dark": "Color(0xFFD9D9D9)"
+    },
+    {
+      "group": "ad",
+      "name": "gameCalendarDesc",
+      "token": "ad.gameCalendarDesc",
+      "light": "Color(0xFF999999)",
+      "dark": "Color(0xFF5C5C5C)"
+    },
+    {
+      "group": "ad",
+      "name": "gameCalendarTagBg",
+      "token": "ad.gameCalendarTagBg",
+      "light": "Color(0xFFE69100)",
+      "dark": "Color(0xFFB97700)"
+    },
+    {
+      "group": "ad",
+      "name": "gameCalendarCardShadow",
+      "token": "ad.gameCalendarCardShadow",
+      "light": "Color(0x40B3B3B3)",
+      "dark": "Color(0x401F1F1F)"
+    },
+    {
+      "group": "ad",
+      "name": "gameCalendarAvatarMask",
+      "token": "ad.gameCalendarAvatarMask",
+      "light": "Color.Transparent",
+      "dark": "Color.Black.copy(alpha = 0.2f)"
+    },
+    {
+      "group": "sport",
+      "name": "textPrimary",
+      "token": "sport.textPrimary",
+      "light": "Color.White",
+      "dark": "Color.White"
+    },
+    {
+      "group": "sport",
+      "name": "reservedBtnBg",
+      "token": "sport.reservedBtnBg",
+      "light": "Color(255, 255, 255, 26)",
+      "dark": "Color(255, 255, 255, 26)"
+    },
+    {
+      "group": "sport",
+      "name": "reservedBtnText",
+      "token": "sport.reservedBtnText",
+      "light": "Color(255, 255, 255, 77)",
+      "dark": "Color(255, 255, 255, 77)"
+    },
+    {
+      "group": "sport",
+      "name": "textSecondary",
+      "token": "sport.textSecondary",
+      "light": "Color(255, 255, 255, 128)",
+      "dark": "Color(255, 255, 255, 128)"
+    },
+    {
+      "group": "sport",
+      "name": "divider",
+      "token": "sport.divider",
+      "light": "Color(255, 255, 255, 31)",
+      "dark": "Color(255, 255, 255, 31)"
+    },
+    {
+      "group": "sport",
+      "name": "endedBtnBg",
+      "token": "sport.endedBtnBg",
+      "light": "Color(255, 255, 255, 20)",
+      "dark": "Color(255, 255, 255, 20)"
+    },
+    {
+      "group": "sport",
+      "name": "highlightBtnBg",
+      "token": "sport.highlightBtnBg",
+      "light": "Color(51, 119, 255, 77)",
+      "dark": "Color(51, 119, 255, 77)"
+    },
+    {
+      "group": "sport",
+      "name": "liveRed",
+      "token": "sport.liveRed",
+      "light": "Color(0xFFFF0055)",
+      "dark": "Color(0xFFFF0055)"
+    },
+    {
+      "group": "user",
+      "name": "historyEditBtnDisabled",
+      "token": "user.historyEditBtnDisabled",
+      "light": "Color(0xFFB2B2B2)",
+      "dark": "Color(0xFF4C4C4C)"
+    }
+  ]
+}

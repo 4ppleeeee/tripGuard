@@ -1,0 +1,152 @@
+---
+description: Struct 页面架构与多 tab/吸顶/悬浮模式规则。适用于新增页面、页面迁移、PageWidget/DataRepo/路由接入、页面级 VM，尤其适用于仿照 MineProfilePage 的多 tab 个人页或带吸顶/悬浮区的 Struct 页面。
+alwaysApply: false
+enabled: true
+---
+
+# Struct 页面架构规则
+
+当任务涉及页面新增、页面迁移、`PageWidget`、`DataRepo`、页面路由、页面级 VM、多 tab、吸顶或悬浮区域时，先读取并参考以下实现矩阵，不要凭空创造新模式。
+
+## 参考实现矩阵
+
+### MineProfile：多 tab + 头部信息 + channelBar 吸顶感
+
+- `wsCompose/src/commonMain/kotlin/com/tencent/weishi/compose/user/profile/page/MineProfilePage.kt`
+- `wsCompose/src/commonMain/kotlin/com/tencent/weishi/compose/user/profile/page/MineProfilePageView.kt`
+- `wsCore/src/commonMain/kotlin/com/tencent/weishi/core/user/profile/page/MineProfilePageArgs.kt`
+- `wsCore/src/commonMain/kotlin/com/tencent/weishi/core/user/profile/vm/IMineProfilePageViewModel.kt`
+- `wsUser/src/commonMain/kotlin/com/tencent/weishi/core/user/profile/page/MineProfilePageWidget.kt`
+- `wsUser/src/commonMain/kotlin/com/tencent/weishi/core/user/profile/page/MineProfilePageViewModel.kt`
+- `wsUser/src/commonMain/kotlin/com/tencent/weishi/core/user/profile/page/MineProfileTabDataRepo.kt`
+- `wsUser/src/commonMain/kotlin/com/tencent/weishi/core/user/profile/widget/MineProfileTitleBarWidget.kt`
+- `wsUser/src/commonTest/kotlin/com/tencent/weishi/core/user/profile/page/MineProfilePageWidgetStructureTest.kt`
+
+### FindDrama：Header 折叠后切换为 `titleHanging`
+
+- `wsDrama/src/commonMain/kotlin/com/tencent/weishi/core/drama/find/page/FindDramaPageDataRepo.kt`
+
+### DramaSquare：channelBar 固定在 TitleBar 下方
+
+- `wsDrama/src/commonMain/kotlin/com/tencent/weishi/core/drama/square/page/DramaSquarePageWidget.kt`
+
+## 页面职责拆分
+
+- **UI 模块**：负责 `@Page`、`ComposePage`、Composable 组件渲染，以及通过 `StructComposePage` / `StructComposePage4VM` 接入页面。
+- **契约层**：负责 `PageArgs`、Service Factory、页面级接口、子组件 VM 接口与 Registry。
+- **逻辑模块**：负责 `StructPageWidget2`、`StructPageConfig`、`IStructDataRepo` / `IStructDataSuspendRepo`、Widget VM 实现。
+- UI 模块不得直接 new 逻辑实现类；必须通过 `Service.pageFactory` 或等价接口拿到 `pageWidget` / `pageVM`。
+
+## MineProfile 式多 tab 页面骨架
+
+当页面像个人主页一样，顶部有资料头、下方是多个内容 tab，并且 tab 跟随 header 滚动产生吸顶效果时，优先使用 MineProfile 模式：
+
+- `titleBar`：使用透明或半透明的标题栏，负责标题文案与状态栏区域，不承载 tab。
+- `header`：承载用户信息、统计、操作区等头部内容。
+- `pager`：承载多 tab 内容，`pager.channelBar` 作为 tab 导航条。
+- `layers`：保留浮层能力，但仅放页面级浮层或抽屉，不要把 tab 条错误放进 `layers`。
+- `hanging` / `titleHanging`：**默认留空**；MineProfile 模式下，吸顶感主要由 `header + pager.channelBar` 形成，而不是额外挂一个悬浮 widget。
+- `bottomBar`：无明确业务需求时保持为空。
+
+推荐的根结构如下：
+
+- `titleBar`
+- `header`
+- `pager`
+  - `channelBar`
+  - `channels`
+  - `mainChannel`
+- `layers`
+
+## MineProfile 式多 tab 的实现要点
+
+- `PageWidget` 先提供本地骨架：至少把 `titleBar`、`header`、`pager`、`layers` 搭出来，让页面在异步数据返回前也有稳定结构。
+- tab 页优先通过 `PagerWidget + ChannelBarWidget.createByChannels(...)` 构建，不要手写平铺的 tab 切换逻辑。
+- 每个 tab 优先建成 `StructPageChannelWidget`，其 `subPageWidget` 再指向独立的 `StructPageWidget2`，由 tab 级 `DataRepo` 负责各自列表数据。
+- tab 的 `channelKey`、`channelName`、默认选中项必须有稳定映射，避免靠 UI 文案反推。
+- 动态 tab 页场景下，更新 `channels` 后要同步更新 `mainChannel`、初始 index，并重新绑定 widget provider，避免子页面挂到错误的根 widget 上。
+- 页面级 ViewModel 负责：
+  - 拉取页面头部与 tab 配置
+  - 根据服务端状态决定 `visibleTabs` 与 `selectedTab`
+  - 回写 `rootWidget.apply...Tabs(...)`
+  - 更新 header VM 与 titleBar VM
+- tab 内列表布局（如三列网格、空态、load more）放在 tab 级 `DataRepo` / channel 配置里，不要挤在页面根 repo 中。
+
+## 吸顶 / 悬浮区域的选择规则
+
+先区分两个容易混淆的概念：
+
+- **延迟出现型悬浮视图**：页面首屏时，顶部区域里**看不到这块悬浮视图**；只有滚动到临界值后，它才以 `hanging` / `titleHanging` 的形式出现。它通常是 header 的“精简副本”或“折叠态版本”。
+- **原位吸顶型视图**：这块视图在页面初始布局中**本来就存在**，先以普通流式内容出现；滚动到临界值后，它保持可见并吸附到顶部。它通常就是 `pager.channelBar` 或 header 中本来就有的那一块。
+
+### 模式 A：原位吸顶型 —— 只用 `pager.channelBar`，不单独挂悬浮 widget
+
+适用场景：
+- 页面有明显 header，tab 条是 header 后面的自然延续
+- tab 条在首屏就应出现，只是滚动后吸顶
+- 不需要 header 折叠后展示“精简版筛选条”或另一套悬浮 UI
+- 典型参考：`MineProfilePageWidget`
+
+做法：
+- `header` 有值
+- `pager.channelBar` 有值
+- `hanging = null`
+- `titleHanging = null`
+- `fixChannelBarBelowTitleBar = false`
+
+说明：
+- 这是“页面中一开始就有，滑到临界值后吸顶”的模式。
+- 不要再额外复制一份 tab 条放进 `titleHanging`，除非折叠后的悬浮态和原始态不是同一套 UI。
+
+### 模式 B：延迟出现型 —— 使用 `titleHanging` / `hanging`
+
+适用场景：
+- header 区域很高，滚动后需要额外出现一份精简版筛选/操作条
+- 首屏不希望顶部直接出现这块悬浮视图
+- 悬浮条内容与 header 有强关联，但不是完整复刻 header
+- 典型参考：`FindDramaPageDataRepo`
+
+做法：
+- `header` 放完整筛选区
+- `titleHanging` 或 `hanging` 放折叠后的精简悬浮条
+- `pager.channelBar` 是否存在，按业务决定；不要为了“有吸顶”就机械添加 `titleHanging`
+
+说明：
+- 这是“页面一开始没有，滑到临界值后才出现悬浮视图”的模式。
+- 更适合筛选条、精简操作条、折叠态导航，而不是本来就该在首屏可见的 tab 条。
+
+### 模式 C：顶部固定型 —— `channelBar` 从一开始就固定在 TitleBar 下方
+
+适用场景：
+- 页面从一开始就希望频道栏固定在顶部
+- 不依赖 header 折叠过程来触发吸顶
+- 典型参考：`DramaSquarePageWidget`
+
+做法：
+- 在 `StructPageConfig` 中设置 `fixChannelBarBelowTitleBar = true`
+- `pager.channelBar` 正常配置
+- 不需要额外的 `titleHanging` 时保持为空
+
+说明：
+- 这不是“滚动后才悬浮”，而是“首屏即固定”。
+- 如果需求明确说“tab 一进页就贴在标题栏下方”，优先用这个模式，而不是自己模拟吸顶。
+
+## 推荐接入顺序
+
+新增类似 MineProfile 的多 tab Struct 页面时，优先按以下顺序组织代码：
+
+1. `wsCore` 定义 `PageArgs`、页面 factory 接口、页面 VM 接口
+2. `wsUser` / `wsDrama` / 对应逻辑模块定义 `PageWidget` 本地骨架
+3. 为每个 tab 建立独立 channel/subPageWidget/tab dataRepo
+4. 页面级 ViewModel 拉页面态并回写 tab/header/titleBar
+5. `wsCompose` 页面入口通过 `Service.pageFactory` 获取装配并接入 `StructComposePage4VM`
+6. 用结构测试锁定 `titleBar/header/pager/layers`、tab 顺序、默认选中项和 hanging 槽位是否符合预期
+
+## 页面基础要求
+
+- 页面路由使用 `@Page(...)` 注册。
+- `PageArgs` 必须实现 `IComposePageArgs` 且标记 `@Serializable`。
+- 如无明确理由，优先复用以上三种 Struct 组合模式，而不是新造第四种吸顶/悬浮模型。
+- 若页面需求只是“多 tab + 头部 + channelBar”，优先从 MineProfile 模式演化。
+- 若页面需求明确要求“header 收起后显示精简悬浮条”，优先从 FindDrama 模式演化。
+- 若页面需求明确要求“频道栏始终贴在标题栏下方”，优先从 DramaSquare 模式演化。

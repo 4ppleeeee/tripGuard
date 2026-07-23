@@ -1,0 +1,7 @@
+package = com.tencent.news.qncore.ohos
+headers = xlog/tdlog_interface.h \
+    mmkv/mmkv_c_wrapper.h \
+    secret/tencent_news_secret.h \
+    shiply/rdelivery_c_api.h \
+    shiply/rdelivery/rdelivery_c_define.h \
+    shiply/rdelivery/core/type_define.h

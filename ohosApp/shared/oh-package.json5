@@ -1,0 +1,26 @@
+{
+  "name": "@kmm/core",
+  "version": "1.0.0",
+  "description": "KMM Core shared HAR module",
+  "main": "Index.ets",
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@tencent/mmkv": "~2.2.1",
+    "@tencentcloud/imsdk": "8.6.7020",
+    "knoi": "0.1.8",
+    "libkmm_shared.so": "file:./src/main/cpp/types/libkmm_shared",
+    "@kuikly/render": '1.3.185-compose-beta',
+    "bugly": "0.5.1-beta.1",
+    "thumbplayer": "file:../libs/thumbplayer.har",
+    "qimei": "8.1.8",
+    "dtreport": "1.5.2",
+    "@shiply/shiply": "2.2.4",
+    "@tencent/qq-open-sdk": "1.0.4",
+    "@tencent/wechat_open_sdk": "1.0.0",
+    "tpdatatransport": "3.12.0-rc.2584",
+    "turingantifraud": "file:../libs/Turingantifraud.har",
+    "@ohos/apng": "^1.0.0-rc.8",
+    "@ohos/lottie": "^2.0.0"
+  }
+}

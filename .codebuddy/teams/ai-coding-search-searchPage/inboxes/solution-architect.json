@@ -1,0 +1,11 @@
+[
+  {
+    "id": "shutdown-1776654611143",
+    "from": "team-lead",
+    "to": "solution-architect",
+    "type": "shutdown_request",
+    "content": "{\"type\":\"shutdown_request\",\"request_id\":\"shutdown-1776654611143\",\"reason\":\"Step 5 技术方案文档已产出（714 行，章节完整），进入 Step 5 人工关卡等待用户确认，你可以关闭。\",\"from\":\"team-lead\",\"timestamp\":\"2026-04-20T03:10:11.143Z\"}",
+    "timestamp": "2026-04-20T03:10:11.143Z",
+    "read": true
+  }
+]

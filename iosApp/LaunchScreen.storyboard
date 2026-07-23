@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="EHf-IW-A2E">
+            <objects>
+                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="UYl-xL-Glk"/>
+                        <viewControllerLayoutGuide type="bottom" id="iGX-Ss-9sg"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchImage_new.png" translatesAutoresizingMaskIntoConstraints="NO" id="Lcd-na-IkZ">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="100" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launchimage_slogan.png" translatesAutoresizingMaskIntoConstraints="NO" id="jcq-6Z-ttf">
+                                <rect key="frame" x="154.5" y="719.5" width="105" height="35"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.027450980392156862" green="0.0" blue="0.070588235294117646" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="jcq-6Z-ttf" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="286:1125" id="Pvw-LN-K6e"/>
+                            <constraint firstAttribute="trailing" secondItem="Lcd-na-IkZ" secondAttribute="trailing" id="VvC-TW-6qK"/>
+                            <constraint firstItem="Lcd-na-IkZ" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" multiplier="2" id="XmD-W9-4xx"/>
+                            <constraint firstAttribute="bottom" secondItem="Lcd-na-IkZ" secondAttribute="bottom" id="h8O-a8-gYA"/>
+                            <constraint firstItem="Lcd-na-IkZ" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="k3k-NB-cHh"/>
+                            <constraint firstItem="jcq-6Z-ttf" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="nW7-zM-jff"/>
+                            <constraint firstAttribute="bottom" secondItem="jcq-6Z-ttf" secondAttribute="bottom" multiplier="2435:2050" id="ysW-Q1-9PX"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="53" y="375"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="LaunchImage_new.png" width="341.33334350585938" height="455.33334350585938"/>
+        <image name="launchimage_slogan.png" width="143" height="35"/>
+    </resources>
+</document>
