@@ -40,6 +40,41 @@ flowchart TD
 
 Agent 的核心价值是判断当前应该调用哪些工具、工具结果是否足够、是否需要追问用户，以及最终答案是否满足“基于知识库、有引用、不编造”的约束。
 
+## 知识库输入与 Canonical Entity
+
+旅行知识库的输入不只来自用户端收藏。MVP 可以先以用户收藏为主，但完整架构需要同时支持两条输入线：
+
+```text
+用户收藏输入：链接 / 分享文本 / 长图 / 平台内容
+合作方可信输入：地图 / 公众号 / 旅游局 / 官方渠道 / 合作方抓取
+```
+
+两条输入线最终都进入知识库，但不能直接把抓取结果当作最终知识。更稳的分层是：
+
+```text
+Raw Source Document
+  -> Extracted Mention
+  -> Canonical Knowledge Entity
+  -> Entity Fact
+  -> Retrieval Context
+```
+
+其中 `Canonical Knowledge Entity` 不是根分类，而是稳定身份层。它用来回答“这些不同来源说的是不是同一个对象或同一个知识主题”。`Destination Scope` 才是旅行知识库第一层确定边界，用来回答“这个知识和哪些国家、城市、区域有关”。
+
+推荐原则：
+
+```text
+Destination 作为导航和检索入口
+Entity 作为唯一知识对象
+Relation 负责把 Entity 挂到一个或多个 Destination 下
+Source Document 保留不同来源证据
+Entity Fact 保存结构化、可版本化、可溯源的事实
+```
+
+因此，当一个知识同时属于多个目的地时，不复制多份实体，而是一个实体绑定多个目的地关系。比如“中国护照去日本旅游签证”同时挂到中国和日本，“东京到京都新干线”同时挂到东京和京都，但底层只有一个 `canonical_entity_id`。
+
+详见 [Canonical Entity 演示文档](./tripguard-canonical-entity-demo.md) 和 [Canonical Entity 可视化演示页](./tripguard-canonical-entity-visual.html)。
+
 ## Agent 不直接做所有事
 
 不要让 Agent 自己完成网页抓取、OCR、数据库查询、排序、行程生成的全部逻辑。更稳的方式是把能力拆成可观测、可测试、可替换的工具。

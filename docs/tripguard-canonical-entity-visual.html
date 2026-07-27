@@ -1,0 +1,962 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TripGuard Canonical Entity Visual</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090a0f;
+      --panel: rgba(17, 20, 30, 0.78);
+      --panel-strong: rgba(25, 30, 45, 0.92);
+      --text: #f3f6fb;
+      --muted: #9ca8bd;
+      --line: rgba(140, 233, 255, 0.38);
+      --cyan: #7ce7ff;
+      --mint: #6fffd2;
+      --amber: #ffd166;
+      --pink: #ff6bd6;
+      --red: #ff6b7a;
+      --green: #72ff8d;
+      --shadow-cyan: rgba(124, 231, 255, 0.34);
+      --shadow-mint: rgba(111, 255, 210, 0.26);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        linear-gradient(90deg, rgba(124, 231, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(124, 231, 255, 0.05) 1px, transparent 1px),
+        radial-gradient(circle at 12% 18%, rgba(111, 255, 210, 0.14), transparent 28%),
+        radial-gradient(circle at 82% 72%, rgba(255, 209, 102, 0.11), transparent 24%),
+        var(--bg);
+      background-size: 44px 44px, 44px 44px, auto, auto, auto;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, transparent 0, rgba(255, 255, 255, 0.035) 50%, transparent 100%);
+      background-size: 100% 7px;
+      mix-blend-mode: screen;
+      opacity: 0.35;
+      animation: scan 8s linear infinite;
+    }
+
+    @keyframes scan {
+      from { transform: translateY(-40px); }
+      to { transform: translateY(40px); }
+    }
+
+    .shell {
+      width: min(1440px, calc(100vw - 40px));
+      margin: 0 auto;
+      padding: 34px 0 42px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 24px;
+      align-items: stretch;
+      min-height: 190px;
+      margin-bottom: 22px;
+    }
+
+    .title-block,
+    .signal-panel,
+    .stage,
+    .info-panel {
+      position: relative;
+      border: 1px solid rgba(124, 231, 255, 0.22);
+      background: linear-gradient(145deg, rgba(17, 20, 30, 0.9), rgba(10, 12, 18, 0.72));
+      box-shadow: 0 0 36px rgba(0, 0, 0, 0.24), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+      overflow: hidden;
+    }
+
+    .title-block::after,
+    .signal-panel::after,
+    .stage::after,
+    .info-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      pointer-events: none;
+    }
+
+    .title-block {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      gap: 8px;
+      color: var(--cyan);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: var(--mint);
+      box-shadow: 0 0 18px var(--mint);
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      max-width: 860px;
+      font-size: clamp(34px, 4.2vw, 68px);
+      line-height: 1.02;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .chip {
+      border: 1px solid rgba(124, 231, 255, 0.28);
+      color: var(--text);
+      background: rgba(124, 231, 255, 0.07);
+      padding: 8px 11px;
+      font-size: 13px;
+    }
+
+    .signal-panel {
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+      align-content: center;
+    }
+
+    .signal-row {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .signal-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .signal-value {
+      position: relative;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.07);
+      overflow: hidden;
+    }
+
+    .signal-value span {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: var(--w);
+      background: linear-gradient(90deg, var(--cyan), var(--mint));
+      box-shadow: 0 0 20px var(--shadow-cyan);
+      animation: pulseWidth 2.8s ease-in-out infinite;
+    }
+
+    @keyframes pulseWidth {
+      0%, 100% { opacity: 0.72; transform: scaleX(0.92); transform-origin: left; }
+      50% { opacity: 1; transform: scaleX(1); transform-origin: left; }
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .case-button {
+      appearance: none;
+      border: 1px solid rgba(124, 231, 255, 0.25);
+      color: var(--muted);
+      background: rgba(14, 18, 28, 0.78);
+      padding: 10px 14px;
+      min-height: 42px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: border-color 180ms ease, color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .case-button[aria-pressed="true"] {
+      color: var(--text);
+      border-color: rgba(111, 255, 210, 0.8);
+      background: rgba(111, 255, 210, 0.12);
+      box-shadow: 0 0 24px rgba(111, 255, 210, 0.18);
+    }
+
+    .stage {
+      min-height: 580px;
+      padding: 20px;
+    }
+
+    .stage-header {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .stage-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .stage-note {
+      margin: 5px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .badge {
+      color: var(--mint);
+      border: 1px solid rgba(111, 255, 210, 0.35);
+      background: rgba(111, 255, 210, 0.08);
+      padding: 8px 10px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .graph-wrap {
+      position: relative;
+      min-height: 470px;
+      margin-top: 8px;
+    }
+
+    svg.graph {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .node {
+      position: absolute;
+      z-index: 3;
+      min-width: 168px;
+      max-width: 230px;
+      padding: 12px 14px;
+      border: 1px solid rgba(124, 231, 255, 0.24);
+      background: rgba(12, 15, 23, 0.9);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.26), inset 0 0 18px rgba(124, 231, 255, 0.04);
+      transform: translate(-50%, -50%);
+      transition: transform 280ms ease, border-color 280ms ease, box-shadow 280ms ease;
+    }
+
+    .node.active {
+      border-color: rgba(111, 255, 210, 0.9);
+      box-shadow: 0 0 32px var(--shadow-mint), inset 0 0 26px rgba(111, 255, 210, 0.08);
+      transform: translate(-50%, -50%) scale(1.03);
+    }
+
+    .node.entity {
+      min-width: 260px;
+      padding: 18px;
+      border-color: rgba(255, 209, 102, 0.72);
+      background: linear-gradient(145deg, rgba(72, 58, 24, 0.96), rgba(12, 15, 23, 0.99));
+      box-shadow: 0 0 38px rgba(255, 209, 102, 0.2), inset 0 0 30px rgba(255, 209, 102, 0.06);
+    }
+
+    .node.source {
+      border-color: rgba(255, 107, 214, 0.34);
+    }
+
+    .node.fact {
+      border-color: rgba(114, 255, 141, 0.34);
+    }
+
+    .node-label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 6px;
+    }
+
+    .node-name {
+      display: block;
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .node-meta {
+      display: block;
+      color: var(--muted);
+      margin-top: 7px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .flow-line {
+      stroke: rgba(124, 231, 255, 0.34);
+      stroke-width: 1.6;
+      fill: none;
+    }
+
+    .flow-line.hot {
+      stroke: var(--mint);
+      stroke-width: 2.4;
+      filter: drop-shadow(0 0 8px rgba(111, 255, 210, 0.68));
+      stroke-dasharray: 10 12;
+      animation: dash 1.25s linear infinite;
+    }
+
+    .flow-line.source-hot {
+      stroke: var(--pink);
+      filter: drop-shadow(0 0 8px rgba(255, 107, 214, 0.58));
+    }
+
+    .flow-line.fact-hot {
+      stroke: var(--green);
+      filter: drop-shadow(0 0 8px rgba(114, 255, 141, 0.58));
+    }
+
+    @keyframes dash {
+      to { stroke-dashoffset: -22; }
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .info-panel {
+      padding: 18px;
+    }
+
+    .info-panel h2 {
+      margin: 0 0 14px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .kv {
+      display: grid;
+      gap: 9px;
+    }
+
+    .kv-row {
+      display: grid;
+      grid-template-columns: 142px 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .kv-key {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .kv-value {
+      color: var(--text);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .pipe-step {
+      position: relative;
+      min-height: 88px;
+      padding: 12px;
+      border: 1px solid rgba(124, 231, 255, 0.2);
+      background: rgba(124, 231, 255, 0.055);
+    }
+
+    .pipe-step::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      width: 10px;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .pipe-step:last-child::after {
+      display: none;
+    }
+
+    .pipe-index {
+      color: var(--cyan);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .pipe-title {
+      display: block;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .pipe-note {
+      display: block;
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .schema {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .schema-card {
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .schema-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--mint);
+      font-size: 14px;
+    }
+
+    .schema-card code {
+      display: block;
+      color: var(--muted);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    .ticker {
+      margin-top: 18px;
+      border: 1px solid rgba(124, 231, 255, 0.22);
+      background: rgba(124, 231, 255, 0.055);
+      overflow: hidden;
+    }
+
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: ticker 24s linear infinite;
+    }
+
+    .ticker-track span {
+      padding: 11px 24px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stage {
+        min-height: 680px;
+      }
+
+      .graph-wrap {
+        min-height: 570px;
+      }
+
+      .schema,
+      .pipeline {
+        grid-template-columns: 1fr;
+      }
+
+      .pipe-step::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(100vw - 24px, 560px);
+        padding: 18px 0 28px;
+      }
+
+      .title-block,
+      .signal-panel,
+      .stage,
+      .info-panel {
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .stage-header {
+        flex-direction: column;
+      }
+
+      .badge {
+        white-space: normal;
+      }
+
+      .node {
+        min-width: 116px;
+        max-width: 116px;
+        padding: 10px;
+      }
+
+      .node.entity {
+        min-width: 168px;
+        max-width: 168px;
+      }
+
+      .node-name {
+        font-size: 13px;
+      }
+
+      .node-label {
+        font-size: 10px;
+      }
+
+      .node-meta {
+        font-size: 11px;
+      }
+
+      .kv-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero" aria-label="TripGuard Canonical Entity">
+      <div class="title-block">
+        <div>
+          <span class="eyebrow">TripGuard Knowledge Core</span>
+          <h1>一个实体，多目的地挂载</h1>
+          <p class="subtitle">Destination 是旅行知识库的第一层确定边界，但不是单父级目录。Canonical Entity 保持唯一身份，Relation 把它挂到多个国家、城市或区域，Source 和 Fact 分开保存。</p>
+        </div>
+        <div class="chips">
+          <span class="chip">Destination Scope</span>
+          <span class="chip">Canonical Entity</span>
+          <span class="chip">Source Evidence</span>
+          <span class="chip">Versioned Facts</span>
+        </div>
+      </div>
+
+      <aside class="signal-panel" aria-label="核心指标">
+        <div class="signal-row">
+          <span class="signal-label">实体唯一性</span>
+          <span class="signal-value"><span style="--w: 94%"></span></span>
+        </div>
+        <div class="signal-row">
+          <span class="signal-label">多入口召回</span>
+          <span class="signal-value"><span style="--w: 88%"></span></span>
+        </div>
+        <div class="signal-row">
+          <span class="signal-label">来源可追溯</span>
+          <span class="signal-value"><span style="--w: 91%"></span></span>
+        </div>
+        <div class="signal-row">
+          <span class="signal-label">事实可更新</span>
+          <span class="signal-value"><span style="--w: 86%"></span></span>
+        </div>
+      </aside>
+    </section>
+
+    <nav class="controls" aria-label="案例切换">
+      <button class="case-button" type="button" data-case="palace" aria-pressed="true">故宫聚合</button>
+      <button class="case-button" type="button" data-case="visa" aria-pressed="false">中日签证</button>
+      <button class="case-button" type="button" data-case="route" aria-pressed="false">东京到京都</button>
+    </nav>
+
+    <section class="stage" aria-label="实体结构动态图">
+      <div class="stage-header">
+        <div>
+          <h2 class="stage-title" id="caseTitle">故宫：多来源归一到一个地点实体</h2>
+          <p class="stage-note" id="caseNote">地图、公众号、旅游局抓到的是不同 source document，但都指向同一个故宫实体；事实按来源和版本挂在实体下。</p>
+        </div>
+        <span class="badge" id="caseBadge">canonical_entity_id: place:cn-beijing:palace_museum</span>
+      </div>
+
+      <div class="graph-wrap" id="graphWrap">
+        <svg class="graph" id="graphSvg" aria-hidden="true"></svg>
+      </div>
+    </section>
+
+    <section class="detail-grid" aria-label="数据结构说明">
+      <article class="info-panel">
+        <h2>当前实体快照</h2>
+        <div class="kv" id="snapshot"></div>
+      </article>
+      <article class="info-panel">
+        <h2>入库流水线</h2>
+        <div class="pipeline">
+          <div class="pipe-step">
+            <span class="pipe-index">01</span>
+            <span class="pipe-title">Raw Source</span>
+            <span class="pipe-note">抓取中台写入原始来源，不直接覆盖知识。</span>
+          </div>
+          <div class="pipe-step">
+            <span class="pipe-index">02</span>
+            <span class="pipe-title">Extract</span>
+            <span class="pipe-note">抽取 mention、目的地、事实和外部 ID。</span>
+          </div>
+          <div class="pipe-step">
+            <span class="pipe-index">03</span>
+            <span class="pipe-title">Resolve</span>
+            <span class="pipe-note">规则、地理、外部 ID、LLM 和人审归一。</span>
+          </div>
+          <div class="pipe-step">
+            <span class="pipe-index">04</span>
+            <span class="pipe-title">Attach</span>
+            <span class="pipe-note">一个实体挂载多个 destination relation。</span>
+          </div>
+          <div class="pipe-step">
+            <span class="pipe-index">05</span>
+            <span class="pipe-title">Retrieve</span>
+            <span class="pipe-note">从任一目的地入口召回同一个实体。</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="info-panel" aria-label="最小表结构">
+      <h2>最小表结构</h2>
+      <div class="schema">
+        <div class="schema-card">
+          <strong>destinations</strong>
+          <code>destination_id
+type
+name
+parent_id
+aliases
+external_ids</code>
+        </div>
+        <div class="schema-card">
+          <strong>canonical_entities</strong>
+          <code>entity_id
+entity_type
+canonical_name
+identity_key
+status</code>
+        </div>
+        <div class="schema-card">
+          <strong>entity_destination_relations</strong>
+          <code>entity_id
+destination_id
+relation_type
+confidence</code>
+        </div>
+        <div class="schema-card">
+          <strong>source_documents</strong>
+          <code>doc_id
+provider
+source_url
+raw_text
+fetched_at
+content_hash</code>
+        </div>
+        <div class="schema-card">
+          <strong>entity_source_links</strong>
+          <code>entity_id
+doc_id
+match_confidence
+match_reason
+matched_by</code>
+        </div>
+        <div class="schema-card">
+          <strong>entity_facts</strong>
+          <code>fact_id
+entity_id
+fact_key
+value_json
+source_doc_id
+status
+valid_from
+valid_to</code>
+        </div>
+      </div>
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          <span>Destination 是入口，不是实体副本</span>
+          <span>Canonical Entity 保证唯一身份</span>
+          <span>Relation 表达 from / to / origin / target / located_in</span>
+          <span>Source Document 保留证据</span>
+          <span>Entity Fact 管事实和版本</span>
+          <span>Destination 是入口，不是实体副本</span>
+          <span>Canonical Entity 保证唯一身份</span>
+          <span>Relation 表达 from / to / origin / target / located_in</span>
+          <span>Source Document 保留证据</span>
+          <span>Entity Fact 管事实和版本</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const cases = {
+      palace: {
+        title: "故宫：多来源归一到一个地点实体",
+        note: "地图、公众号、旅游局抓到的是不同 source document，但都指向同一个故宫实体；事实按来源和版本挂在实体下。",
+        badge: "canonical_entity_id: place:cn-beijing:palace_museum",
+        entity: { label: "Canonical Entity", name: "故宫", meta: "place:cn-beijing:palace_museum" },
+        destinations: [
+          { id: "china", label: "Destination", name: "中国", meta: "country · located_in", x: 17, y: 24 },
+          { id: "beijing", label: "Destination", name: "北京", meta: "city · located_in", x: 14, y: 48 },
+          { id: "dongcheng", label: "Destination", name: "东城区", meta: "district · located_in", x: 18, y: 72 }
+        ],
+        sources: [
+          { id: "map", label: "Source", name: "地图抓取", meta: "地址 / 经纬度 / POI ID", x: 82, y: 23 },
+          { id: "wechat", label: "Source", name: "公众号", meta: "开放时间 / 闭馆通知", x: 86, y: 49 },
+          { id: "bureau", label: "Source", name: "旅游局", meta: "玩法 / 游客提示", x: 82, y: 74 }
+        ],
+        facts: [
+          { id: "address", label: "Fact", name: "地址 / 经纬度", meta: "provider: map", x: 50, y: 16 },
+          { id: "hours", label: "Fact", name: "开放时间", meta: "provider: official account", x: 50, y: 84 }
+        ],
+        snapshot: [
+          ["entity_type", "place"],
+          ["destination_relations", "中国: country, 北京: city, 东城区: district"],
+          ["source_documents", "地图、公众号、旅游局分别保留原始证据"],
+          ["entity_facts", "地址、经纬度、开放时间、门票政策、游玩提示"]
+        ]
+      },
+      visa: {
+        title: "签证：同一个政策实体挂到出发国和目的国",
+        note: "中国护照去日本旅游签证可以从中国出境信息找到，也可以从日本入境信息找到；底层仍然只有一个 policy entity。",
+        badge: "canonical_entity_id: visa_policy:cn-jp:ordinary:tourism",
+        entity: { label: "Canonical Entity", name: "中国护照去日本旅游签证", meta: "visa_policy:cn-jp:ordinary:tourism" },
+        destinations: [
+          { id: "china", label: "Destination", name: "中国", meta: "origin_country", x: 16, y: 34 },
+          { id: "japan", label: "Destination", name: "日本", meta: "target_country", x: 16, y: 66 }
+        ],
+        sources: [
+          { id: "embassy", label: "Source", name: "使领馆页面", meta: "政策原文 / 材料清单", x: 84, y: 28 },
+          { id: "partner", label: "Source", name: "合作方抓取", meta: "费用 / 办理时效", x: 86, y: 52 },
+          { id: "gov", label: "Source", name: "官方公告", meta: "生效时间 / 失效时间", x: 82, y: 76 }
+        ],
+        facts: [
+          { id: "docs", label: "Fact", name: "所需材料", meta: "versioned fact", x: 50, y: 17 },
+          { id: "stay", label: "Fact", name: "停留天数 / 费用", meta: "active / superseded", x: 50, y: 84 }
+        ],
+        snapshot: [
+          ["entity_type", "visa_policy"],
+          ["destination_relations", "中国: origin_country, 日本: target_country"],
+          ["identity_key", "passport_country + destination_country + purpose + passport_type"],
+          ["entity_facts", "是否需要签证、停留天数、材料、费用、办理时长、有效期"]
+        ]
+      },
+      route: {
+        title: "路线：同一条跨城交通挂到东京和京都",
+        note: "东京到京都新干线不是东京下面的一份、京都下面的一份，而是一个 route entity 同时拥有 from_city 和 to_city 关系。",
+        badge: "canonical_entity_id: route:jp:tokyo-kyoto:shinkansen",
+        entity: { label: "Canonical Entity", name: "东京到京都新干线", meta: "route:jp:tokyo-kyoto:shinkansen" },
+        destinations: [
+          { id: "japan", label: "Destination", name: "日本", meta: "country", x: 17, y: 24 },
+          { id: "tokyo", label: "Destination", name: "东京", meta: "from_city", x: 14, y: 50 },
+          { id: "kyoto", label: "Destination", name: "京都", meta: "to_city", x: 18, y: 76 }
+        ],
+        sources: [
+          { id: "rail", label: "Source", name: "铁路官网", meta: "班次 / 车站", x: 84, y: 26 },
+          { id: "map", label: "Source", name: "地图路线", meta: "耗时 / 换乘", x: 86, y: 52 },
+          { id: "partner", label: "Source", name: "合作方票务", meta: "价格 / 购票建议", x: 82, y: 76 }
+        ],
+        facts: [
+          { id: "duration", label: "Fact", name: "时长 / 班次", meta: "provider: rail", x: 50, y: 16 },
+          { id: "ticket", label: "Fact", name: "价格 / 购票", meta: "provider: partner", x: 50, y: 84 }
+        ],
+        snapshot: [
+          ["entity_type", "transport_route"],
+          ["destination_relations", "日本: country, 东京: from_city, 京都: to_city"],
+          ["identity_key", "from + to + transport_mode + main_operator"],
+          ["entity_facts", "交通方式、耗时、出发站、到达站、票价、购票建议"]
+        ]
+      }
+    };
+
+    const graphWrap = document.getElementById("graphWrap");
+    const graphSvg = document.getElementById("graphSvg");
+    const caseTitle = document.getElementById("caseTitle");
+    const caseNote = document.getElementById("caseNote");
+    const caseBadge = document.getElementById("caseBadge");
+    const snapshot = document.getElementById("snapshot");
+    const buttons = Array.from(document.querySelectorAll(".case-button"));
+    let activeCase = "palace";
+    let timer = null;
+
+    function nodeMarkup(node, type) {
+      return `<div class="node ${type}" id="node-${node.id}" style="left:${node.x}%;top:${node.y}%">
+        <span class="node-label">${node.label}</span>
+        <span class="node-name">${node.name}</span>
+        <span class="node-meta">${node.meta}</span>
+      </div>`;
+    }
+
+    function linePath(from, to) {
+      const dx = Math.abs(to.x - from.x);
+      const c1x = from.x + dx * 0.42;
+      const c2x = to.x - dx * 0.42;
+      return `M ${from.x} ${from.y} C ${c1x} ${from.y}, ${c2x} ${to.y}, ${to.x} ${to.y}`;
+    }
+
+    function withResponsivePositions(caseData) {
+      const small = window.matchMedia("(max-width: 640px)").matches;
+      if (!small) return caseData;
+      const destinationY = caseData.destinations.length === 2 ? [28, 78] : [20, 40, 80];
+      const sourceY = caseData.sources.length === 2 ? [28, 78] : [20, 40, 80];
+      return {
+        ...caseData,
+        entityPosition: { x: 50, y: 58 },
+        destinations: caseData.destinations.map((destination, index) => ({
+          ...destination,
+          x: 19,
+          y: destinationY[index]
+        })),
+        sources: caseData.sources.map((source, index) => ({
+          ...source,
+          x: 83,
+          y: sourceY[index]
+        })),
+        facts: caseData.facts.map((fact, index) => ({
+          ...fact,
+          x: 50,
+          y: index === 0 ? 12 : 92
+        }))
+      };
+    }
+
+    function drawGraph(caseData) {
+      caseData = withResponsivePositions(caseData);
+      const entityPosition = caseData.entityPosition || { x: 50, y: 50 };
+      const entity = { ...caseData.entity, id: "entity", ...entityPosition };
+      const nodes = [...caseData.destinations, ...caseData.sources, ...caseData.facts, entity];
+      graphWrap.querySelectorAll(".node").forEach((node) => node.remove());
+      nodes.forEach((node) => {
+        const type = node.id === "entity"
+          ? "entity active"
+          : caseData.sources.some((source) => source.id === node.id)
+            ? "source"
+            : caseData.facts.some((fact) => fact.id === node.id)
+              ? "fact"
+              : "destination";
+        graphWrap.insertAdjacentHTML("beforeend", nodeMarkup(node, type));
+      });
+
+      const relationLines = caseData.destinations.map((destination) => ({
+        from: destination,
+        to: entity,
+        cls: "flow-line hot"
+      }));
+      const sourceLines = caseData.sources.map((source) => ({
+        from: source,
+        to: entity,
+        cls: "flow-line hot source-hot"
+      }));
+      const factLines = caseData.facts.map((fact) => ({
+        from: entity,
+        to: fact,
+        cls: "flow-line hot fact-hot"
+      }));
+
+      const paths = [...relationLines, ...sourceLines, ...factLines]
+        .map((line) => `<path class="${line.cls}" d="${linePath(line.from, line.to)}"></path>`)
+        .join("");
+      graphSvg.setAttribute("viewBox", "0 0 100 100");
+      graphSvg.innerHTML = paths;
+    }
+
+    function renderSnapshot(caseData) {
+      snapshot.innerHTML = caseData.snapshot
+        .map(([key, value]) => `<div class="kv-row"><span class="kv-key">${key}</span><span class="kv-value">${value}</span></div>`)
+        .join("");
+    }
+
+    function setCase(caseKey) {
+      activeCase = caseKey;
+      const caseData = cases[caseKey];
+      caseTitle.textContent = caseData.title;
+      caseNote.textContent = caseData.note;
+      caseBadge.textContent = caseData.badge;
+      buttons.forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.case === caseKey));
+      });
+      drawGraph(caseData);
+      renderSnapshot(caseData);
+    }
+
+    function nextCase() {
+      const keys = Object.keys(cases);
+      const index = keys.indexOf(activeCase);
+      setCase(keys[(index + 1) % keys.length]);
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setCase(button.dataset.case);
+        window.clearInterval(timer);
+        timer = window.setInterval(nextCase, 7000);
+      });
+    });
+
+    setCase(activeCase);
+    timer = window.setInterval(nextCase, 7000);
+    window.addEventListener("resize", () => setCase(activeCase));
+  </script>
+</body>
+</html>
