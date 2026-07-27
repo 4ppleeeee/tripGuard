@@ -107,7 +107,6 @@ android {
     buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("demo")
             buildConfigField("String", "QQ_APP_ID", "\"1101083114\"")
             buildConfigField("String", "WX_APP_ID", "\"wx5dfbe0a95623607b\"")
             manifestPlaceholders["QQ_AUTH_SCHEME"] = "tencent1101083114"
