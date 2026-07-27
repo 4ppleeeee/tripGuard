@@ -35,8 +35,11 @@ class DemoActivity : Activity() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private lateinit var root: LinearLayout
     private lateinit var input: EditText
+    private lateinit var chatInput: EditText
+    private lateinit var chatResultContainer: LinearLayout
     private lateinit var listContainer: LinearLayout
     private lateinit var emptyView: TextView
+    private var showingChat = false
     private val repository by lazy { TravelSourceRepository(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +62,11 @@ class DemoActivity : Activity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        if (showingChat) {
+            setupHomeView()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -84,10 +91,11 @@ class DemoActivity : Activity() {
     }
 
     private fun setupHomeView() {
+        showingChat = false
         setupBaseRoot()
 
         root.addView(text("旅行资料 MVP", 26f, true, 0xFF171717.toInt()))
-        root.addView(text("粘贴链接，或从微信/相册分享长图到 App。AI 会先判断旅行相关性，相关才入库。", 14f, false, 0xFF667085.toInt()).apply {
+        root.addView(text("粘贴链接，或从微信/相册分享长图到 App。AI 会先判断旅行相关性，相关才保存到后端知识库。", 14f, false, 0xFF667085.toInt()).apply {
             setPadding(0, dp(8), 0, dp(18))
         })
 
@@ -115,9 +123,8 @@ class DemoActivity : Activity() {
             openImagePicker()
         }, LinearLayout.LayoutParams(dp(128), dp(44)))
         actions.addView(space(dp(10), 1))
-        actions.addView(secondaryButton("清空") {
-            repository.replaceAll(emptyList())
-            renderSources()
+        actions.addView(secondaryButton("问行程") {
+            setupChatView()
         }, LinearLayout.LayoutParams(dp(88), dp(44)))
         root.addView(actions)
 
@@ -135,6 +142,54 @@ class DemoActivity : Activity() {
         root.addView(scroll, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
 
         renderSources()
+        refreshBackendSources(showToast = false)
+    }
+
+    private fun setupChatView() {
+        showingChat = true
+        setupBaseRoot()
+
+        root.addView(text("行程推荐", 26f, true, 0xFF171717.toInt()))
+        root.addView(text("基于已经入库的旅行资料回答，并返回引用来源。", 14f, false, 0xFF667085.toInt()).apply {
+            setPadding(0, dp(8), 0, dp(18))
+        })
+
+        chatInput = EditText(this).apply {
+            hint = "比如：北京周末想看花拍照，怎么安排？"
+            minLines = 3
+            maxLines = 5
+            gravity = Gravity.TOP
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            setTextColor(0xFF222222.toInt())
+            setHintTextColor(0xFF999999.toInt())
+            background = roundedBg(0xFFFFFFFF.toInt(), 0xFFE2E8F0.toInt(), 8f)
+            setPadding(dp(14), dp(12), dp(14), dp(12))
+        }
+        root.addView(chatInput, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+
+        val actions = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, dp(12), 0, dp(18))
+        }
+        actions.addView(primaryButton("生成推荐") { sendTravelQuestion() }, LinearLayout.LayoutParams(0, dp(44), 1f))
+        actions.addView(space(dp(10), 1))
+        actions.addView(secondaryButton("返回") {
+            setupHomeView()
+        }, LinearLayout.LayoutParams(dp(96), dp(44)))
+        root.addView(actions)
+
+        val scroll = ScrollView(this)
+        chatResultContainer = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+        }
+        scroll.addView(chatResultContainer)
+        root.addView(scroll, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
+
+        chatResultContainer.addView(text("输入问题后，会从后端知识库检索已保存资料再生成推荐。", 14f, false, 0xFF667085.toInt()).apply {
+            setPadding(dp(16), dp(18), dp(16), dp(18))
+            background = roundedBg(0xFFFFFFFF.toInt(), 0xFFE2E8F0.toInt(), 8f)
+        })
     }
 
     private fun handleIncomingIntent(intent: Intent, autoSave: Boolean) {
@@ -221,67 +276,26 @@ class DemoActivity : Activity() {
                         )
                     }
             }
-            val insightResult = withContext(Dispatchers.IO) {
-                runCatching { TravelInsightAnalyzer.analyze(rawText, metadata) }
+            val collectResult = withContext(Dispatchers.IO) {
+                runCatching { TravelInsightAnalyzer.collect(rawText, metadata) }
             }
-            val insight = insightResult.getOrElse {
+            val collect = collectResult.getOrElse {
                 input.setText(rawText)
                 Toast.makeText(
                     this@DemoActivity,
-                    "AI 分析失败，确认后端服务和 Lucky 反代可访问",
+                    "后端入库失败，确认后端服务和 Lucky 反代可访问",
                     Toast.LENGTH_LONG,
                 ).show()
                 return@launch
             }
 
-            if (!insight.isTravelRelated) {
-                Toast.makeText(this@DemoActivity, "这条内容看起来和旅行无关，已跳过入库", Toast.LENGTH_LONG).show()
+            if (!collect.saved) {
+                Toast.makeText(this@DemoActivity, collect.reason ?: "这条内容看起来和旅行无关，已跳过入库", Toast.LENGTH_LONG).show()
                 return@launch
             }
 
-            val resolvedUrl = XhsShareParser.normalizeResolvedUrl(metadata.resolvedUrl)
-            if (repository.findByUrl(resolvedUrl) != null) {
-                Toast.makeText(this@DemoActivity, "这条资料已经保存过", Toast.LENGTH_SHORT).show()
-                renderSources()
-                return@launch
-            }
-
-            val platform = XhsShareParser.detectPlatform("$resolvedUrl $rawText")
-                .takeIf { it != SourcePlatform.WEB || initialPlatform == SourcePlatform.WEB }
-                ?: initialPlatform
-            val now = System.currentTimeMillis()
-            val source = TravelSource(
-                id = UUID.randomUUID().toString(),
-                sourceKind = SourceKind.LINK,
-                rawText = rawText,
-                originalUrl = url,
-                resolvedUrl = resolvedUrl,
-                platform = platform,
-                title = insight.title
-                    .ifBlank {
-                        metadata.title
-                            ?.takeIf { XhsShareParser.isUsefulParsedTitle(it) }
-                            ?: XhsShareParser.deriveTitle(rawText)
-                    },
-                description = insight.bodyText.ifBlank {
-                    XhsShareParser.selectDescription(
-                        platform = platform,
-                        parsedDescription = metadata.description,
-                        rawText = rawText,
-                        resolvedUrl = resolvedUrl,
-                    ).orEmpty()
-                },
-                imageUrl = metadata.imageUrl?.takeIf { it.isNotBlank() },
-                imagePath = null,
-                insight = insight,
-                status = if (metadata.hasUsefulContent()) SourceStatus.PARSED else SourceStatus.PARTIAL,
-                error = metadata.warning,
-                createdAt = now,
-                updatedAt = now,
-            )
-            repository.upsert(source)
-            renderSources()
-            Toast.makeText(this@DemoActivity, "已入库并生成旅行卡片", Toast.LENGTH_SHORT).show()
+            refreshBackendSources(showToast = false)
+            Toast.makeText(this@DemoActivity, "已保存到后端知识库", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -296,44 +310,26 @@ class DemoActivity : Activity() {
                 return@launch
             }
 
-            val insight = withContext(Dispatchers.IO) {
-                runCatching { TravelInsightAnalyzer.analyzeImage(imageFile) }
+            val collect = withContext(Dispatchers.IO) {
+                runCatching { TravelInsightAnalyzer.collectImage(imageFile) }
             }.getOrElse {
                 Toast.makeText(
                     this@DemoActivity,
-                    "AI 图片识别失败，确认 Ollama 已启动并执行 adb reverse tcp:11434 tcp:11434",
+                    "AI 图片识别失败，确认后端服务和 Ollama 隧道可访问",
                     Toast.LENGTH_LONG,
                 ).show()
                 return@launch
             }
 
-            if (!insight.isTravelRelated || insight.title.isBlank() || insight.destination.isBlank()) {
+            if (!collect.saved) {
                 imageFile.delete()
-                Toast.makeText(this@DemoActivity, "这张图未识别出有效旅行信息，已跳过入库", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@DemoActivity, collect.reason ?: "这张图未识别出有效旅行信息，已跳过入库", Toast.LENGTH_LONG).show()
                 return@launch
             }
 
-            val now = System.currentTimeMillis()
-            val source = TravelSource(
-                id = UUID.randomUUID().toString(),
-                sourceKind = SourceKind.IMAGE,
-                rawText = insight.bodyText,
-                originalUrl = imageFile.absolutePath,
-                resolvedUrl = null,
-                platform = SourcePlatform.WEB,
-                title = insight.title,
-                description = insight.bodyText,
-                imageUrl = null,
-                imagePath = imageFile.absolutePath,
-                insight = insight,
-                status = SourceStatus.PARSED,
-                error = null,
-                createdAt = now,
-                updatedAt = now,
-            )
-            repository.upsert(source)
-            renderSources()
-            Toast.makeText(this@DemoActivity, "长图已识别并生成旅行卡片", Toast.LENGTH_SHORT).show()
+            imageFile.delete()
+            refreshBackendSources(showToast = false)
+            Toast.makeText(this@DemoActivity, "长图已保存到后端知识库", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -396,6 +392,88 @@ class DemoActivity : Activity() {
             renderSources()
         }
     }
+
+    private fun refreshBackendSources(showToast: Boolean) {
+        scope.launch {
+            val result = withContext(Dispatchers.IO) {
+                runCatching { TravelInsightAnalyzer.fetchSources() }
+            }
+            result.onSuccess { cards ->
+                val now = System.currentTimeMillis()
+                repository.replaceAll(cards.mapIndexed { index, card -> card.toTravelSource(now - index) })
+                renderSources()
+                if (showToast) {
+                    Toast.makeText(this@DemoActivity, "已刷新后端知识库", Toast.LENGTH_SHORT).show()
+                }
+            }.onFailure {
+                if (showToast) {
+                    Toast.makeText(this@DemoActivity, "刷新后端知识库失败", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun sendTravelQuestion() {
+        val message = chatInput.text?.toString()?.trim().orEmpty()
+        if (message.isBlank()) {
+            Toast.makeText(this, "先输入旅行问题", Toast.LENGTH_SHORT).show()
+            return
+        }
+        chatResultContainer.removeAllViews()
+        chatResultContainer.addView(text("正在从知识库检索并生成推荐...", 14f, false, 0xFF667085.toInt()).apply {
+            setPadding(dp(16), dp(18), dp(16), dp(18))
+            background = roundedBg(0xFFFFFFFF.toInt(), 0xFFE2E8F0.toInt(), 8f)
+        })
+        scope.launch {
+            val result = withContext(Dispatchers.IO) {
+                runCatching { TravelInsightAnalyzer.recommend(message) }
+            }
+            result.onSuccess(::renderRecommendation)
+                .onFailure {
+                    chatResultContainer.removeAllViews()
+                    chatResultContainer.addView(text("生成失败，请确认后端服务和 Ollama 隧道可访问。", 14f, false, 0xFFB3261E.toInt()).apply {
+                        setPadding(dp(16), dp(18), dp(16), dp(18))
+                        background = roundedBg(0xFFFFFFFF.toInt(), 0xFFE2E8F0.toInt(), 8f)
+                    })
+                }
+        }
+    }
+
+    private fun renderRecommendation(result: BackendRecommendResult) {
+        chatResultContainer.removeAllViews()
+        chatResultContainer.addView(text(result.answer.ifBlank { "暂时没有足够资料生成推荐。" }, 16f, false, 0xFF172033.toInt()).apply {
+            setPadding(dp(16), dp(14), dp(16), dp(14))
+            background = roundedBg(0xFFFFFFFF.toInt(), 0xFFE2E8F0.toInt(), 8f)
+        })
+        if (result.usedSources.isNotEmpty()) {
+            chatResultContainer.addView(text("引用资料", 15f, true, 0xFF344054.toInt()).apply {
+                setPadding(0, dp(16), 0, dp(8))
+            })
+            result.usedSources.forEach { source ->
+                chatResultContainer.addView(usedSourceView(source))
+                chatResultContainer.addView(space(1, dp(10)))
+            }
+        }
+    }
+
+    private fun usedSourceView(source: BackendUsedSource): View =
+        LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(14), dp(12), dp(14), dp(12))
+            background = roundedBg(0xFFFFFFFF.toInt(), 0xFFE2E8F0.toInt(), 8f)
+            addView(text(source.title, 15f, true, 0xFF172033.toInt()))
+            addView(text("${source.destination} · ${TravelCategory.fromModelValue(source.category).displayName}", 12f, false, 0xFF667085.toInt()).apply {
+                setPadding(0, dp(6), 0, 0)
+            })
+            if (source.tags.isNotEmpty()) {
+                addView(text(source.tags.take(4).joinToString("  ") { "#$it" }, 12f, true, 0xFF175CD3.toInt()).apply {
+                    setPadding(0, dp(6), 0, 0)
+                })
+            }
+            if (!source.originalUrl.isNullOrBlank()) {
+                setOnClickListener { openUrl(source.originalUrl) }
+            }
+        }
 
     private fun renderSources() {
         val sources = repository.getAll()
@@ -701,6 +779,40 @@ private data class TravelSource(
             SourceKind.IMAGE -> "来源 长图"
             SourceKind.LINK -> "来源 ${platform.displayName}"
         }
+}
+
+private fun BackendSourceCard.toTravelSource(createdAtMillis: Long): TravelSource {
+    val sourceKind = if (originalUrl.isNullOrBlank() || sourcePlatform == "image") SourceKind.IMAGE else SourceKind.LINK
+    val sourcePlatformValue = when (sourcePlatform) {
+        "xhs" -> SourcePlatform.XIAOHONGSHU
+        "mafengwo" -> SourcePlatform.MAFENGWO
+        else -> originalUrl?.let { XhsShareParser.detectPlatform(it) } ?: SourcePlatform.WEB
+    }
+    return TravelSource(
+        id = sourceId,
+        sourceKind = sourceKind,
+        rawText = "",
+        originalUrl = originalUrl ?: sourceId,
+        resolvedUrl = originalUrl,
+        platform = sourcePlatformValue,
+        title = title,
+        description = null,
+        imageUrl = coverImageUrl,
+        imagePath = null,
+        insight = TravelInsight(
+            isTravelRelated = true,
+            title = title,
+            destination = destination,
+            category = TravelCategory.fromModelValue(category),
+            tags = tags,
+            bodyText = "",
+            confidence = 1.0,
+        ),
+        status = SourceStatus.PARSED,
+        error = null,
+        createdAt = createdAtMillis,
+        updatedAt = createdAtMillis,
+    )
 }
 
 private class TravelSourceRepository(activity: Activity) {
