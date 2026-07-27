@@ -360,6 +360,246 @@
       to { stroke-dashoffset: -22; }
     }
 
+    .architecture-wrap {
+      position: relative;
+      min-height: 520px;
+      margin-top: 16px;
+      display: grid;
+      grid-template-rows: 170px 145px 170px;
+      gap: 16px;
+    }
+
+    .architecture-svg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .visual-layer {
+      position: relative;
+      z-index: 2;
+      border: 1px solid rgba(124, 231, 255, 0.18);
+      background: rgba(8, 11, 18, 0.58);
+      box-shadow: inset 0 0 28px rgba(124, 231, 255, 0.03);
+      overflow: hidden;
+    }
+
+    .visual-layer::before {
+      content: attr(data-label);
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      color: var(--cyan);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.82;
+    }
+
+    .product-layer,
+    .relation-layer {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 34px 14px 14px;
+    }
+
+    .product-entry,
+    .relation-row,
+    .entity-card,
+    .fact-pill {
+      position: relative;
+      border: 1px solid rgba(124, 231, 255, 0.24);
+      background: linear-gradient(145deg, rgba(124, 231, 255, 0.09), rgba(10, 14, 22, 0.82));
+      box-shadow: 0 0 20px rgba(124, 231, 255, 0.06);
+    }
+
+    .product-entry {
+      min-height: 104px;
+      padding: 12px 12px 12px 16px;
+    }
+
+    .product-entry::after {
+      content: "";
+      position: absolute;
+      top: 15px;
+      bottom: 15px;
+      left: 7px;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--cyan), transparent);
+      opacity: 0.72;
+    }
+
+    .product-destination,
+    .relation-key,
+    .fact-pill span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .product-path {
+      display: block;
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .product-alias {
+      display: block;
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .relation-row {
+      padding: 12px;
+      border-color: rgba(111, 255, 210, 0.32);
+      background: rgba(111, 255, 210, 0.075);
+      box-shadow: 0 0 22px rgba(111, 255, 210, 0.08);
+      overflow: hidden;
+    }
+
+    .relation-row::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: var(--mint);
+      box-shadow: 0 0 18px var(--mint);
+      opacity: 0.7;
+    }
+
+    .relation-value {
+      display: block;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.45;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    .entity-layer {
+      display: grid;
+      grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.28fr);
+      gap: 14px;
+      padding: 34px 14px 14px;
+    }
+
+    .entity-card {
+      padding: 18px;
+      border-color: rgba(255, 209, 102, 0.72);
+      background: linear-gradient(145deg, rgba(72, 58, 24, 0.96), rgba(12, 15, 23, 0.99));
+      box-shadow: 0 0 38px rgba(255, 209, 102, 0.2), inset 0 0 30px rgba(255, 209, 102, 0.06);
+    }
+
+    .entity-card strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+
+    .entity-card code {
+      display: block;
+      color: var(--amber);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+    }
+
+    .entity-facts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .fact-pill {
+      padding: 12px;
+      border-color: rgba(114, 255, 141, 0.26);
+      background: rgba(114, 255, 141, 0.055);
+    }
+
+    .fact-pill strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .architecture-line {
+      stroke: var(--mint);
+      stroke-width: 2;
+      fill: none;
+      stroke-dasharray: 8 10;
+      animation: dash 1.25s linear infinite;
+      filter: drop-shadow(0 0 8px rgba(111, 255, 210, 0.62));
+    }
+
+    .architecture-line.to-entity {
+      stroke: var(--amber);
+      filter: drop-shadow(0 0 8px rgba(255, 209, 102, 0.56));
+    }
+
+    .duplicate-warning {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: 12px;
+      margin-top: 14px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .bad-model,
+    .good-model {
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .bad-model {
+      border-color: rgba(255, 107, 122, 0.28);
+    }
+
+    .good-model {
+      border-color: rgba(111, 255, 210, 0.28);
+    }
+
+    .model-title {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .bad-model .model-title {
+      color: var(--red);
+    }
+
+    .good-model .model-title {
+      color: var(--mint);
+    }
+
+    .model-text {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      white-space: pre-wrap;
+    }
+
     .detail-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -518,8 +758,18 @@
       }
 
       .schema,
-      .pipeline {
+      .pipeline,
+      .product-layer,
+      .relation-layer,
+      .entity-layer,
+      .entity-facts,
+      .duplicate-warning {
         grid-template-columns: 1fr;
+      }
+
+      .architecture-wrap {
+        min-height: 980px;
+        grid-template-rows: auto auto auto;
       }
 
       .pipe-step::after {
@@ -634,8 +884,22 @@
         <span class="badge" id="caseBadge">canonical_entity_id: place:cn-beijing:palace_museum</span>
       </div>
 
-      <div class="graph-wrap" id="graphWrap">
-        <svg class="graph" id="graphSvg" aria-hidden="true"></svg>
+      <div class="architecture-wrap" id="architectureWrap">
+        <svg class="architecture-svg" id="architectureSvg" aria-hidden="true"></svg>
+        <div class="visual-layer product-layer" id="productLayer" data-label="Product Navigation Layer"></div>
+        <div class="visual-layer relation-layer" id="relationLayer" data-label="Multi-scope Relation Index"></div>
+        <div class="visual-layer entity-layer" id="entityLayer" data-label="Canonical Knowledge Entity"></div>
+      </div>
+
+      <div class="duplicate-warning">
+        <div class="bad-model">
+          <span class="model-title">Bad: duplicated copies</span>
+          <span class="model-text" id="badModelText">多个 destination 下各存一份实体，后续会带来去重、更新、引用和冲突问题。</span>
+        </div>
+        <div class="good-model">
+          <span class="model-title">Good: one entity, many indexes</span>
+          <span class="model-text" id="goodModelText">产品上可以多处出现，底层只保存一个 canonical entity，所有入口通过 relation 指向它。</span>
+        </div>
       </div>
     </section>
 
@@ -752,173 +1016,189 @@ valid_to</code>
   <script>
     const cases = {
       palace: {
-        title: "故宫：多来源归一到一个地点实体",
-        note: "地图、公众号、旅游局抓到的是不同 source document，但都指向同一个故宫实体；事实按来源和版本挂在实体下。",
+        title: "故宫：产品上多入口，底层只有一个地点实体",
+        note: "故宫可以从中国、北京、东城区多个入口被看到；这些入口不是实体副本，而是 destination relation 指向同一个 canonical entity。",
         badge: "canonical_entity_id: place:cn-beijing:palace_museum",
-        entity: { label: "Canonical Entity", name: "故宫", meta: "place:cn-beijing:palace_museum" },
-        destinations: [
-          { id: "china", label: "Destination", name: "中国", meta: "country · located_in", x: 17, y: 24 },
-          { id: "beijing", label: "Destination", name: "北京", meta: "city · located_in", x: 14, y: 48 },
-          { id: "dongcheng", label: "Destination", name: "东城区", meta: "district · located_in", x: 18, y: 72 }
+        entity: {
+          name: "故宫",
+          id: "place:cn-beijing:palace_museum",
+          type: "place"
+        },
+        productEntries: [
+          { id: "product-0", destination: "中国", path: "北京 / 故宫", alias: "国家入口下的目的地知识" },
+          { id: "product-1", destination: "北京", path: "故宫", alias: "城市入口下的核心景点" },
+          { id: "product-2", destination: "东城区", path: "故宫", alias: "区域入口下的 POI" }
         ],
-        sources: [
-          { id: "map", label: "Source", name: "地图抓取", meta: "地址 / 经纬度 / POI ID", x: 82, y: 23 },
-          { id: "wechat", label: "Source", name: "公众号", meta: "开放时间 / 闭馆通知", x: 86, y: 49 },
-          { id: "bureau", label: "Source", name: "旅游局", meta: "玩法 / 游客提示", x: 82, y: 74 }
+        relations: [
+          { id: "relation-0", destination: "country:CN", type: "country", entityId: "place:cn-beijing:palace_museum" },
+          { id: "relation-1", destination: "city:CN-BEIJING", type: "city", entityId: "place:cn-beijing:palace_museum" },
+          { id: "relation-2", destination: "district:CN-BEIJING-DONGCHENG", type: "district", entityId: "place:cn-beijing:palace_museum" }
         ],
-        facts: [
-          { id: "address", label: "Fact", name: "地址 / 经纬度", meta: "provider: map", x: 50, y: 16 },
-          { id: "hours", label: "Fact", name: "开放时间", meta: "provider: official account", x: 50, y: 84 }
-        ],
+        facts: ["地址 / 经纬度", "开放时间", "门票政策"],
+        bad: "中国/北京/东城区各存一份故宫实体\\n=> 地址、开放时间、门票需要多处更新",
+        good: "中国、北京、东城区只是入口\\n=> 3 条 relation 指向同一个 place entity",
         snapshot: [
           ["entity_type", "place"],
           ["destination_relations", "中国: country, 北京: city, 东城区: district"],
-          ["source_documents", "地图、公众号、旅游局分别保留原始证据"],
-          ["entity_facts", "地址、经纬度、开放时间、门票政策、游玩提示"]
+          ["product_view", "中国、北京、东城区多个入口都可以展示故宫"],
+          ["canonical_rule", "底层只维护 place:cn-beijing:palace_museum 一个实体"]
         ]
       },
       visa: {
-        title: "签证：同一个政策实体挂到出发国和目的国",
-        note: "中国护照去日本旅游签证可以从中国出境信息找到，也可以从日本入境信息找到；底层仍然只有一个 policy entity。",
+        title: "签证：同一个政策实体同时出现在中国和日本下",
+        note: "中国入口可以展示“去日本签证”，日本入口可以展示“中国护照旅游签证”；产品文案不同，但 relation 指向同一个 visa policy。",
         badge: "canonical_entity_id: visa_policy:cn-jp:ordinary:tourism",
-        entity: { label: "Canonical Entity", name: "中国护照去日本旅游签证", meta: "visa_policy:cn-jp:ordinary:tourism" },
-        destinations: [
-          { id: "china", label: "Destination", name: "中国", meta: "origin_country", x: 16, y: 34 },
-          { id: "japan", label: "Destination", name: "日本", meta: "target_country", x: 16, y: 66 }
+        entity: {
+          name: "中国护照去日本旅游签证",
+          id: "visa_policy:cn-jp:ordinary:tourism",
+          type: "visa_policy"
+        },
+        productEntries: [
+          { id: "product-0", destination: "中国", path: "去日本签证", alias: "origin_country 入口" },
+          { id: "product-1", destination: "日本", path: "中国护照旅游签证", alias: "target_country 入口" },
+          { id: "product-2", destination: "日本", path: "入境政策 / 中国游客", alias: "同一实体的另一种产品展示" }
         ],
-        sources: [
-          { id: "embassy", label: "Source", name: "使领馆页面", meta: "政策原文 / 材料清单", x: 84, y: 28 },
-          { id: "partner", label: "Source", name: "合作方抓取", meta: "费用 / 办理时效", x: 86, y: 52 },
-          { id: "gov", label: "Source", name: "官方公告", meta: "生效时间 / 失效时间", x: 82, y: 76 }
+        relations: [
+          { id: "relation-0", destination: "country:CN", type: "origin_country", entityId: "visa_policy:cn-jp:ordinary:tourism" },
+          { id: "relation-1", destination: "country:JP", type: "target_country", entityId: "visa_policy:cn-jp:ordinary:tourism" },
+          { id: "relation-2", destination: "country:JP", type: "inbound_policy", entityId: "visa_policy:cn-jp:ordinary:tourism" }
         ],
-        facts: [
-          { id: "docs", label: "Fact", name: "所需材料", meta: "versioned fact", x: 50, y: 17 },
-          { id: "stay", label: "Fact", name: "停留天数 / 费用", meta: "active / superseded", x: 50, y: 84 }
-        ],
+        facts: ["所需材料", "停留天数 / 费用", "有效期 / 生效时间"],
+        bad: "中国下存一份去日本签证，日本下再存一份中国护照签证\\n=> 政策更新、引用来源和冲突判断都会重复",
+        good: "中国和日本都是索引入口\\n=> relation.origin_country / target_country 指向同一个 policy",
         snapshot: [
           ["entity_type", "visa_policy"],
-          ["destination_relations", "中国: origin_country, 日本: target_country"],
-          ["identity_key", "passport_country + destination_country + purpose + passport_type"],
-          ["entity_facts", "是否需要签证、停留天数、材料、费用、办理时长、有效期"]
+          ["destination_relations", "中国: origin_country, 日本: target_country / inbound_policy"],
+          ["product_view", "中国下显示“去日本签证”，日本下显示“中国护照旅游签证”"],
+          ["canonical_rule", "底层只维护 visa_policy:cn-jp:ordinary:tourism 一个实体"]
         ]
       },
       route: {
-        title: "路线：同一条跨城交通挂到东京和京都",
-        note: "东京到京都新干线不是东京下面的一份、京都下面的一份，而是一个 route entity 同时拥有 from_city 和 to_city 关系。",
+        title: "路线：东京和京都下都能看到同一条新干线",
+        note: "东京到京都新干线可以从东京、京都、日本跨城交通三个入口召回；底层不是三条路线，而是一条 route entity。",
         badge: "canonical_entity_id: route:jp:tokyo-kyoto:shinkansen",
-        entity: { label: "Canonical Entity", name: "东京到京都新干线", meta: "route:jp:tokyo-kyoto:shinkansen" },
-        destinations: [
-          { id: "japan", label: "Destination", name: "日本", meta: "country", x: 17, y: 24 },
-          { id: "tokyo", label: "Destination", name: "东京", meta: "from_city", x: 14, y: 50 },
-          { id: "kyoto", label: "Destination", name: "京都", meta: "to_city", x: 18, y: 76 }
+        entity: {
+          name: "东京到京都新干线",
+          id: "route:jp:tokyo-kyoto:shinkansen",
+          type: "transport_route"
+        },
+        productEntries: [
+          { id: "product-0", destination: "东京", path: "去京都新干线", alias: "from_city 入口" },
+          { id: "product-1", destination: "京都", path: "从东京抵达", alias: "to_city 入口" },
+          { id: "product-2", destination: "日本", path: "东京 ↔ 京都跨城交通", alias: "country 入口" }
         ],
-        sources: [
-          { id: "rail", label: "Source", name: "铁路官网", meta: "班次 / 车站", x: 84, y: 26 },
-          { id: "map", label: "Source", name: "地图路线", meta: "耗时 / 换乘", x: 86, y: 52 },
-          { id: "partner", label: "Source", name: "合作方票务", meta: "价格 / 购票建议", x: 82, y: 76 }
+        relations: [
+          { id: "relation-0", destination: "city:JP-TOKYO", type: "from_city", entityId: "route:jp:tokyo-kyoto:shinkansen" },
+          { id: "relation-1", destination: "city:JP-KYOTO", type: "to_city", entityId: "route:jp:tokyo-kyoto:shinkansen" },
+          { id: "relation-2", destination: "country:JP", type: "country", entityId: "route:jp:tokyo-kyoto:shinkansen" }
         ],
-        facts: [
-          { id: "duration", label: "Fact", name: "时长 / 班次", meta: "provider: rail", x: 50, y: 16 },
-          { id: "ticket", label: "Fact", name: "价格 / 购票", meta: "provider: partner", x: 50, y: 84 }
-        ],
+        facts: ["交通方式 / 耗时", "出发站 / 到达站", "价格 / 购票建议"],
+        bad: "东京下存一份，京都下存一份，日本交通再存一份\\n=> 票价更新、去重和 Agent used_sources 都会混乱",
+        good: "东京、京都、日本都是召回入口\\n=> 3 条 relation 指向同一个 route entity",
         snapshot: [
           ["entity_type", "transport_route"],
-          ["destination_relations", "日本: country, 东京: from_city, 京都: to_city"],
-          ["identity_key", "from + to + transport_mode + main_operator"],
-          ["entity_facts", "交通方式、耗时、出发站、到达站、票价、购票建议"]
+          ["destination_relations", "东京: from_city, 京都: to_city, 日本: country"],
+          ["product_view", "东京、京都、日本跨城交通下都可以展示这条路线"],
+          ["canonical_rule", "底层只维护 route:jp:tokyo-kyoto:shinkansen 一个实体"]
         ]
       }
     };
 
-    const graphWrap = document.getElementById("graphWrap");
-    const graphSvg = document.getElementById("graphSvg");
+    const architectureWrap = document.getElementById("architectureWrap");
+    const architectureSvg = document.getElementById("architectureSvg");
+    const productLayer = document.getElementById("productLayer");
+    const relationLayer = document.getElementById("relationLayer");
+    const entityLayer = document.getElementById("entityLayer");
     const caseTitle = document.getElementById("caseTitle");
     const caseNote = document.getElementById("caseNote");
     const caseBadge = document.getElementById("caseBadge");
+    const badModelText = document.getElementById("badModelText");
+    const goodModelText = document.getElementById("goodModelText");
     const snapshot = document.getElementById("snapshot");
     const buttons = Array.from(document.querySelectorAll(".case-button"));
     let activeCase = "palace";
     let timer = null;
 
-    function nodeMarkup(node, type) {
-      return `<div class="node ${type}" id="node-${node.id}" style="left:${node.x}%;top:${node.y}%">
-        <span class="node-label">${node.label}</span>
-        <span class="node-name">${node.name}</span>
-        <span class="node-meta">${node.meta}</span>
-      </div>`;
+    function renderProductLayer(caseData) {
+      productLayer.innerHTML = caseData.productEntries.map((entry) => `
+        <div class="product-entry" id="${entry.id}">
+          <span class="product-destination">${entry.destination}</span>
+          <span class="product-path">${entry.path}</span>
+          <span class="product-alias">${entry.alias}</span>
+        </div>
+      `).join("");
     }
 
-    function linePath(from, to) {
-      const dx = Math.abs(to.x - from.x);
-      const c1x = from.x + dx * 0.42;
-      const c2x = to.x - dx * 0.42;
-      return `M ${from.x} ${from.y} C ${c1x} ${from.y}, ${c2x} ${to.y}, ${to.x} ${to.y}`;
+    function renderRelationLayer(caseData) {
+      relationLayer.innerHTML = caseData.relations.map((relation) => `
+        <div class="relation-row" id="${relation.id}">
+          <span class="relation-key">${relation.destination} · ${relation.type}</span>
+          <span class="relation-value">entity_id<br>${relation.entityId}</span>
+        </div>
+      `).join("");
     }
 
-    function withResponsivePositions(caseData) {
-      const small = window.matchMedia("(max-width: 640px)").matches;
-      if (!small) return caseData;
-      const destinationY = caseData.destinations.length === 2 ? [28, 78] : [20, 40, 80];
-      const sourceY = caseData.sources.length === 2 ? [28, 78] : [20, 40, 80];
+    function renderEntityLayer(caseData) {
+      entityLayer.innerHTML = `
+        <div class="entity-card" id="canonicalEntity">
+          <strong>${caseData.entity.name}</strong>
+          <code>entity_type = ${caseData.entity.type}<br>entity_id = ${caseData.entity.id}</code>
+        </div>
+        <div class="entity-facts">
+          ${caseData.facts.map((fact, index) => `
+            <div class="fact-pill">
+              <span>Entity Fact ${String(index + 1).padStart(2, "0")}</span>
+              <strong>${fact}</strong>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function centerOf(element, rootBox) {
+      const box = element.getBoundingClientRect();
       return {
-        ...caseData,
-        entityPosition: { x: 50, y: 58 },
-        destinations: caseData.destinations.map((destination, index) => ({
-          ...destination,
-          x: 19,
-          y: destinationY[index]
-        })),
-        sources: caseData.sources.map((source, index) => ({
-          ...source,
-          x: 83,
-          y: sourceY[index]
-        })),
-        facts: caseData.facts.map((fact, index) => ({
-          ...fact,
-          x: 50,
-          y: index === 0 ? 12 : 92
-        }))
+        x: box.left - rootBox.left + box.width / 2,
+        y: box.top - rootBox.top + box.height / 2
       };
     }
 
-    function drawGraph(caseData) {
-      caseData = withResponsivePositions(caseData);
-      const entityPosition = caseData.entityPosition || { x: 50, y: 50 };
-      const entity = { ...caseData.entity, id: "entity", ...entityPosition };
-      const nodes = [...caseData.destinations, ...caseData.sources, ...caseData.facts, entity];
-      graphWrap.querySelectorAll(".node").forEach((node) => node.remove());
-      nodes.forEach((node) => {
-        const type = node.id === "entity"
-          ? "entity active"
-          : caseData.sources.some((source) => source.id === node.id)
-            ? "source"
-            : caseData.facts.some((fact) => fact.id === node.id)
-              ? "fact"
-              : "destination";
-        graphWrap.insertAdjacentHTML("beforeend", nodeMarkup(node, type));
+    function curvedPath(from, to) {
+      const dy = Math.abs(to.y - from.y);
+      const c1y = from.y + dy * 0.45;
+      const c2y = to.y - dy * 0.45;
+      return `M ${from.x} ${from.y} C ${from.x} ${c1y}, ${to.x} ${c2y}, ${to.x} ${to.y}`;
+    }
+
+    function drawArchitectureLines(caseData) {
+      const rootBox = architectureWrap.getBoundingClientRect();
+      architectureSvg.setAttribute("viewBox", `0 0 ${rootBox.width} ${rootBox.height}`);
+      architectureSvg.innerHTML = "";
+
+      caseData.productEntries.forEach((entry, index) => {
+        const product = document.getElementById(entry.id);
+        const relation = document.getElementById(caseData.relations[index].id);
+        if (!product || !relation) return;
+        const from = centerOf(product, rootBox);
+        const to = centerOf(relation, rootBox);
+        architectureSvg.insertAdjacentHTML("beforeend", `<path class="architecture-line" d="${curvedPath(from, to)}"></path>`);
       });
 
-      const relationLines = caseData.destinations.map((destination) => ({
-        from: destination,
-        to: entity,
-        cls: "flow-line hot"
-      }));
-      const sourceLines = caseData.sources.map((source) => ({
-        from: source,
-        to: entity,
-        cls: "flow-line hot source-hot"
-      }));
-      const factLines = caseData.facts.map((fact) => ({
-        from: entity,
-        to: fact,
-        cls: "flow-line hot fact-hot"
-      }));
+      const entity = document.getElementById("canonicalEntity");
+      caseData.relations.forEach((relationItem) => {
+        const relation = document.getElementById(relationItem.id);
+        if (!relation || !entity) return;
+        const from = centerOf(relation, rootBox);
+        const to = centerOf(entity, rootBox);
+        architectureSvg.insertAdjacentHTML("beforeend", `<path class="architecture-line to-entity" d="${curvedPath(from, to)}"></path>`);
+      });
+    }
 
-      const paths = [...relationLines, ...sourceLines, ...factLines]
-        .map((line) => `<path class="${line.cls}" d="${linePath(line.from, line.to)}"></path>`)
-        .join("");
-      graphSvg.setAttribute("viewBox", "0 0 100 100");
-      graphSvg.innerHTML = paths;
+    function renderArchitecture(caseData) {
+      renderProductLayer(caseData);
+      renderRelationLayer(caseData);
+      renderEntityLayer(caseData);
+      requestAnimationFrame(() => drawArchitectureLines(caseData));
     }
 
     function renderSnapshot(caseData) {
@@ -933,10 +1213,12 @@ valid_to</code>
       caseTitle.textContent = caseData.title;
       caseNote.textContent = caseData.note;
       caseBadge.textContent = caseData.badge;
+      badModelText.textContent = caseData.bad;
+      goodModelText.textContent = caseData.good;
       buttons.forEach((button) => {
         button.setAttribute("aria-pressed", String(button.dataset.case === caseKey));
       });
-      drawGraph(caseData);
+      renderArchitecture(caseData);
       renderSnapshot(caseData);
     }
 
@@ -956,7 +1238,10 @@ valid_to</code>
 
     setCase(activeCase);
     timer = window.setInterval(nextCase, 7000);
-    window.addEventListener("resize", () => setCase(activeCase));
+    window.addEventListener("resize", () => {
+      window.clearTimeout(window.__tripGuardResizeTimer);
+      window.__tripGuardResizeTimer = window.setTimeout(() => setCase(activeCase), 120);
+    });
   </script>
 </body>
 </html>
