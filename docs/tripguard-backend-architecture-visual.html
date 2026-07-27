@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TripGuard 后端架构演示</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080a10;
+      --panel: rgba(15, 19, 30, 0.86);
+      --panel-soft: rgba(124, 231, 255, 0.07);
+      --text: #f4f7fb;
+      --muted: #9aa8bd;
+      --cyan: #7ce7ff;
+      --mint: #68ffd2;
+      --amber: #ffd166;
+      --pink: #ff6bd6;
+      --red: #ff6b7a;
+      --green: #72ff8d;
+      --line: rgba(124, 231, 255, 0.32);
+      --shadow-cyan: rgba(124, 231, 255, 0.28);
+      --shadow-mint: rgba(104, 255, 210, 0.24);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        linear-gradient(90deg, rgba(124, 231, 255, 0.055) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(124, 231, 255, 0.045) 1px, transparent 1px),
+        radial-gradient(circle at 12% 18%, rgba(104, 255, 210, 0.13), transparent 28%),
+        radial-gradient(circle at 82% 62%, rgba(255, 107, 214, 0.1), transparent 24%),
+        radial-gradient(circle at 52% 92%, rgba(255, 209, 102, 0.08), transparent 30%),
+        var(--bg);
+      background-size: 42px 42px, 42px 42px, auto, auto, auto, auto;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, transparent 0, rgba(255, 255, 255, 0.035) 50%, transparent 100%);
+      background-size: 100% 7px;
+      mix-blend-mode: screen;
+      opacity: 0.35;
+      animation: scan 8s linear infinite;
+    }
+
+    @keyframes scan {
+      from { transform: translateY(-40px); }
+      to { transform: translateY(40px); }
+    }
+
+    .shell {
+      width: min(1480px, calc(100vw - 40px));
+      margin: 0 auto;
+      padding: 34px 0 42px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 22px;
+      margin-bottom: 20px;
+    }
+
+    .panel,
+    .hero-main,
+    .signals,
+    .board,
+    .detail-panel {
+      position: relative;
+      border: 1px solid rgba(124, 231, 255, 0.22);
+      background: linear-gradient(145deg, rgba(16, 20, 31, 0.92), rgba(8, 11, 18, 0.74));
+      box-shadow: 0 0 36px rgba(0, 0, 0, 0.28), inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+      overflow: hidden;
+    }
+
+    .hero-main,
+    .signals,
+    .board,
+    .detail-panel {
+      padding: 22px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--cyan);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: var(--mint);
+      box-shadow: 0 0 18px var(--mint);
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      max-width: 900px;
+      font-size: clamp(34px, 4vw, 64px);
+      line-height: 1.03;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 820px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .chip {
+      border: 1px solid rgba(124, 231, 255, 0.28);
+      background: rgba(124, 231, 255, 0.07);
+      color: var(--text);
+      padding: 8px 11px;
+      font-size: 13px;
+    }
+
+    .signals {
+      display: grid;
+      gap: 14px;
+      align-content: center;
+    }
+
+    .signal-row {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .signal-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .signal-value {
+      position: relative;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.07);
+      overflow: hidden;
+    }
+
+    .signal-value span {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: var(--w);
+      background: linear-gradient(90deg, var(--cyan), var(--mint));
+      box-shadow: 0 0 20px var(--shadow-cyan);
+      animation: pulseWidth 2.8s ease-in-out infinite;
+    }
+
+    @keyframes pulseWidth {
+      0%, 100% { opacity: 0.72; transform: scaleX(0.92); transform-origin: left; }
+      50% { opacity: 1; transform: scaleX(1); transform-origin: left; }
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .mode-button {
+      appearance: none;
+      border: 1px solid rgba(124, 231, 255, 0.25);
+      color: var(--muted);
+      background: rgba(14, 18, 28, 0.78);
+      padding: 10px 14px;
+      min-height: 42px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: border-color 180ms ease, color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .mode-button[aria-pressed="true"] {
+      color: var(--text);
+      border-color: rgba(104, 255, 210, 0.8);
+      background: rgba(104, 255, 210, 0.12);
+      box-shadow: 0 0 24px rgba(104, 255, 210, 0.18);
+    }
+
+    .board-header {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .board-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .board-note {
+      margin: 5px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .badge {
+      color: var(--mint);
+      border: 1px solid rgba(104, 255, 210, 0.35);
+      background: rgba(104, 255, 210, 0.08);
+      padding: 8px 10px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .flow-board {
+      position: relative;
+      min-height: 690px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      z-index: 2;
+    }
+
+    .flow-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .lane {
+      position: relative;
+      z-index: 2;
+      min-height: 690px;
+      padding: 34px 12px 12px;
+      border: 1px solid rgba(124, 231, 255, 0.16);
+      background: rgba(8, 11, 18, 0.54);
+    }
+
+    .lane::before {
+      content: attr(data-label);
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      color: var(--cyan);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.82;
+    }
+
+    .node {
+      position: relative;
+      min-height: 94px;
+      margin-bottom: 12px;
+      padding: 12px;
+      border: 1px solid rgba(124, 231, 255, 0.23);
+      background: linear-gradient(145deg, rgba(124, 231, 255, 0.085), rgba(10, 14, 22, 0.82));
+      box-shadow: 0 0 20px rgba(124, 231, 255, 0.055);
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+    }
+
+    .node.dim {
+      opacity: 0.42;
+    }
+
+    .node.active {
+      border-color: rgba(104, 255, 210, 0.86);
+      box-shadow: 0 0 30px var(--shadow-mint), inset 0 0 24px rgba(104, 255, 210, 0.06);
+      transform: translateY(-2px);
+    }
+
+    .node.warn {
+      border-color: rgba(255, 209, 102, 0.58);
+    }
+
+    .node-label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .node-name {
+      display: block;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .node-meta {
+      display: block;
+      color: var(--muted);
+      margin-top: 7px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .flow-line {
+      stroke: rgba(124, 231, 255, 0.18);
+      stroke-width: 1.4;
+      fill: none;
+    }
+
+    .flow-line.active {
+      stroke: var(--mint);
+      stroke-width: 2.4;
+      stroke-dasharray: 10 12;
+      animation: dash 1.15s linear infinite;
+      filter: drop-shadow(0 0 9px rgba(104, 255, 210, 0.62));
+    }
+
+    .flow-line.partner {
+      stroke: var(--amber);
+      filter: drop-shadow(0 0 9px rgba(255, 209, 102, 0.58));
+    }
+
+    .flow-line.query {
+      stroke: var(--pink);
+      filter: drop-shadow(0 0 9px rgba(255, 107, 214, 0.58));
+    }
+
+    @keyframes dash {
+      to { stroke-dashoffset: -22; }
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .detail-panel h2 {
+      margin: 0 0 14px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .kv {
+      display: grid;
+      gap: 9px;
+    }
+
+    .kv-row {
+      display: grid;
+      grid-template-columns: 132px 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .kv-key {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .kv-value {
+      color: var(--text);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .risk-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .risk-card {
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .risk-card strong {
+      display: block;
+      color: var(--amber);
+      font-size: 14px;
+      margin-bottom: 7px;
+      line-height: 1.35;
+    }
+
+    .risk-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .schema {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .schema-card {
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .schema-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--mint);
+      font-size: 14px;
+    }
+
+    .schema-card code {
+      display: block;
+      color: var(--muted);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .ticker {
+      margin-top: 18px;
+      border: 1px solid rgba(124, 231, 255, 0.22);
+      background: rgba(124, 231, 255, 0.055);
+      overflow: hidden;
+    }
+
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: ticker 26s linear infinite;
+    }
+
+    .ticker-track span {
+      padding: 11px 24px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @media (max-width: 1180px) {
+      .flow-board {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        min-height: 980px;
+      }
+
+      .lane {
+        min-height: auto;
+      }
+
+      .schema {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .hero,
+      .detail-grid,
+      .risk-grid,
+      .schema {
+        grid-template-columns: 1fr;
+      }
+
+      .board-header {
+        flex-direction: column;
+      }
+
+      .badge {
+        white-space: normal;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(100vw - 24px, 560px);
+        padding: 18px 0 28px;
+      }
+
+      .hero-main,
+      .signals,
+      .board,
+      .detail-panel {
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .signal-row,
+      .kv-row,
+      .flow-board {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-board {
+        min-height: auto;
+      }
+
+      .node {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero" aria-label="TripGuard 后端架构">
+      <div class="hero-main">
+        <span class="eyebrow">TripGuard Backend Control Plane</span>
+        <h1>旅行知识库后端架构</h1>
+        <p class="subtitle">后端不是简单调 LLM，而是把用户收藏和合作方官方抓取两条输入线，统一编排成可追溯、可归一、可检索、可引用的旅行知识库，再由 Agent 基于检索结果生成答案。</p>
+        <div class="chips">
+          <span class="chip">User Collection</span>
+          <span class="chip">Trusted Partner Ingestion</span>
+          <span class="chip">Canonical Entity</span>
+          <span class="chip">Hybrid Retrieval</span>
+          <span class="chip">Agent with used_sources</span>
+        </div>
+      </div>
+
+      <aside class="signals" aria-label="后端能力指标">
+        <div class="signal-row">
+          <span class="signal-label">输入可扩展</span>
+          <span class="signal-value"><span style="--w: 90%"></span></span>
+        </div>
+        <div class="signal-row">
+          <span class="signal-label">实体可归一</span>
+          <span class="signal-value"><span style="--w: 86%"></span></span>
+        </div>
+        <div class="signal-row">
+          <span class="signal-label">事实可追溯</span>
+          <span class="signal-value"><span style="--w: 92%"></span></span>
+        </div>
+        <div class="signal-row">
+          <span class="signal-label">回答可引用</span>
+          <span class="signal-value"><span style="--w: 88%"></span></span>
+        </div>
+      </aside>
+    </section>
+
+    <nav class="controls" aria-label="链路切换">
+      <button class="mode-button" type="button" data-mode="collect" aria-pressed="true">用户收藏入库</button>
+      <button class="mode-button" type="button" data-mode="partner" aria-pressed="false">官方信息同步</button>
+      <button class="mode-button" type="button" data-mode="rag" aria-pressed="false">行程问答 RAG</button>
+    </nav>
+
+    <section class="board" aria-label="后端架构链路图">
+      <div class="board-header">
+        <div>
+          <h2 class="board-title" id="modeTitle">用户收藏入库：从链接/长图到个人知识卡片</h2>
+          <p class="board-note" id="modeNote">前端只负责采集入口和状态展示，后端完成解析、旅行相关判断、结构化抽取、实体挂载、chunk 与索引。</p>
+        </div>
+        <span class="badge" id="modeBadge">POST /sources/collect · /sources/collect-image</span>
+      </div>
+
+      <div class="flow-board" id="flowBoard">
+        <svg class="flow-svg" id="flowSvg" aria-hidden="true"></svg>
+        <div class="lane" data-label="Input">
+          <div class="node active" id="user_input">
+            <span class="node-label">用户端输入</span>
+            <span class="node-name">链接 / 分享文本 / 长图</span>
+            <span class="node-meta">App 负责采集、上传、展示状态。</span>
+          </div>
+          <div class="node dim" id="partner_input">
+            <span class="node-label">合作方输入</span>
+            <span class="node-name">官方渠道抓取任务</span>
+            <span class="node-meta">地图、公众号、旅游局、合作方数据。</span>
+          </div>
+          <div class="node dim" id="query_input">
+            <span class="node-label">用户问题</span>
+            <span class="node-name">行程规划 / 推荐询问</span>
+            <span class="node-meta">目的地、天数、偏好、排除项。</span>
+          </div>
+        </div>
+
+        <div class="lane" data-label="Ingestion & Parsing">
+          <div class="node active" id="api">
+            <span class="node-label">API 接入层</span>
+            <span class="node-name">FastAPI Gateway</span>
+            <span class="node-meta">鉴权、限流、任务创建、输入类型判断。</span>
+          </div>
+          <div class="node active" id="parser">
+            <span class="node-label">解析层</span>
+            <span class="node-name">Parser / OCR / Platform Worker</span>
+            <span class="node-meta">网页正文、小红书、马蜂窝、长图 OCR、fallback。</span>
+          </div>
+          <div class="node warn dim" id="crawl_job">
+            <span class="node-label">定时任务</span>
+            <span class="node-name">Crawler Job Orchestrator</span>
+            <span class="node-meta">抓取中台按目的地、POI、政策主题定期更新。</span>
+          </div>
+        </div>
+
+        <div class="lane" data-label="Knowledge Normalization">
+          <div class="node active" id="raw_doc">
+            <span class="node-label">原始证据层</span>
+            <span class="node-name">Source Documents</span>
+            <span class="node-meta">保留原文、URL、抓取时间、provider、hash。</span>
+          </div>
+          <div class="node active" id="analysis">
+            <span class="node-label">AI 结构化</span>
+            <span class="node-name">旅行相关 / 目的地 / 分类 / tags</span>
+            <span class="node-meta">Gemma/Ollama 输出稳定 JSON schema。</span>
+          </div>
+          <div class="node active" id="entity">
+            <span class="node-label">实体归一</span>
+            <span class="node-name">Canonical Entity Resolver</span>
+            <span class="node-meta">名称、外部 ID、地理、规则、LLM、人审兜底。</span>
+          </div>
+        </div>
+
+        <div class="lane" data-label="Knowledge Storage">
+          <div class="node active" id="kb">
+            <span class="node-label">核心知识库</span>
+            <span class="node-name">Entity / Relation / Facts</span>
+            <span class="node-meta">一个实体，多目的地挂载；事实带来源和版本。</span>
+          </div>
+          <div class="node active" id="chunks">
+            <span class="node-label">检索材料</span>
+            <span class="node-name">Chunks / Keywords / Embeddings</span>
+            <span class="node-meta">正文切片、关键词索引、向量索引。</span>
+          </div>
+          <div class="node dim" id="itinerary_store">
+            <span class="node-label">用户资产</span>
+            <span class="node-name">Cards / Itinerary Drafts</span>
+            <span class="node-meta">展示卡片、收藏状态、行程草稿。</span>
+          </div>
+        </div>
+
+        <div class="lane" data-label="Retrieval & Agent">
+          <div class="node dim" id="intent">
+            <span class="node-label">问题理解</span>
+            <span class="node-name">Intent Parser</span>
+            <span class="node-meta">目的地、天数、偏好、负向约束。</span>
+          </div>
+          <div class="node dim" id="retrieval">
+            <span class="node-label">混合检索</span>
+            <span class="node-name">SQL + Keyword + Vector</span>
+            <span class="node-meta">hard filter、soft boost、放宽策略、rerank。</span>
+          </div>
+          <div class="node dim" id="agent">
+            <span class="node-label">Agent 生成</span>
+            <span class="node-name">Answer + used_sources</span>
+            <span class="node-meta">只基于检索上下文回答，不足时追问或说明不足。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail-grid" aria-label="职责和难点">
+      <article class="detail-panel">
+        <h2 id="responsibilityTitle">当前链路职责</h2>
+        <div class="kv" id="responsibility"></div>
+      </article>
+      <article class="detail-panel">
+        <h2>后端关键难点</h2>
+        <div class="risk-grid">
+          <div class="risk-card">
+            <strong>平台解析不稳定</strong>
+            <span>不同平台短链、登录态、反爬、页面结构都不同，需要 worker 和 fallback。</span>
+          </div>
+          <div class="risk-card">
+            <strong>实体归一</strong>
+            <span>故宫、签证、路线都可能来自多个来源，必须归到稳定 canonical id。</span>
+          </div>
+          <div class="risk-card">
+            <strong>事实冲突</strong>
+            <span>多个官方源给出不同营业时间或政策时，需要优先级、版本和冲突状态。</span>
+          </div>
+          <div class="risk-card">
+            <strong>混合检索</strong>
+            <span>旅行检索不能只靠向量，目的地、分类、tag、关键词都要参与召回和排序。</span>
+          </div>
+          <div class="risk-card">
+            <strong>引用约束</strong>
+            <span>Agent 生成的每个推荐点都要能回到 source 或 fact，避免模型编造。</span>
+          </div>
+          <div class="risk-card">
+            <strong>异步重试</strong>
+            <span>解析、OCR、抓取、embedding 都可能慢或失败，需要任务状态和可观测性。</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="detail-panel" aria-label="核心数据层">
+      <h2>核心数据层</h2>
+      <div class="schema">
+        <div class="schema-card">
+          <strong>source_documents</strong>
+          <code>doc_id
+provider
+source_url
+raw_text
+raw_payload
+fetched_at
+content_hash</code>
+        </div>
+        <div class="schema-card">
+          <strong>canonical_entities</strong>
+          <code>entity_id
+entity_type
+canonical_name
+identity_key
+status</code>
+        </div>
+        <div class="schema-card">
+          <strong>entity_destination_relations</strong>
+          <code>entity_id
+destination_id
+relation_type
+confidence</code>
+        </div>
+        <div class="schema-card">
+          <strong>entity_facts</strong>
+          <code>fact_id
+entity_id
+fact_key
+value_json
+source_doc_id
+valid_from
+valid_to
+status</code>
+        </div>
+        <div class="schema-card">
+          <strong>source_chunks</strong>
+          <code>chunk_id
+source_id
+entity_id
+chunk_text
+embedding
+keywords</code>
+        </div>
+        <div class="schema-card">
+          <strong>retrieval_events</strong>
+          <code>query_id
+intent_json
+candidate_ids
+relaxed_rules
+used_sources</code>
+        </div>
+        <div class="schema-card">
+          <strong>agent_runs</strong>
+          <code>run_id
+user_id
+tools_called
+prompt_version
+answer
+trace_id</code>
+        </div>
+        <div class="schema-card">
+          <strong>jobs</strong>
+          <code>job_id
+job_type
+status
+retry_count
+last_error
+scheduled_at</code>
+        </div>
+      </div>
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          <span>用户收藏线负责个人兴趣沉淀</span>
+          <span>合作方官方线负责可信事实补充</span>
+          <span>Canonical Entity 负责统一身份</span>
+          <span>Entity Fact 负责事实、来源和版本</span>
+          <span>Hybrid Retrieval 负责召回和排序</span>
+          <span>Agent 只基于 used_sources 回答</span>
+          <span>用户收藏线负责个人兴趣沉淀</span>
+          <span>合作方官方线负责可信事实补充</span>
+          <span>Canonical Entity 负责统一身份</span>
+          <span>Entity Fact 负责事实、来源和版本</span>
+          <span>Hybrid Retrieval 负责召回和排序</span>
+          <span>Agent 只基于 used_sources 回答</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const modes = {
+      collect: {
+        title: "用户收藏入库：从链接/长图到个人知识卡片",
+        note: "前端只负责采集入口和状态展示，后端完成解析、旅行相关判断、结构化抽取、实体挂载、chunk 与索引。",
+        badge: "POST /sources/collect · /sources/collect-image",
+        activeNodes: ["user_input", "api", "parser", "raw_doc", "analysis", "entity", "kb", "chunks", "itinerary_store"],
+        lineClass: "active",
+        edges: [
+          ["user_input", "api"],
+          ["api", "parser"],
+          ["parser", "raw_doc"],
+          ["raw_doc", "analysis"],
+          ["analysis", "entity"],
+          ["entity", "kb"],
+          ["raw_doc", "chunks"],
+          ["kb", "itinerary_store"]
+        ],
+        responsibility: [
+          ["前端", "提供 URL/图片/分享文本入口，展示解析中、已入库、非旅行内容、失败重试等状态。"],
+          ["后端接入", "统一接收 collect 请求，创建任务，选择 parser/OCR/平台 worker。"],
+          ["AI 分析", "判断是否旅行相关，抽取 destination、category、location、tags。"],
+          ["入库结果", "生成卡片用于展示，正文和 chunk 留给后续检索与 Agent 使用。"]
+        ]
+      },
+      partner: {
+        title: "官方信息同步：抓取中台定时更新可信事实库",
+        note: "合作方从地图、公众号、旅游局、官方渠道抓取信息，后端保留来源证据，再通过实体归一和事实版本更新可信知识库。",
+        badge: "scheduled jobs · trusted ingestion · canonical facts",
+        activeNodes: ["partner_input", "crawl_job", "raw_doc", "entity", "kb", "chunks"],
+        lineClass: "active partner",
+        edges: [
+          ["partner_input", "crawl_job"],
+          ["crawl_job", "raw_doc"],
+          ["raw_doc", "entity"],
+          ["entity", "kb"],
+          ["raw_doc", "chunks"]
+        ],
+        responsibility: [
+          ["抓取中台", "按我们提供的目的地、POI、政策主题和频率，从官方或合作方渠道抓取。"],
+          ["原始证据", "不直接覆盖知识，先写 source_documents，保留 provider、URL、时间、hash。"],
+          ["实体归一", "同一个故宫、签证政策、跨城路线要落到同一个 canonical_entity_id。"],
+          ["事实更新", "开放时间、票价、签证材料等进入 entity_facts，并记录来源、版本、冲突状态。"]
+        ]
+      },
+      rag: {
+        title: "行程问答 RAG：先检索可信资料，再让 Agent 生成",
+        note: "用户问题不会直接丢给 LLM。后端先解析意图，再用结构化约束、关键词、向量混合检索，最后把带引用上下文交给 Agent。",
+        badge: "POST /agent/chat · /chat/recommend",
+        activeNodes: ["query_input", "intent", "retrieval", "chunks", "kb", "agent"],
+        lineClass: "active query",
+        edges: [
+          ["query_input", "intent"],
+          ["intent", "retrieval"],
+          ["kb", "retrieval"],
+          ["chunks", "retrieval"],
+          ["retrieval", "agent"]
+        ],
+        responsibility: [
+          ["意图解析", "抽取目的地、天数、偏好、负向约束，缺少关键条件时追问。"],
+          ["混合检索", "hard filter 保底，soft constraint 加权，关键词和向量一起召回。"],
+          ["排序去重", "按 destination、category、tag、recency、source trust 打分，必要时放宽条件。"],
+          ["Agent 输出", "只基于检索上下文生成答案，每个推荐点必须带 used_sources。"]
+        ]
+      }
+    };
+
+    const flowBoard = document.getElementById("flowBoard");
+    const flowSvg = document.getElementById("flowSvg");
+    const modeTitle = document.getElementById("modeTitle");
+    const modeNote = document.getElementById("modeNote");
+    const modeBadge = document.getElementById("modeBadge");
+    const responsibilityTitle = document.getElementById("responsibilityTitle");
+    const responsibility = document.getElementById("responsibility");
+    const buttons = Array.from(document.querySelectorAll(".mode-button"));
+    const allNodes = Array.from(document.querySelectorAll(".node"));
+    let activeMode = "collect";
+    let timer = null;
+
+    function centerOf(element, rootBox) {
+      const box = element.getBoundingClientRect();
+      return {
+        x: box.left - rootBox.left + box.width / 2,
+        y: box.top - rootBox.top + box.height / 2
+      };
+    }
+
+    function pathBetween(from, to) {
+      const dx = Math.abs(to.x - from.x);
+      const c1x = from.x + dx * 0.42;
+      const c2x = to.x - dx * 0.42;
+      return `M ${from.x} ${from.y} C ${c1x} ${from.y}, ${c2x} ${to.y}, ${to.x} ${to.y}`;
+    }
+
+    function renderLines(mode) {
+      const rootBox = flowBoard.getBoundingClientRect();
+      flowSvg.setAttribute("viewBox", `0 0 ${rootBox.width} ${rootBox.height}`);
+      flowSvg.innerHTML = "";
+      mode.edges.forEach(([fromId, toId]) => {
+        const fromEl = document.getElementById(fromId);
+        const toEl = document.getElementById(toId);
+        if (!fromEl || !toEl) return;
+        const from = centerOf(fromEl, rootBox);
+        const to = centerOf(toEl, rootBox);
+        flowSvg.insertAdjacentHTML("beforeend", `<path class="flow-line ${mode.lineClass}" d="${pathBetween(from, to)}"></path>`);
+      });
+    }
+
+    function renderResponsibility(modeKey, mode) {
+      responsibilityTitle.textContent = modeKey === "partner" ? "官方同步职责" : modeKey === "rag" ? "问答链路职责" : "收藏入库职责";
+      responsibility.innerHTML = mode.responsibility
+        .map(([key, value]) => `<div class="kv-row"><span class="kv-key">${key}</span><span class="kv-value">${value}</span></div>`)
+        .join("");
+    }
+
+    function setMode(modeKey) {
+      activeMode = modeKey;
+      const mode = modes[modeKey];
+      modeTitle.textContent = mode.title;
+      modeNote.textContent = mode.note;
+      modeBadge.textContent = mode.badge;
+      buttons.forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.mode === modeKey));
+      });
+      allNodes.forEach((node) => {
+        const active = mode.activeNodes.includes(node.id);
+        node.classList.toggle("active", active);
+        node.classList.toggle("dim", !active);
+      });
+      renderResponsibility(modeKey, mode);
+      requestAnimationFrame(() => renderLines(mode));
+    }
+
+    function nextMode() {
+      const keys = Object.keys(modes);
+      const index = keys.indexOf(activeMode);
+      setMode(keys[(index + 1) % keys.length]);
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setMode(button.dataset.mode);
+        window.clearInterval(timer);
+        timer = window.setInterval(nextMode, 8000);
+      });
+    });
+
+    setMode(activeMode);
+    timer = window.setInterval(nextMode, 8000);
+    window.addEventListener("resize", () => {
+      window.clearTimeout(window.__tripGuardBackendResizeTimer);
+      window.__tripGuardBackendResizeTimer = window.setTimeout(() => setMode(activeMode), 120);
+    });
+  </script>
+</body>
+</html>

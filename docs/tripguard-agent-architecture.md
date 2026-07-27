@@ -73,7 +73,7 @@ Entity Fact 保存结构化、可版本化、可溯源的事实
 
 因此，当一个知识同时属于多个目的地时，不复制多份实体，而是一个实体绑定多个目的地关系。比如“中国护照去日本旅游签证”同时挂到中国和日本，“东京到京都新干线”同时挂到东京和京都，但底层只有一个 `canonical_entity_id`。
 
-详见 [Canonical Entity 演示文档](./tripguard-canonical-entity-demo.md) 和 [Canonical Entity 可视化演示页](./tripguard-canonical-entity-visual.html)。
+详见 [Canonical Entity 演示文档](./tripguard-canonical-entity-demo.md)、[Canonical Entity 可视化演示页](./tripguard-canonical-entity-visual.html) 和 [后端架构可视化演示页](./tripguard-backend-architecture-visual.html)。
 
 ## Agent 不直接做所有事
 
